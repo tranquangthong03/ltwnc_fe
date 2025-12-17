@@ -116,6 +116,8 @@ namespace WebSucKhoe.API.Controllers
         [HttpGet("doctors")]
         public async Task<IActionResult> GetDoctors()
         {
+            Console.WriteLine("GetDoctors called");
+            
             var list = await _context.ChiTietBacSis
                 .Include(d => d.MaBacSiNavigation) // Join bảng NguoiDung
                 .Select(d => new
@@ -123,10 +125,20 @@ namespace WebSucKhoe.API.Controllers
                     d.MaBacSi,
                     HoTen = d.MaBacSiNavigation.HoTen,
                     Email = d.MaBacSiNavigation.Email,
+                    SoDienThoai = d.MaBacSiNavigation.SoDienThoai, // Thêm số điện thoại
+                    TrangThai = d.MaBacSiNavigation.TrangThai, // Thêm trạng thái
                     d.ChuyenKhoa,
                     d.GiaKham,
-                    d.SoChungChi
+                    d.SoChungChi,
+                    d.SoNamKinhNghiem // Thêm số năm kinh nghiệm
                 }).ToListAsync();
+                
+            Console.WriteLine($"Found {list.Count} doctors");
+            foreach (var doctor in list)
+            {
+                Console.WriteLine($"Doctor: {doctor.HoTen}, Email: {doctor.Email}, Phone: {doctor.SoDienThoai}");
+            }
+            
             return Ok(list);
         }
 
@@ -141,22 +153,66 @@ namespace WebSucKhoe.API.Controllers
             return Ok(new { message = "Đã xóa thành công" });
         }
 
+        // 2.1 Cập nhật trạng thái người dùng (Khóa/Mở khóa)
+        [HttpPut("users/{id}/status")]
+        public async Task<IActionResult> UpdateUserStatus(int id, [FromBody] UpdateStatusRequest request)
+        {
+            Console.WriteLine($"UpdateUserStatus - Received ID: {id}, New Status: {request.trangThai}");
+
+            var user = await _context.NguoiDungs.FindAsync(id);
+            if (user == null)
+            {
+                Console.WriteLine($"User with ID {id} not found in NguoiDungs table");
+                return NotFound($"Không tìm thấy người dùng với ID: {id}");
+            }
+
+            Console.WriteLine($"Found user: {user.HoTen}, Current Status: {user.TrangThai}");
+
+            user.TrangThai = request.trangThai;
+            await _context.SaveChangesAsync();
+
+            Console.WriteLine($"Updated user status to: {user.TrangThai}");
+
+            return Ok(new
+            {
+                message = $"Đã {(request.trangThai ? "mở khóa" : "khóa")} tài khoản thành công",
+                trangThai = user.TrangThai,
+                userId = user.MaNguoiDung,
+                userName = user.HoTen
+            });
+        }
+
         // 3. Lấy danh sách Bệnh nhân
         [HttpGet("patients")]
         public async Task<IActionResult> GetPatients()
         {
+            Console.WriteLine("GetPatients called");
+            
             var list = await _context.ChiTietBenhNhans
                 .Include(p => p.MaBenhNhanNavigation)
                 .Select(p => new
                 {
-                    p.MaBenhNhan,
+                    // ID để cập nhật trạng thái (MaNguoiDung)
+                    MaBenhNhan = p.MaBenhNhanNavigation.MaNguoiDung,
+                    // Thông tin từ bảng NguoiDung
                     HoTen = p.MaBenhNhanNavigation.HoTen,
                     Email = p.MaBenhNhanNavigation.Email,
                     SoDienThoai = p.MaBenhNhanNavigation.SoDienThoai,
-                    p.NgaySinh,
-                    p.GioiTinh,
-                    p.TienSuBenh
+                    TrangThai = p.MaBenhNhanNavigation.TrangThai,
+                    VaiTro = p.MaBenhNhanNavigation.VaiTro,
+                    // Thông tin từ bảng ChiTietBenhNhan
+                    NgaySinh = p.NgaySinh,
+                    GioiTinh = p.GioiTinh,
+                    DiaChi = p.DiaChi,
+                    TienSuBenh = p.TienSuBenh
                 }).ToListAsync();
+                
+            Console.WriteLine($"Found {list.Count} patients");
+            foreach (var patient in list)
+            {
+                Console.WriteLine($"Patient: {patient.HoTen}, Email: {patient.Email}, Status: {patient.TrangThai}");
+            }
+            
             return Ok(list);
         }
 
@@ -188,6 +244,11 @@ namespace WebSucKhoe.API.Controllers
         public string HoTen { get; set; }
         public string ChuyenKhoa { get; set; }
         public decimal GiaKham { get; set; }
+    }
+
+    public class UpdateStatusRequest
+    {
+        public bool trangThai { get; set; }
     }
 
 }
