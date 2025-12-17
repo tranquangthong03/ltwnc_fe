@@ -700,3 +700,88 @@ body {
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.9rem;
 }
+
+/* --- CSS CHO TRANG BÁC SĨ (DOCTORS) --- */
+
+.doctor-card-wrapper {
+  background: var(--white);
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: var(--shadow);
+}
+
+.doctor-card-wrapper:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-light);
+}
+
+.doc-img-container {
+  width: 100%;
+  height: 280px;
+  background-color: #f1f5f9;
+  position: relative;
+  overflow: hidden;
+}
+
+.doc-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.doctor-card-wrapper:hover .doc-img {
+  transform: scale(1.05);
+}
+
+.doc-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: var(--primary);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.doc-info {
+  padding: 25px;
+  text-align: center;
+}
+
+.doc-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+}
+
+.doc-dept {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.doc-stats {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.doc-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
