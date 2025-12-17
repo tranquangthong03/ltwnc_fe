@@ -823,3 +823,546 @@ body {
   background: var(--white);
   box-shadow: 0 0 0 3px var(--primary-light);
 }
+
+/* --- PHẦN GIỚI THIỆU ĐỘI NGŨ (TRUST SECTION) --- */
+.trust-section {
+  background-color: var(--bg-light);
+  padding: 80px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.trust-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.trust-content h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.trust-list {
+  list-style: none;
+  padding: 0;
+  margin: 30px 0;
+}
+
+.trust-item {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.trust-icon {
+  width: 50px;
+  height: 50px;
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+}
+
+.trust-text h4 {
+  margin: 0 0 5px 0;
+  font-size: 1.1rem;
+}
+
+.trust-text p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+/* Ảnh collage bác sĩ */
+.trust-image-box {
+  position: relative;
+}
+
+.main-trust-img {
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: var(--shadow-hover);
+}
+
+.float-badge {
+  position: absolute;
+  bottom: 30px;
+  left: -20px;
+  background: white;
+  padding: 15px 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  animation: floatCard 5s ease-in-out infinite;
+}
+
+/* --- BANNER ỨNG DỤNG (MOBILE APP SECTION) --- */
+.app-section {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  padding: 80px 20px;
+  margin-top: 80px;
+  color: white;
+  border-radius: 30px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.app-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+
+.app-content {
+  max-width: 500px;
+}
+
+.app-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  color: white;
+}
+
+.app-content p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 30px;
+}
+
+.app-btns {
+  display: flex;
+  gap: 15px;
+}
+
+.store-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.3s;
+}
+
+.store-btn:hover {
+  background: white;
+  color: var(--primary-dark);
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .trust-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .trust-image-box {
+    order: -1;
+  }
+
+  /* Ảnh lên trên text */
+  .app-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .app-btns {
+    justify-content: center;
+  }
+}
+
+/* --- CHAT AI MODERN UI --- */
+.chat-layout {
+  display: flex;
+  height: calc(100vh - 80px);
+  /* Trừ đi chiều cao Navbar */
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+/* 1. Sidebar (Lịch sử) */
+.chat-sidebar {
+  width: 280px;
+  background: white;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  transition: transform 0.3s ease;
+}
+
+.new-chat-btn {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  border: 1px solid var(--primary);
+  padding: 12px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  margin-bottom: 20px;
+}
+
+.new-chat-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.history-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.history-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.history-item:hover {
+  background: #f1f5f9;
+  color: var(--text-primary);
+}
+
+/* 2. Main Chat Area */
+.chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: white;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 20px 15%;
+  /* Padding 2 bên lớn để nội dung tập trung giữa */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Bong bóng chat */
+.message-row {
+  display: flex;
+  gap: 15px;
+  max-width: 100%;
+}
+
+.message-row.user {
+  flex-direction: row-reverse;
+}
+
+.avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar.bot {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.avatar.user {
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+.message-content {
+  background: #f1f5f9;
+  padding: 12px 18px;
+  border-radius: 18px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 80%;
+  position: relative;
+}
+
+.message-row.user .message-content {
+  background: var(--primary);
+  color: white;
+  border-radius: 18px 18px 4px 18px;
+}
+
+.message-row.bot .message-content {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px 18px 18px 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Ảnh đính kèm trong tin nhắn */
+.attached-image {
+  max-width: 200px;
+  border-radius: 12px;
+  margin-top: 10px;
+  border: 2px solid white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 3. Input Area */
+.chat-input-area {
+  padding: 20px 15%;
+  background: white;
+  border-top: 1px solid #f1f5f9;
+  position: relative;
+}
+
+/* Xem trước ảnh upload */
+.preview-container {
+  position: absolute;
+  top: -70px;
+  left: 15%;
+  background: white;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: flex-start;
+}
+
+.preview-img {
+  height: 50px;
+  border-radius: 6px;
+}
+
+.remove-preview {
+  margin-left: -10px;
+  margin-top: -10px;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+.input-wrapper {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 8px 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s;
+}
+
+.input-wrapper:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+  background: white;
+}
+
+.chat-textarea {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  resize: none;
+  height: 24px;
+  max-height: 100px;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0;
+  color: var(--text-primary);
+}
+
+.action-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn:hover {
+  background: #e2e8f0;
+  color: var(--primary);
+}
+
+.send-btn {
+  background: var(--primary);
+  color: white;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.send-btn:hover {
+  background: var(--primary-dark);
+}
+
+.send-btn:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .chat-sidebar {
+    display: none;
+  }
+
+  /* Ẩn sidebar trên mobile cho gọn */
+  .chat-messages,
+  .chat-input-area {
+    padding: 20px 5%;
+  }
+
+  .preview-container {
+    left: 5%;
+  }
+}
+
+/* --- PHẦN THANH TOÁN & CAM KẾT (PACKAGES PAGE) --- */
+.payment-section {
+  background-color: var(--bg-light);
+  /* Nền xanh nhạt */
+  padding: 60px 20px;
+  margin-top: 60px;
+  border-radius: 30px;
+}
+
+.payment-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Cột trái: Cam kết */
+.policy-item {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  border: 1px solid #f1f5f9;
+  transition: transform 0.3s;
+}
+
+.policy-item:hover {
+  transform: translateX(5px);
+  border-color: var(--primary-light);
+}
+
+.policy-icon {
+  flex-shrink: 0;
+  width: 45px;
+  height: 45px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Cột phải: Thanh toán & QR */
+.payment-box {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  border: 1px solid #e2e8f0;
+}
+
+.payment-methods-icons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.pay-icon {
+  height: 40px;
+  padding: 5px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.qr-container {
+  background: white;
+  padding: 15px;
+  border: 2px dashed var(--primary);
+  border-radius: 15px;
+  display: inline-block;
+  margin-top: 10px;
+  position: relative;
+}
+
+.qr-img {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+}
+
+.donation-text {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .payment-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
