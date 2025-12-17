@@ -1,0 +1,72 @@
+/* --- Admin Layout Styles --- */
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f1f5f9; /* Màu nền xám nhẹ cho dashboard */
+    color: #333; /* Chữ màu đen cho dễ đọc */
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background-color: #1e293b; /* Màu tối cho sidebar */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+}
+
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid #334155;
+    text-align: center;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 20px 0;
+    flex-grow: 1;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: 0.3s;
+    gap: 15px;
+}
+
+.sidebar-link:hover {
+    background-color: #334155;
+    color: #fff;
+}
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid #334155;
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+/* Admin Content Area */
+.admin-content {
+    margin-left: 260px; /* Bằng width của sidebar */
+    padding: 30px;
+    width: 100%;
+    overflow-y: auto;
+}

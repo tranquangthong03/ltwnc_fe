@@ -1,56 +1,69 @@
-// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-// Import các Components
-import Navbar from './components/Navbar';
 import { AuthProvider } from './context/AuthContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './App.css';
+import './styles/admin.css'; 
 
-// Import các Pages
+// Import Layouts
+import MainLayout from './layouts/MainLayout';
+import AdminLayout from './layouts/AdminLayout';
+
+// Import Pages (User)
 import Home from './pages/Home';
 import Doctors from './pages/Doctors';
 import ChatAI from './pages/ChatAI';
 import Packages from './pages/Packages';
 import Login from './pages/Login';
-import Register from './pages/Register'; // <--- Đã thêm trang Đăng ký
+import Register from './pages/Register';
 import Contact from './pages/Contact';
 
-// Import Thư viện thông báo & CSS
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import './App.css'; // File CSS chính (chứa hiệu ứng nền)
+
+import AdminDashboard from './pages/admin/AdminDashboard';
+import ManageDoctors from './pages/admin/ManageDoctors'; 
+import ManageUsers from './pages/admin/ManageUsers';
+import ManagePackages from './pages/admin/ManagePackages';
+import ManageAppointments from './pages/admin/ManageAppointments';
+import ManageInvoices from './pages/admin/ManageInvoices';
+import AdminSettings from './pages/admin/AdminSettings';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        {/* --- HIỆU ỨNG NỀN (ORBS) --- */}
-        {/* Các quả cầu mờ lơ lửng phía sau */}
-        <div className="background-effects">
-          <div className="orb orb-1"></div>
-          <div className="orb orb-2"></div>
-        </div>
+        <Routes>
+          {/* --- NHÓM 1: USER ROUTE (Giao diện người dùng) --- */}
+          <Route element={<MainLayout />}>
+             <Route path="/" element={<Home />} />
+             <Route path="/doctors" element={<Doctors />} />
+             <Route path="/chat-ai" element={<ChatAI />} />
+             <Route path="/packages" element={<Packages />} />
+             <Route path="/contact" element={<Contact />} />
+             <Route path="/login" element={<Login />} />
+             <Route path="/register" element={<Register />} />
+          </Route>
 
-        {/* Thanh điều hướng */}
-        <Navbar />
+          {/* --- NHÓM 2: ADMIN ROUTE (Giao diện quản trị) --- */}
+          <Route path="/admin" element={<AdminLayout />}>
+             {/* Dashboard: localhost:3000/admin */}
+             <Route index element={<AdminDashboard />} /> 
+             
+             {/* Quản lý Nhân sự */}
+             <Route path="users" element={<ManageUsers />} />
+             <Route path="doctors" element={<ManageDoctors />} />
+             
+             {/* Dịch vụ & Vận hành */}
+             <Route path="packages" element={<ManagePackages />} />
+             <Route path="appointments" element={<ManageAppointments />} />
+             <Route path="invoices" element={<ManageInvoices />} />
+             
+             {/* Khác */}
+             <Route path="settings" element={<AdminSettings />} />
+          </Route>
 
-        {/* Nội dung chính của trang */}
-        <div className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/doctors" element={<Doctors />} />
-            <Route path="/chat-ai" element={<ChatAI />} />
-            <Route path="/packages" element={<Packages />} />
+        </Routes>
 
-            {/* Auth Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} /> {/* <--- Route cho trang Đăng ký */}
-
-            <Route path="/contact" element={<Contact />} />
-          </Routes>
-        </div>
-
-        {/* Component hiển thị thông báo (Toast) toàn cục */}
         <ToastContainer position="bottom-right" theme="colored" />
       </Router>
     </AuthProvider>
