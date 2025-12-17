@@ -1,0 +1,23 @@
+// src/services/api.js
+import axios from 'axios';
+
+// Tạo instance axios với đường dẫn cơ sở của Backend
+const api = axios.create({
+    baseURL: 'http://localhost:5119/api', // Đổi port 5119 nếu backend của bạn chạy port khác
+});
+
+// Cấu hình Interceptor: Tự động thêm Token vào mỗi request nếu đã đăng nhập
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+export default api;

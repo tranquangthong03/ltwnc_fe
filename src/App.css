@@ -1,38 +1,351 @@
-.App {
-  text-align: center;
+/* src/App.css - PHIÊN BẢN DARK MODE CYBERPUNK */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+:root {
+  /* --- Bảng màu Dark Mode Hiện đại --- */
+  --bg-main: #0f172a;
+  /* Slate 900 - Nền chính tối */
+  --bg-glass: rgba(15, 23, 42, 0.7);
+  /* Nền kính trong suốt */
+  --text-primary: #f8fafc;
+  /* Slate 50 - Chữ sáng */
+  --text-secondary: #94a3b8;
+  /* Slate 400 - Chữ phụ màu xám */
+
+  /* Màu điểm nhấn: Xanh Cyan công nghệ */
+  --accent: #06b6d4;
+  /* Cyan 500 */
+  --accent-glow: rgba(6, 182, 212, 0.4);
+  /* Hiệu ứng phát sáng */
+
+  --navbar-height: 70px;
+  /* Thu hẹp chiều cao Navbar */
+  --radius: 16px;
 }
 
-.App-logo {
-  height: 40vmin;
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.6;
+  overflow-x: hidden;
+  /* Ẩn thanh cuộn ngang do hiệu ứng nền */
+}
+
+/* --- HIỆU ỨNG QUẢ CẦU MỜ LƠ LỬNG (ORBS) --- */
+.background-effects {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  /* Nằm dưới cùng */
+  overflow: hidden;
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  /* Tạo độ mờ mạnh */
+  opacity: 0.5;
+  animation: floatOrb 20s infinite alternate ease-in-out;
+}
+
+.orb-1 {
+  top: -10%;
+  left: -10%;
+  width: 600px;
+  height: 600px;
+  background: var(--accent);
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  bottom: -10%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: #8b5cf6;
+  /* Màu tím phụ trợ */
+  animation-delay: -5s;
+}
+
+@keyframes floatOrb {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(50px, 50px) scale(1.1);
+  }
+
+  100% {
+    transform: translate(-30px, 20px) scale(0.9);
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* --- UTILITIES --- */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+  background: linear-gradient(to right, var(--text-primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* --- BUTTONS (Hiệu ứng phát sáng) --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #3b82f6);
+  color: var(--text-primary);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 30px var(--accent-glow);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+}
+
+.btn-outline:hover {
+  background: var(--accent-glow);
+  color: var(--text-primary);
+}
+
+/* --- NAVBAR (Thu hẹp & Hiệu ứng kính) --- */
+.navbar {
+  height: var(--navbar-height);
+  /* Chiều cao cố định nhỏ hơn */
+  background: var(--bg-glass);
+  /* Nền kính trong suốt */
+  backdrop-filter: blur(12px);
+  /* Hiệu ứng mờ kính */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 25px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: color 0.3s;
+  font-size: 0.95rem;
+}
+
+.nav-links a:hover {
+  color: var(--accent);
+}
+
+/* --- HERO SECTION (Bố cục chia đôi & Khung ảnh) --- */
+.hero-wrapper {
+  padding: 80px 20px 120px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 40px;
+}
+
+.hero-content {
+  flex: 1;
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 25px;
+}
+
+.text-gradient {
+  background: linear-gradient(to right, var(--accent), #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-desc {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin-bottom: 40px;
+}
+
+/* Khung ảnh bác sĩ */
+.hero-image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.doctor-frame {
+  position: relative;
+  width: 450px;
+  height: 550px;
+  /* Tạo hình dáng khung organic, không vuông vức */
+  border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
+  overflow: hidden;
+  border: 4px solid var(--accent);
+  box-shadow: 0 0 50px var(--accent-glow);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1));
+  animation: floatOrb 15s infinite alternate ease-in-out;
+}
+
+.doctor-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Đẩy ảnh xuống một chút để phần đầu không bị cắt bởi khung tròn */
+  transform: translateY(20px) scale(1.05);
+}
+
+/* Hiệu ứng vòng tròn phát sáng sau lưng bác sĩ */
+.hero-image-container::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle, var(--accent-glow) 0%, rgba(0, 0, 0, 0) 70%);
+  top: -10%;
+  left: -10%;
+}
+
+/* --- CARDS (Giao diện kính Dark Mode) --- */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.modern-card {
+  background: rgba(30, 41, 59, 0.5);
+  /* Nền kính tối */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius);
+  padding: 30px;
+  transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.3);
+  transform: translateY(-5px);
+}
+
+.card-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--accent);
+  border-radius: 15px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin-bottom: 25px;
 }
 
-.App-link {
-  color: #61dafb;
+.modern-card h3 {
+  margin-bottom: 15px;
+  font-size: 1.3rem;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.modern-card p {
+  color: var(--text-secondary);
+}
+
+/* Responsive cho mobile */
+@media (max-width: 968px) {
+  .hero-wrapper {
+    flex-direction: column;
+    text-align: center;
+    padding-top: 40px;
   }
-  to {
-    transform: rotate(360deg);
+
+  .hero-content {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
   }
+
+  .hero-btns {
+    justify-content: center;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+  }
+
+  .doctor-frame {
+    width: 350px;
+    height: 450px;
+    margin-top: 40px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  /* Tạm ẩn menu trên mobile cho gọn */
 }
