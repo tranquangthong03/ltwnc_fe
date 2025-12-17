@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Trị Y Tế Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
+        
+        /* Sidebar */
+        .sidebar { min-height: 100vh; background: #343a40; color: #fff; }
+        .sidebar a { color: #cfd8dc; text-decoration: none; padding: 15px 20px; display: block; border-bottom: 1px solid #4b545c; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: #007bff; color: white; padding-left: 25px; }
+        .sidebar i { width: 25px; }
+        
+        /* Content */
+        .main-content { padding: 20px; }
+        .card { border: none; shadow: 0 0 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card-header { background: white; font-weight: bold; border-bottom: 2px solid #007bff; }
+        
+        /* Chat Box */
+        .chat-history { height: 400px; overflow-y: auto; background: #fff; border: 1px solid #e9ecef; padding: 15px; border-radius: 5px; }
+        .msg { margin-bottom: 10px; padding: 10px; border-radius: 10px; max-width: 80%; }
+        .msg-user { background: #e3f2fd; margin-left: auto; text-align: right; }
+        .msg-bot { background: #f1f0f0; margin-right: auto; }
+        
+        .hidden { display: none !important; }
+        .loading { text-align: center; padding: 20px; color: #666; }
+    </style>
+</head>
+<body>
+
+    <div id="login-section" class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="card p-4 shadow-lg" style="width: 400px;">
+            <div class="text-center mb-4">
+                <i class="fas fa-user-md fa-3x text-primary"></i>
+                <h3 class="mt-2">Admin Login</h3>
+            </div>
+            <div class="mb-3">
+                <label>Tài khoản</label>
+                <input type="text" id="username" class="form-control" value="admin">
+            </div>
+            <div class="mb-3">
+                <label>Mật khẩu</label>
+                <input type="password" id="password" class="form-control" value="123456">
+            </div>
+            <button onclick="login()" class="btn btn-primary w-100">Đăng nhập</button>
+        </div>
+    </div>
+
+    <div id="dashboard-section" class="container-fluid hidden">
+        <div class="row">
+            <div class="col-md-2 sidebar p-0">
+                <div class="p-3 text-center bg-dark">
+                    <h5 class="m-0">HealthCare Admin</h5>
+                </div>
+                <a href="#" onclick="showTab('doctors')" class="nav-link active"><i class="fas fa-user-doctor"></i> Quản lý Bác sĩ</a>
+                <a href="#" onclick="showTab('patients')" class="nav-link"><i class="fas fa-users"></i> Quản lý Bệnh nhân</a>
+                <a href="#" onclick="showTab('invoices')" class="nav-link"><i class="fas fa-file-invoice-dollar"></i> Hóa đơn & Thu tiền</a>
+                <a href="#" onclick="showTab('chats')" class="nav-link"><i class="fas fa-robot"></i> Giám sát Chat AI</a>
+                <a href="#" onclick="logout()" class="text-danger mt-5"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+            </div>
+
+            <div class="col-md-10 main-content">
+                
+                <div id="tab-doctors" class="content-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3>Danh sách Bác sĩ</h3>
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addDoctorModal"><i class="fas fa-plus"></i> Thêm Bác sĩ</button>
+                    </div>
+                    <div class="card">
+                        <div class="card-body table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Họ Tên</th>
+                                        <th>Chuyên Khoa</th>
+                                        <th>Giá Khám</th>
+                                        <th>Email</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="doctors-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-patients" class="content-tab hidden">
+                    <h3>Hồ sơ Bệnh nhân</h3>
+                    <div class="card">
+                        <div class="card-body table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Họ Tên</th>
+                                        <th>Ngày Sinh</th>
+                                        <th>Giới Tính</th>
+                                        <th>Tiền Sử Bệnh</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="patients-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-invoices" class="content-tab hidden">
+                    <h3>Quản lý Hóa đơn</h3>
+                    <div class="card">
+                        <div class="card-body table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th>Bệnh nhân</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invoices-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-chats" class="content-tab hidden">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h3>Lịch sử tư vấn AI</h3>
+                        <button class="btn btn-outline-primary btn-sm" onclick="loadChats()"><i class="fas fa-sync"></i> Làm mới</button>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID Phiên</th>
+                                        <th>Bệnh nhân</th>
+                                        <th>Tiêu đề</th>
+                                        <th>Thời gian</th>
+                                        <th>Chi tiết</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="chats-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addDoctorModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm Bác sĩ Mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addDoctorForm">
+                        <div class="mb-2"><label>Tên đăng nhập</label><input type="text" id="docUser" class="form-control" required></div>
+                        <div class="mb-2"><label>Mật khẩu</label><input type="password" id="docPass" class="form-control" required></div>
+                        <div class="mb-2"><label>Họ Tên</label><input type="text" id="docName" class="form-control" required></div>
+                        <div class="mb-2"><label>Email</label><input type="email" id="docEmail" class="form-control" required></div>
+                        <div class="mb-2"><label>Chuyên Khoa</label><input type="text" id="docSpec" class="form-control" required></div>
+                        <div class="mb-2"><label>Giá Khám</label><input type="number" id="docPrice" class="form-control" required></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="addDoctor()">Lưu lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="chatDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi tiết hội thoại</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="chat-history-content" class="chat-history"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ================= CẤU HÌNH HỆ THỐNG =================
+        // THAY ĐỔI PORT TẠI ĐÂY (Ví dụ: https://localhost:7054/api)
+        const API_BASE_URL = "https://localhost:7004/api"; 
+
+        // Hàm tiện ích gọi API
+        async function fetchAPI(endpoint, method = 'GET', body = null) {
+            const token = localStorage.getItem('token');
+            const headers = { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            };
+            
+            const config = { method, headers };
+            if (body) config.body = JSON.stringify(body);
+
+            try {
+                const res = await fetch(`${API_BASE_URL}${endpoint}`, config);
+                if (res.status === 401) {
+                    Swal.fire("Hết phiên!", "Vui lòng đăng nhập lại", "warning");
+                    logout();
+                    return null;
+                }
+                if (!res.ok) throw new Error(await res.text());
+                return method === 'GET' ? await res.json() : res;
+            } catch (err) {
+                console.error(err);
+                Swal.fire("Lỗi", err.message, "error");
+                return null;
+            }
+        }
+
+        // ================= AUTHENTICATION =================
+        function checkAuth() {
+            if(localStorage.getItem('token')) {
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('dashboard-section').classList.remove('hidden');
+                loadDoctors(); // Load tab đầu tiên
+            }
+        }
+
+        async function login() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({ username: u, password: p })
+                });
+
+                if(!res.ok) throw new Error("Sai tài khoản hoặc mật khẩu");
+                const data = await res.json();
+                
+                if(data.role !== 'Admin') throw new Error("Bạn không có quyền Admin!");
+
+                localStorage.setItem('token', data.token);
+                checkAuth();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đăng nhập thành công',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } catch(e) {
+                Swal.fire("Lỗi", e.message, "error");
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        // ================= NAVIGATION =================
+        function showTab(tabName) {
+            document.querySelectorAll('.content-tab').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            event.target.classList.add('active');
+
+            if(tabName === 'doctors') loadDoctors();
+            if(tabName === 'patients') loadPatients();
+            if(tabName === 'invoices') loadInvoices();
+            if(tabName === 'chats') loadChats();
+        }
+
+        // ================= 1. DOCTORS LOGIC =================
+        async function loadDoctors() {
+            const data = await fetchAPI('/admin/doctors');
+            if(!data) return;
+
+            const html = data.map(d => `
+                <tr>
+                    <td>${d.maBacSi}</td>
+                    <td><strong>${d.hoTen}</strong></td>
+                    <td><span class="badge bg-info">${d.chuyenKhoa}</span></td>
+                    <td>${d.giaKham.toLocaleString()} đ</td>
+                    <td>${d.email}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteUser(${d.maBacSi})"><i class="fas fa-trash"></i> Xóa</button>
+                    </td>
+                </tr>
+            `).join('');
+            document.getElementById('doctors-table-body').innerHTML = html;
+        }
+
+        async function addDoctor() {
+            const body = {
+                tenDangNhap: document.getElementById('docUser').value,
+                matKhau: document.getElementById('docPass').value,
+                hoTen: document.getElementById('docName').value,
+                email: document.getElementById('docEmail').value,
+                chuyenKhoa: document.getElementById('docSpec').value,
+                giaKham: parseFloat(document.getElementById('docPrice').value)
+            };
+
+            const res = await fetchAPI('/admin/add-doctor', 'POST', body);
+            if(res && res.ok) {
+                Swal.fire("Thành công", "Đã thêm bác sĩ mới", "success");
+                bootstrap.Modal.getInstance(document.getElementById('addDoctorModal')).hide();
+                loadDoctors();
+            }
+        }
+
+        // ================= 2. PATIENTS LOGIC =================
+        async function loadPatients() {
+            const data = await fetchAPI('/admin/patients');
+            if(!data) return;
+
+            const html = data.map(p => `
+                <tr>
+                    <td>${p.maBenhNhan}</td>
+                    <td><strong>${p.hoTen}</strong></td>
+                    <td>${p.ngaySinh ? p.ngaySinh.split('T')[0] : 'N/A'}</td>
+                    <td>${p.gioiTinh}</td>
+                    <td><small>${p.tienSuBenh || 'Không có'}</small></td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteUser(${p.maBenhNhan})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            document.getElementById('patients-table-body').innerHTML = html;
+        }
+
+        async function deleteUser(id) {
+            const result = await Swal.fire({
+                title: 'Bạn chắc chứ?',
+                text: "Dữ liệu người dùng này sẽ bị xóa vĩnh viễn!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa ngay'
+            });
+
+            if (result.isConfirmed) {
+                const res = await fetchAPI(`/admin/delete-user/${id}`, 'DELETE');
+                if(res && res.ok) {
+                    Swal.fire('Đã xóa!', '', 'success');
+                    loadDoctors(); // Reload both just in case
+                    loadPatients();
+                }
+            }
+        }
+
+        // ================= 3. INVOICES LOGIC =================
+        async function loadInvoices() {
+            const data = await fetchAPI('/admin/invoices');
+            if(!data) return;
+
+            const html = data.map(i => {
+                const statusBadge = i.trangThaiThanhToan === 'DaThanhToan' 
+                    ? '<span class="badge bg-success">Đã thanh toán</span>' 
+                    : '<span class="badge bg-warning text-dark">Chờ thanh toán</span>';
+                
+                const btnAction = i.trangThaiThanhToan !== 'DaThanhToan'
+                    ? `<button class="btn btn-sm btn-primary" onclick="confirmPay(${i.maHoaDon})">Xác nhận thu tiền</button>`
+                    : '<i class="fas fa-check-circle text-success fa-lg"></i>';
+
+                return `<tr>
+                    <td>#${i.maHoaDon}</td>
+                    <td>${i.tenBenhNhan}</td>
+                    <td class="fw-bold">${i.tongTien.toLocaleString()} đ</td>
+                    <td>${new Date(i.ngayTao).toLocaleDateString()}</td>
+                    <td>${statusBadge}</td>
+                    <td>${btnAction}</td>
+                </tr>`;
+            }).join('');
+            document.getElementById('invoices-table-body').innerHTML = html;
+        }
+
+        async function confirmPay(id) {
+            const res = await fetchAPI(`/admin/confirm-payment/${id}`, 'POST');
+            if(res && res.ok) {
+                Swal.fire("Thành công", "Đã xác nhận thanh toán", "success");
+                loadInvoices();
+            }
+        }
+
+        // ================= 4. CHAT LOGIC =================
+        async function loadChats() {
+            const data = await fetchAPI('/admin/chat-monitor?page=1&pageSize=50');
+            if(!data) return;
+
+            const html = data.map(c => `
+                <tr>
+                    <td>${c.maPhienChat}</td>
+                    <td>${c.tenBenhNhan}</td>
+                    <td>${c.tieuDe}</td>
+                    <td>${new Date(c.thoiGianTao).toLocaleString()}</td>
+                    <td><button class="btn btn-sm btn-info text-white" onclick="viewChat(${c.maPhienChat})">Xem chi tiết</button></td>
+                </tr>
+            `).join('');
+            document.getElementById('chats-table-body').innerHTML = html;
+        }
+
+        async function viewChat(id) {
+            const msgs = await fetchAPI(`/admin/chat-detail/${id}`);
+            if(!msgs) return;
+
+            const container = document.getElementById('chat-history-content');
+            container.innerHTML = msgs.map(m => `
+                <div class="msg ${m.sender === 'Bệnh nhân' ? 'msg-user' : 'msg-bot'}">
+                    <strong>${m.sender}</strong> <small class="text-muted">(${new Date(m.thoiGian).toLocaleTimeString()})</small>
+                    <div class="mt-1">${m.noiDung}</div>
+                </div>
+            `).join('');
+
+            new bootstrap.Modal(document.getElementById('chatDetailModal')).show();
+        }
+
+        // Init
+        checkAuth();
+
+    </script>
+</body>
+</html>
