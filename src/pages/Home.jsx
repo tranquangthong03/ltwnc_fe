@@ -1,12 +1,53 @@
 // src/pages/Home.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import RevealOnScroll from '../components/RevealOnScroll';
-import Footer from '../components/Footer'; // Import Footer
-import { ArrowRight, Activity, ShieldCheck, Clock, Sparkles, Search, Award, Users, ThumbsUp } from 'lucide-react';
+import Footer from '../components/Footer';
+import { ArrowRight, Activity, ShieldCheck, Clock, Sparkles, Search, Award, Users, ThumbsUp, HeartPulse, UserCheck } from 'lucide-react';
 
 const Home = () => {
-    // Dữ liệu giả lập Tin tức
+    // --- 1. LOGIC TYPEWRITER EFFECT (Đã sửa lỗi Hook) ---
+    const [text, setText] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [loopNum, setLoopNum] = useState(0);
+    const [delta, setDelta] = useState(150);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const toRotate = ["Toàn Diện", "Tận Tâm", "Chuyên Nghiệp", "Hiện Đại"];
+    const period = 2000;
+
+    useEffect(() => {
+        const tick = () => {
+            let i = loopNum % toRotate.length;
+            let fullText = toRotate[i];
+            let updatedText = isDeleting
+                ? fullText.substring(0, text.length - 1)
+                : fullText.substring(0, text.length + 1);
+
+            setText(updatedText);
+
+            if (isDeleting) {
+                setDelta(80);
+            }
+
+            if (!isDeleting && updatedText === fullText) {
+                setIsDeleting(true);
+                setDelta(period);
+            } else if (isDeleting && updatedText === '') {
+                setIsDeleting(false);
+                setLoopNum(loopNum + 1);
+                setDelta(150);
+            }
+        };
+
+        let ticker = setInterval(() => {
+            tick();
+        }, delta);
+
+        return () => clearInterval(ticker);
+    }, [text, delta, isDeleting, loopNum, toRotate]); // Đã thêm đầy đủ dependencies
+    // -----------------------------------------------------
+
     const news = [
         { id: 1, title: "5 Cách tăng cường hệ miễn dịch mùa lạnh", date: "15/12/2024", img: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=300" },
         { id: 2, title: "Lịch khám sức khỏe định kỳ năm 2025", date: "10/12/2024", img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=300" },
@@ -15,15 +56,24 @@ const Home = () => {
 
     return (
         <div>
-            {/* 1. HERO SECTION (Giữ nguyên) */}
+            {/* HERO SECTION */}
             <div className="hero-wrapper">
+                {/* CỘT TRÁI */}
                 <div className="hero-content">
                     <RevealOnScroll>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', color: 'var(--primary-dark)', fontWeight: 600 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', color: 'var(--primary)', fontWeight: 600 }}>
                             <Sparkles size={20} /> <span>Hệ sinh thái y tế 4.0</span>
                         </div>
-                        <h1 className="hero-title">Chăm Sóc Sức Khỏe <br /> <span className="text-gradient">Toàn Diện & Tận Tâm</span></h1>
-                        <p className="hero-desc">Đặt lịch khám bệnh nhanh chóng, kết nối với bác sĩ chuyên khoa và nhận tư vấn sức khỏe mọi lúc, mọi nơi.</p>
+
+                        <h1 className="hero-title">
+                            Chăm Sóc Sức Khỏe <br />
+                            <span className="text-gradient">{text}</span>
+                            <span className="typewriter-cursor"></span>
+                        </h1>
+
+                        <p className="hero-desc">
+                            Hệ thống Healthes System kết nối bạn với chuyên gia y tế hàng đầu. Đặt lịch khám, tư vấn AI và quản lý hồ sơ sức khỏe chỉ trong một chạm.
+                        </p>
 
                         <div className="search-container">
                             <input type="text" className="search-input" placeholder="Tìm triệu chứng, bác sĩ..." />
@@ -36,42 +86,49 @@ const Home = () => {
                         </div>
                     </RevealOnScroll>
                 </div>
+
+                {/* CỘT PHẢI */}
                 <div className="hero-image-container">
                     <RevealOnScroll>
-                        <div className="doctor-frame-bg"></div>
-                        <div className="doctor-frame"><img src="/doctor.png" alt="Bác sĩ" /></div>
+                        <div className="doctor-frame">
+                            <img src="/doctor.png" alt="Bác sĩ" />
+                        </div>
+
+                        <div className="floating-card float-1">
+                            <div className="card-icon-box"><HeartPulse size={20} /></div>
+                            <div className="floating-text">
+                                <span>Chuyên khoa</span>
+                                <strong>Tim Mạch</strong>
+                            </div>
+                        </div>
+
+                        <div className="floating-card float-2">
+                            <div className="card-icon-box"><UserCheck size={20} /></div>
+                            <div className="floating-text">
+                                <span>Bác sĩ uy tín</span>
+                                <strong>Top 1% VN</strong>
+                            </div>
+                        </div>
                     </RevealOnScroll>
                 </div>
             </div>
 
-            {/* 2. STATS SECTION (Mới) */}
+            {/* STATS SECTION */}
             <div className="stats-section">
                 <RevealOnScroll>
                     <div className="stats-grid">
-                        <div>
-                            <div className="stat-number">15+</div>
-                            <div className="stat-label">Năm Kinh Nghiệm</div>
-                        </div>
-                        <div>
-                            <div className="stat-number">50+</div>
-                            <div className="stat-label">Bác Sĩ Chuyên Khoa</div>
-                        </div>
-                        <div>
-                            <div className="stat-number">10k+</div>
-                            <div className="stat-label">Bệnh Nhân Tin Dùng</div>
-                        </div>
-                        <div>
-                            <div className="stat-number">24/7</div>
-                            <div className="stat-label">Hỗ Trợ Y Tế</div>
-                        </div>
+                        <div><div className="stat-number">15+</div><div className="stat-label">Năm Kinh Nghiệm</div></div>
+                        <div><div className="stat-number">50+</div><div className="stat-label">Bác Sĩ Chuyên Khoa</div></div>
+                        <div><div className="stat-number">10k+</div><div className="stat-label">Bệnh Nhân Tin Dùng</div></div>
+                        <div><div className="stat-number">24/7</div><div className="stat-label">Hỗ Trợ Y Tế</div></div>
                     </div>
                 </RevealOnScroll>
             </div>
 
-            {/* 3. FEATURES SECTION */}
+            {/* FEATURES SECTION */}
             <div className="page-container">
                 <RevealOnScroll>
-                    <h2 className="section-title">Tại Sao Chọn Chúng Tôi?</h2>
+                    <h2 className="section-title">Tại Sao Chọn Healthes System?</h2>
                     <p className="section-subtitle">Giải pháp y tế tối ưu cho mọi gia đình</p>
                     <div className="grid-container">
                         <div className="modern-card">
@@ -93,13 +150,13 @@ const Home = () => {
                 </RevealOnScroll>
             </div>
 
-            {/* 4. EXPERIENCE SECTION (Mới) */}
+            {/* EXPERIENCE SECTION */}
             <div className="experience-section">
                 <RevealOnScroll>
                     <div className="exp-content">
                         <h2 className="section-title">Đội Ngũ Chuyên Gia Hàng Đầu</h2>
                         <p style={{ color: 'var(--text-secondary)', marginBottom: '30px' }}>
-                            Chúng tôi tự hào sở hữu đội ngũ y bác sĩ giàu kinh nghiệm, từng công tác tại các bệnh viện lớn như Bạch Mai, Chợ Rẫy, Việt Đức. Sự tận tâm và chuyên môn cao là cam kết của chúng tôi.
+                            Chúng tôi tự hào sở hữu đội ngũ y bác sĩ giàu kinh nghiệm, từng công tác tại các bệnh viện lớn như Bạch Mai, Chợ Rẫy, Việt Đức.
                         </p>
                         <div className="exp-badges">
                             <div className="badge"><Award size={16} style={{ display: 'inline' }} /> Chứng chỉ Quốc tế</div>
@@ -113,7 +170,7 @@ const Home = () => {
                 </RevealOnScroll>
             </div>
 
-            {/* 5. NEWS SECTION (Mới) */}
+            {/* NEWS SECTION */}
             <div className="page-container">
                 <RevealOnScroll>
                     <h2 className="section-title">Tin Tức & Sự Kiện</h2>
@@ -125,7 +182,8 @@ const Home = () => {
                                 <div className="news-body">
                                     <span className="news-date">{item.date}</span>
                                     <h3 className="news-title">{item.title}</h3>
-                                    <a href="#" className="news-link">Đọc tiếp &rarr;</a>
+                                    {/* Sửa thẻ a thành Link hoặc button để fix lỗi warning */}
+                                    <Link to={`/news/${item.id}`} className="news-link">Đọc tiếp &rarr;</Link>
                                 </div>
                             </div>
                         ))}
@@ -133,7 +191,6 @@ const Home = () => {
                 </RevealOnScroll>
             </div>
 
-            {/* 6. FOOTER (Mới) */}
             <Footer />
         </div>
     );

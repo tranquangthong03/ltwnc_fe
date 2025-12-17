@@ -1,35 +1,27 @@
-/* src/App.css - PHIÊN BẢN FULL (NAVBAR + HOME + CÁC TRANG CON) */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+/* src/App.css - PHIÊN BẢN SỬA LỖI & HOÀN CHỈNH */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  /* --- Bảng màu Xanh Lá & Trắng (Clean & Fresh) --- */
+  /* --- Bảng màu --- */
   --bg-main: #ffffff;
   --bg-light: #f0fdf4;
-  /* Nền xanh rất nhạt */
   --bg-input: #f8fafc;
-  /* Nền input */
 
   --text-primary: #1e293b;
-  /* Slate 800 */
   --text-secondary: #64748b;
-  /* Slate 500 */
 
   --primary: #10b981;
-  /* Emerald 500 */
   --primary-dark: #047857;
-  /* Emerald 700 */
   --primary-light: #d1fae5;
-  /* Emerald 100 */
 
   --danger: #ef4444;
-  /* Đỏ cho nút logout/error */
   --white: #ffffff;
 
   --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
   --radius: 16px;
-  --navbar-height: 70px;
+  --navbar-height: 80px;
 }
 
 body {
@@ -42,7 +34,7 @@ body {
 }
 
 /* =========================================
-   1. UTILITIES & CHUNG
+   1. UTILITIES
    ========================================= */
 .page-container {
   max-width: 1200px;
@@ -75,120 +67,147 @@ body {
 }
 
 /* =========================================
-   2. NAVBAR (Đã thêm lại phần này)
+   2. NAVBAR
    ========================================= */
 .navbar {
   height: var(--navbar-height);
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  /* Hiệu ứng kính mờ */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid #e2e8f0;
   position: sticky;
   top: 0;
   z-index: 1000;
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
 .nav-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
   padding: 0 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 30px;
 }
 
-.logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--primary);
-  text-decoration: none;
+.logo-wrapper {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  text-decoration: none;
+  min-width: max-content;
+}
+
+.logo-icon-box {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+  transform: rotate(-5deg);
+}
+
+.brand-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+  line-height: 1;
 }
 
 .nav-links {
   display: flex;
-  gap: 30px;
+  gap: 35px;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.nav-links a {
+.nav-link-item {
   text-decoration: none;
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.95rem;
-  transition: all 0.2s;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  transition: all 0.2s;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
+.nav-link-item:hover,
+.nav-link-item.active {
   color: var(--primary);
   transform: translateY(-1px);
+}
+
+.nav-search {
+  margin-left: auto;
+  width: 220px;
+}
+
+.nav-search-box {
+  display: flex;
+  align-items: center;
+  background: var(--bg-input);
+  border: 1px solid #e2e8f0;
+  border-radius: 50px;
+  padding: 6px 15px;
+  transition: all 0.3s;
+}
+
+.nav-search-box:focus-within {
+  background: white;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+  width: 250px;
+}
+
+.nav-search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  padding-left: 8px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
 }
 
 .auth-buttons {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 }
 
-/* =========================================
-   3. BUTTONS
-   ========================================= */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 24px;
-  border-radius: 50px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  font-size: 0.95rem;
-}
-
-.btn-primary {
+.btn-login-nav {
   background: var(--primary);
-  color: var(--white);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  color: white;
+  padding: 10px 28px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
 }
 
-.btn-primary:hover {
+.btn-login-nav:hover {
   background: var(--primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
-}
-
-.btn-outline {
-  background: transparent;
-  border: 2px solid var(--primary);
-  color: var(--primary);
-}
-
-.btn-outline:hover {
-  background: var(--primary-light);
-  transform: translateY(-2px);
-}
-
-.btn-block {
-  width: 100%;
+  box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
 }
 
 /* =========================================
-   4. HERO SECTION (Trang chủ)
+   3. HERO SECTION
    ========================================= */
 .hero-wrapper {
   background: linear-gradient(180deg, var(--bg-light) 0%, #ffffff 100%);
@@ -212,6 +231,8 @@ body {
   line-height: 1.1;
   margin-bottom: 25px;
   color: var(--text-primary);
+  min-height: 140px;
+  /* Giữ chiều cao cố định để tránh giật khi chữ thay đổi */
 }
 
 .hero-desc {
@@ -221,7 +242,27 @@ body {
   margin-bottom: 35px;
 }
 
-/* Khung ảnh Bác sĩ Vuông Lệch */
+/* Typewriter Cursor */
+.typewriter-cursor {
+  border-right: 3px solid var(--primary);
+  animation: blink 0.7s infinite;
+  margin-left: 5px;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 .hero-image-container {
   flex: 1;
   display: flex;
@@ -248,20 +289,71 @@ body {
   object-fit: cover;
 }
 
-.doctor-frame-bg {
+/* Floating Cards */
+.floating-card {
   position: absolute;
-  top: 40px;
-  right: -40px;
-  width: 420px;
-  height: 420px;
-  background-color: var(--primary-light);
-  border-radius: 24px;
-  z-index: 0;
-  border: 2px dashed var(--primary);
-  opacity: 0.6;
+  background: white;
+  padding: 12px 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+  animation: floatCard 4s ease-in-out infinite;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  min-width: 180px;
 }
 
-/* Thanh Tìm kiếm (Search Bar) */
+.card-icon-box {
+  width: 35px;
+  height: 35px;
+  background: var(--bg-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+
+.floating-text span {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.floating-text strong {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.float-1 {
+  top: 40px;
+  right: -30px;
+  animation-delay: 0s;
+}
+
+.float-2 {
+  bottom: 60px;
+  left: -30px;
+  animation-delay: 2s;
+}
+
+@keyframes floatCard {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* Thanh search trang chủ */
 .search-container {
   background: var(--white);
   padding: 8px;
@@ -303,8 +395,139 @@ body {
 }
 
 /* =========================================
-   5. CARDS (Dùng chung cho Gói khám, Tính năng)
+   4. SECTIONS (Stats, Features, Experience, News)
    ========================================= */
+.stats-section {
+  background: var(--primary-dark);
+  color: white;
+  padding: 60px 20px;
+  margin-top: 60px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 5px;
+  color: #fbbf24;
+}
+
+.stat-label {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.experience-section {
+  background-color: var(--bg-light);
+  padding: 80px 20px;
+}
+
+.exp-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.exp-badges {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.badge {
+  background: white;
+  padding: 10px 20px;
+  border-radius: 50px;
+  border: 1px solid #e2e8f0;
+  color: var(--primary-dark);
+  font-weight: 600;
+  box-shadow: var(--shadow);
+}
+
+/* News */
+.news-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+}
+
+.news-body {
+  padding: 20px;
+}
+
+.news-date {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.news-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.news-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* =========================================
+   5. GENERAL UI (Buttons, Cards, Footer)
+   ========================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--white);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+}
+
+.btn-outline:hover {
+  background: var(--primary-light);
+  transform: translateY(-2px);
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -338,326 +561,9 @@ body {
   margin-bottom: 20px;
 }
 
-/* =========================================
-   6. TRANG CHAT AI (Giao diện mới)
-   ========================================= */
-.chat-window {
-  max-width: 900px;
-  margin: 0 auto;
-  background: var(--white);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  height: 75vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
-}
-
-.chat-header {
-  background: var(--white);
-  padding: 15px 25px;
-  border-bottom: 1px solid #e2e8f0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-weight: 700;
-  color: var(--primary);
-  font-size: 1.1rem;
-}
-
-.chat-body {
-  flex: 1;
-  padding: 25px;
-  overflow-y: auto;
-  background: #f8fafc;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.chat-bubble {
-  max-width: 75%;
-  padding: 14px 20px;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  position: relative;
-}
-
-.chat-bubble-user {
-  align-self: flex-end;
-  background: var(--primary);
-  color: var(--white);
-  border-radius: 20px 20px 4px 20px;
-  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
-}
-
-.chat-bubble-model {
-  align-self: flex-start;
-  background: var(--white);
-  color: var(--text-primary);
-  border: 1px solid #e2e8f0;
-  border-radius: 20px 20px 20px 4px;
-}
-
-.chat-footer {
-  padding: 20px;
-  background: var(--white);
-  border-top: 1px solid #e2e8f0;
-  display: flex;
-  gap: 12px;
-}
-
-.chat-input {
-  flex: 1;
-  padding: 12px 20px;
-  border: 1px solid #e2e8f0;
-  border-radius: 50px;
-  background: var(--bg-input);
-  outline: none;
-  transition: 0.3s;
-}
-
-.chat-input:focus {
-  border-color: var(--primary);
-  background: var(--white);
-  box-shadow: 0 0 0 3px var(--primary-light);
-}
-
-/* =========================================
-   7. TRANG ĐĂNG NHẬP (Login)
-   ========================================= */
-.login-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 85vh;
-  background: linear-gradient(135deg, var(--bg-light) 0%, #fff 100%);
-}
-
-.login-box {
-  background: var(--white);
-  padding: 40px;
-  border-radius: 24px;
-  box-shadow: var(--shadow-hover);
-  width: 100%;
-  max-width: 420px;
-  border: 1px solid #e2e8f0;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: var(--text-primary);
-  font-size: 0.9rem;
-}
-
-.form-input {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  background: var(--bg-input);
-  font-size: 1rem;
-  box-sizing: border-box;
-  outline: none;
-  transition: 0.3s;
-}
-
-.form-input:focus {
-  border-color: var(--primary);
-  background: var(--white);
-  box-shadow: 0 0 0 3px var(--primary-light);
-}
-
-/* =========================================
-   8. TRANG GÓI KHÁM (Packages)
-   ========================================= */
-.package-price {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: var(--primary);
-  margin: 15px 0;
-}
-
-.package-features {
-  list-style: none;
-  padding: 0;
-  margin: 20px 0 30px 0;
-}
-
-.package-features li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  color: var(--text-secondary);
-}
-
-/* Badge "Phổ biến" */
-.popular-badge {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: var(--primary-light);
-  color: var(--primary-dark);
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-/* =========================================
-   9. RESPONSIVE (Mobile)
-   ========================================= */
-@media (max-width: 968px) {
-  .hero-wrapper {
-    flex-direction: column;
-    text-align: center;
-    padding-bottom: 60px;
-    gap: 50px;
-  }
-
-  .hero-title {
-    font-size: 2.5rem;
-  }
-
-  .hero-image-container {
-    width: 100%;
-    margin-top: 20px;
-  }
-
-  /* Thu nhỏ khung ảnh trên mobile */
-  .doctor-frame,
-  .doctor-frame-bg {
-    width: 320px;
-    height: 320px;
-  }
-
-  .doctor-frame-bg {
-    top: 20px;
-    right: -20px;
-  }
-
-  .search-container {
-    margin: 0 auto 30px auto;
-  }
-
-  .hero-btns {
-    justify-content: center;
-  }
-
-  .nav-links {
-    display: none;
-  }
-
-  /* Tạm ẩn menu link trên mobile */
-}
-
-/* --- BỔ SUNG CSS CHO TRANG HOME MỞ RỘNG --- */
-
-/* 1. Phần Thống Kê (Stats Section) */
-.stats-section {
-  background: var(--primary-dark);
-  color: white;
-  padding: 60px 20px;
-  margin-top: 60px;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 30px;
-  text-align: center;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.stat-number {
-  font-size: 3rem;
-  font-weight: 800;
-  margin-bottom: 5px;
-  color: #fbbf24;
-  /* Màu vàng nổi bật */
-}
-
-.stat-label {
-  font-size: 1.1rem;
-  opacity: 0.9;
-}
-
-/* 2. Phần Bác sĩ Kinh nghiệm (Experience) */
-.experience-section {
-  background-color: var(--bg-light);
-  padding: 80px 20px;
-}
-
-.exp-content {
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.exp-badges {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
-  margin-top: 30px;
-}
-
-.badge {
-  background: white;
-  padding: 10px 20px;
-  border-radius: 50px;
-  border: 1px solid #e2e8f0;
-  color: var(--primary-dark);
-  font-weight: 600;
-  box-shadow: var(--shadow);
-}
-
-/* 3. Phần Tin Tức (News) */
-.news-img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-bottom: 1px solid #eee;
-}
-
-.news-body {
-  padding: 20px;
-}
-
-.news-date {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-  display: block;
-}
-
-.news-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 10px;
-  line-height: 1.4;
-}
-
-.news-link {
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-/* 4. FOOTER (Chân trang) */
+/* Footer */
 .footer {
   background-color: #064e3b;
-  /* Xanh rêu đậm */
   color: white;
   padding: 60px 20px 20px 20px;
   margin-top: 80px;
@@ -701,8 +607,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* --- CSS CHO TRANG BÁC SĨ (DOCTORS) --- */
-
+/* Doctor Page Specifics */
 .doctor-card-wrapper {
   background: var(--white);
   border: 1px solid #e2e8f0;
@@ -784,4 +689,137 @@ body {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+/* Login & Register */
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+  background: linear-gradient(135deg, var(--bg-light) 0%, #fff 100%);
+}
+
+.login-box {
+  background: var(--white);
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: var(--shadow-hover);
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid #e2e8f0;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: var(--bg-input);
+  font-size: 1rem;
+  box-sizing: border-box;
+  outline: none;
+  transition: 0.3s;
+}
+
+.form-input:focus {
+  border-color: var(--primary);
+  background: var(--white);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* Chat UI */
+.chat-window {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  height: 75vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.chat-header {
+  background: var(--white);
+  padding: 15px 25px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+.chat-body {
+  flex: 1;
+  padding: 25px;
+  overflow-y: auto;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.chat-bubble {
+  max-width: 75%;
+  padding: 14px 20px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  position: relative;
+}
+
+.chat-bubble-user {
+  align-self: flex-end;
+  background: var(--primary);
+  color: var(--white);
+  border-radius: 20px 20px 4px 20px;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+}
+
+.chat-bubble-model {
+  align-self: flex-start;
+  background: var(--white);
+  color: var(--text-primary);
+  border: 1px solid #e2e8f0;
+  border-radius: 20px 20px 20px 4px;
+}
+
+.chat-footer {
+  padding: 20px;
+  background: var(--white);
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 12px;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 12px 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 50px;
+  background: var(--bg-input);
+  outline: none;
+  transition: 0.3s;
+}
+
+.chat-input:focus {
+  border-color: var(--primary);
+  background: var(--white);
+  box-shadow: 0 0 0 3px var(--primary-light);
 }
