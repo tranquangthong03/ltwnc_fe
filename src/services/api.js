@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Tạo instance axios với đường dẫn cơ sở của Backend
 const api = axios.create({
-    baseURL: 'http://localhost:5119/api', // Đổi port 5119 nếu backend của bạn chạy port khác
+    baseURL: 'https://localhost:7004/api', // Đổi port 5119 nếu backend của bạn chạy port khác
 });
 
 // Cấu hình Interceptor: Tự động thêm Token vào mỗi request nếu đã đăng nhập
