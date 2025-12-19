@@ -1,72 +1,79 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Receipt, Download, Search, DollarSign, 
   TrendingUp, CheckCircle, Clock, Eye,
   CreditCard, Banknote, RefreshCw, FileText
 } from 'lucide-react';
+import api from '../../services/api';
 
 const ManageInvoices = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
+    const [invoices, setInvoices] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Mock data với nhiều thông tin hơn
-    const invoices = useMemo(() => [
-        { 
-            id: 1, 
-            user: 'Nguyễn Văn An', 
-            email: 'khach.hang1@gmail.com',
-            dichVu: 'Gói Tổng Quát VIP', 
-            soTien: 5000000, 
-            ngay: '2025-12-15', 
-            status: 'DaThanhToan',
-            phuongThuc: 'ChuyenKhoan',
-            maGiaoDich: 'TXN001234567'
-        },
-        { 
-            id: 2, 
-            user: 'Lê Thị Bình', 
-            email: 'khach.hang2@gmail.com',
-            dichVu: 'Khám Tim mạch', 
-            soTien: 500000, 
-            ngay: '2025-12-16', 
-            status: 'ChuaThanhToan',
-            phuongThuc: null,
-            maGiaoDich: null
-        },
-        { 
-            id: 3, 
-            user: 'Trần Văn Cường', 
-            email: 'tran.cuong@gmail.com',
-            dichVu: 'Gói Nhi Khoa', 
-            soTien: 2000000, 
-            ngay: '2025-12-17', 
-            status: 'DaThanhToan',
-            phuongThuc: 'TienMat',
-            maGiaoDich: 'TXN001234568'
-        },
-        { 
-            id: 4, 
-            user: 'Phạm Thị Dung', 
-            email: 'pham.dung@gmail.com',
-            dichVu: 'Khám Tổng Quát', 
-            soTien: 800000, 
-            ngay: '2025-12-17', 
-            status: 'ChuaThanhToan',
-            phuongThuc: null,
-            maGiaoDich: null
-        },
-        { 
-            id: 5, 
-            user: 'Hoàng Minh Tuấn', 
-            email: 'hoang.tuan@gmail.com',
-            dichVu: 'Gói Cao Cấp', 
-            soTien: 3500000, 
-            ngay: '2025-12-18', 
-            status: 'DaThanhToan',
-            phuongThuc: 'ChuyenKhoan',
-            maGiaoDich: 'TXN001234569'
+    // Lấy dữ liệu hóa đơn từ API
+    useEffect(() => {
+        const fetchInvoices = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const response = await api.get('/admin/invoices');
+                
+                // Transform dữ liệu từ API
+                const transformedData = response.data.map((invoice) => ({
+                    id: invoice.maHoaDon,
+                    user: invoice.tenBenhNhan,
+                    email: invoice.email || 'N/A',
+                    dichVu: invoice.dichVu || 'Dịch vụ',
+                    soTien: invoice.tongTien,
+                    ngay: invoice.ngayTao,
+                    status: invoice.trangThaiThanhToan || 'ChuaThanhToan',
+                    phuongThuc: invoice.phuongThucThanhToan,
+                    maGiaoDich: invoice.maGiaoDich
+                }));
+                
+                setInvoices(transformedData);
+            } catch (err) {
+                console.error('Lỗi tải dữ liệu hóa đơn:', err);
+                setError('Không thể tải dữ liệu hóa đơn. Vui lòng thử lại.');
+                setInvoices([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchInvoices();
+    }, []);
+
+    // Làm mới dữ liệu
+    const handleRefresh = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await api.get('/admin/invoices');
+            
+            const transformedData = response.data.map((invoice) => ({
+                id: invoice.maHoaDon,
+                user: invoice.tenBenhNhan,
+                email: invoice.email || 'N/A',
+                dichVu: invoice.dichVu || 'Dịch vụ',
+                soTien: invoice.tongTien,
+                ngay: invoice.ngayTao,
+                status: invoice.trangThaiThanhToan || 'ChuaThanhToan',
+                phuongThuc: invoice.phuongThucThanhToan,
+                maGiaoDich: invoice.maGiaoDich
+            }));
+            
+            setInvoices(transformedData);
+        } catch (err) {
+            console.error('Lỗi làm mới dữ liệu:', err);
+            setError('Không thể làm mới dữ liệu. Vui lòng thử lại.');
+        } finally {
+            setLoading(false);
         }
-    ], []);
+    };
 
     // Tính toán thống kê
     const stats = useMemo(() => {
@@ -156,9 +163,35 @@ const ManageInvoices = () => {
             </div>
 
             <div className="relative p-6 md:p-8 lg:p-10">
-                {/* Enhanced Header */}
-                <div className="mb-8">
-                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
+                {/* Error Message */}
+                {error && (
+                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
+                        <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-xs">!</span>
+                        </div>
+                        <p className="text-red-700 font-medium">{error}</p>
+                        <button 
+                            onClick={handleRefresh}
+                            className="ml-auto text-red-600 hover:text-red-700 underline text-sm font-semibold"
+                        >
+                            Thử lại
+                        </button>
+                    </div>
+                )}
+
+                {/* Loading State */}
+                {loading && invoices.length === 0 ? (
+                    <div className="flex items-center justify-center py-20">
+                        <div className="text-center">
+                            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                                <Receipt className="text-blue-600" size={32} />
+                            </div>
+                            <p className="text-slate-600 font-semibold">Đang tải dữ liệu hóa đơn...</p>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="mb-8">
+                        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
                         <div className="flex items-center gap-4">
                             <div className="relative">
                                 <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/40">
@@ -177,9 +210,13 @@ const ManageInvoices = () => {
                         </div>
 
                         <div className="flex gap-3">
-                            <button className="group px-5 py-3 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold transition-all hover:border-purple-300 hover:shadow-lg flex items-center gap-2">
-                                <RefreshCw size={18} className="group-hover:rotate-180 transition-transform duration-500" />
-                                <span>Tải lại</span>
+                            <button 
+                                onClick={handleRefresh}
+                                disabled={loading}
+                                className="group px-5 py-3 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold transition-all hover:border-purple-300 hover:shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <RefreshCw size={18} className={`${loading ? 'animate-spin' : 'group-hover:rotate-180'} transition-transform duration-500`} />
+                                <span>{loading ? 'Đang tải...' : 'Tải lại'}</span>
                             </button>
                             <button className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all shadow-lg shadow-blue-500/30 hover:shadow-xl flex items-center gap-2">
                                 <FileText size={18} />
@@ -240,7 +277,8 @@ const ManageInvoices = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                    </div>
+                )}
 
                 {/* Filter Bar */}
                 <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-white/60 shadow-lg mb-6 overflow-hidden">

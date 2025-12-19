@@ -192,13 +192,21 @@ namespace WebSucKhoe.API.Controllers
         {
             var list = await _context.HoaDons
                 .Include(h => h.MaBenhNhanNavigation)
+                .Include(h => h.MaDangKyNavigation)
+                .ThenInclude(d => d.MaGoiNavigation)
+                .Include(h => h.MaLichHenNavigation)
                 .OrderByDescending(h => h.NgayTao)
                 .Select(h => new
                 {
                     h.MaHoaDon,
+                    Email = h.MaBenhNhanNavigation.Email,
                     TenBenhNhan = h.MaBenhNhanNavigation.HoTen,
+                    DichVu = h.MaDangKyNavigation != null ? h.MaDangKyNavigation.MaGoiNavigation.TenGoi : 
+                             (h.MaLichHenNavigation != null ? (h.MaLichHenNavigation.LyDoKham ?? "Khám tại lịch hẹn") : "Dịch vụ"),
                     h.TongTien,
                     h.TrangThaiThanhToan,
+                    h.PhuongThucThanhToan,
+                    h.MaGiaoDich,
                     h.NgayTao
                 }).ToListAsync();
             return Ok(list);
