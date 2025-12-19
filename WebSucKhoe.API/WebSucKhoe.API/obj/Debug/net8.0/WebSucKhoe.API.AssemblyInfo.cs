@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebSucKhoe.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cd3de1bcdb33a8e6f8c20280f73fe65749db2afd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0cba6299aa79c31838ced03e815cdef21544cea2")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebSucKhoe.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebSucKhoe.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
