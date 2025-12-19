@@ -19,7 +19,7 @@ public partial class LichHen
 
     public DateTime? NgayTao { get; set; }
 
-    public virtual HoSoYte? HoSoYte { get; set; }
+    // --- QUAN TRỌNG: Đã XÓA dòng liên kết HoSoYte ở đây ---
 
     public virtual ICollection<HoaDon> HoaDons { get; set; } = new List<HoaDon>();
 

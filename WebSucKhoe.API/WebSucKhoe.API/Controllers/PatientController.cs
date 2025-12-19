@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using WebSucKhoe.API.Models;
 
 namespace WebSucKhoe.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "BenhNhan")] // Chỉ Bệnh nhân mới gọi được
     public class PatientController : ControllerBase
     {
         private readonly WebSucKhoeDbContext _context;
@@ -17,113 +17,94 @@ namespace WebSucKhoe.API.Controllers
             _context = context;
         }
 
-        // 1. Đăng ký gói khám sức khỏe
-        [HttpPost("register-package")]
-        public async Task<IActionResult> RegisterPackage([FromBody] DangKyGoiRequest req)
+        // Helper: Lấy ID User từ Token
+        private int GetCurrentUserId()
         {
-            // Transaction để đảm bảo: Đăng ký + Tạo hóa đơn phải cùng thành công hoặc cùng thất bại
-            using var transaction = await _context.Database.BeginTransactionAsync();
-            try
+            var identity = User.Identity as ClaimsIdentity;
+            if (identity != null)
             {
-                var goiKham = await _context.GoiKhams.FindAsync(req.MaGoi);
-                if (goiKham == null) return NotFound("Gói khám không tồn tại");
-
-                // A. Tạo bản ghi Đăng Ký
-                var dangKy = new DangKyGoi
-                {
-                    MaBenhNhan = req.MaBenhNhan,
-                    MaGoi = req.MaGoi,
-                    NgayBatDau = DateTime.Now,
-                    NgayKetThuc = DateTime.Now.AddDays(goiKham.ThoiHanNgay),
-                    TrangThai = "ChoThanhToan" // Mặc định chờ thanh toán
-                };
-                _context.DangKyGois.Add(dangKy);
-                await _context.SaveChangesAsync(); // Để lấy MaDangKy vừa tạo
-
-                // B. Tạo Hóa Đơn Tương Ứng
-                var hoaDon = new HoaDon
-                {
-                    MaBenhNhan = req.MaBenhNhan,
-                    MaDangKy = dangKy.MaDangKy,
-                    TongTien = goiKham.GiaTien,
-                    TrangThaiThanhToan = "ChuaThanhToan",
-                    NgayTao = DateTime.Now
-                };
-                _context.HoaDons.Add(hoaDon);
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
-                return Ok(new { Message = "Đăng ký thành công, vui lòng thanh toán", MaHoaDon = hoaDon.MaHoaDon });
+                var userClaim = identity.FindFirst("Id")
+                             ?? identity.FindFirst("UserID")
+                             ?? identity.FindFirst(ClaimTypes.NameIdentifier);
+                if (userClaim != null && int.TryParse(userClaim.Value, out int userId)) return userId;
             }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-                return BadRequest("Lỗi xử lý: " + ex.Message);
-            }
+            return 0;
         }
 
-        // 2. Xem lịch sử hóa đơn của mình
-        [HttpGet("my-invoices/{userId}")]
-        public async Task<IActionResult> GetMyInvoices(int userId)
+        // 1. LẤY DANH SÁCH BÁC SĨ (Public)
+        [HttpGet("doctors")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllDoctors()
         {
-            // Kiểm tra user hiện tại có đúng là userId đang request không (Bảo mật)
-            var currentUserId = int.Parse(User.FindFirst("UserID")?.Value);
-            if (currentUserId != userId) return Forbid();
-
-            var list = await _context.HoaDons
-                .Include(h => h.MaDangKyNavigation)
-                .ThenInclude(d => d.MaGoiNavigation) // Include lấy tên gói
-                .Where(x => x.MaBenhNhan == userId)
-                .Select(x => new
+            var list = await _context.ChiTietBacSis
+                .Include(d => d.MaBacSiNavigation)
+                .Where(d => d.MaBacSiNavigation.TrangThai == true)
+                .Select(d => new
                 {
-                    x.MaHoaDon,
-                    TenGoi = x.MaDangKyNavigation.MaGoiNavigation.TenGoi,
-                    x.TongTien,
-                    x.TrangThaiThanhToan,
-                    x.NgayTao
+                    d.MaBacSi,
+                    HoTen = d.MaBacSiNavigation.HoTen,
+                    AnhDaiDien = d.MaBacSiNavigation.AnhDaiDien,
+                    ChuyenKhoa = d.ChuyenKhoa,
+                    SoNamKinhNghiem = d.SoNamKinhNghiem,
+                    GiaKham = d.GiaKham,
+                    DanhGia = 5.0
                 })
                 .ToListAsync();
             return Ok(list);
         }
-        [HttpPut("update-profile")]
-        public async Task<IActionResult> UpdateProfile([FromBody] PatientUpdateDto req)
+
+        // 2. LẤY LỊCH HẸN CỦA TÔI (Yêu cầu đăng nhập)
+        [HttpGet("appointments")]
+        [Authorize(Roles = "BenhNhan")]
+        public async Task<IActionResult> GetMyAppointments()
         {
-            // Lấy ID từ Token (Bảo mật: User A không sửa được hồ sơ User B)
-            var userId = int.Parse(User.FindFirst("UserID").Value);
-
-            var detail = await _context.ChiTietBenhNhans.FindAsync(userId);
-            var user = await _context.NguoiDungs.FindAsync(userId);
-
-            if (detail == null || user == null) return NotFound();
-
-            // Cập nhật thông tin
-            user.HoTen = req.HoTen ?? user.HoTen;
-            user.SoDienThoai = req.SoDienThoai ?? user.SoDienThoai;
-            user.AnhDaiDien = req.AnhDaiDien ?? user.AnhDaiDien;
-
-            detail.DiaChi = req.DiaChi ?? detail.DiaChi;
-            detail.TienSuBenh = req.TienSuBenh ?? detail.TienSuBenh; // Quan trọng để AI đọc
-            detail.NhomMau = req.NhomMau ?? detail.NhomMau;
-
-            await _context.SaveChangesAsync();
-            return Ok("Cập nhật hồ sơ thành công.");
+            int userId = GetCurrentUserId();
+            var list = await _context.LichHens
+                .Include(l => l.MaBacSiNavigation)
+                .Where(l => l.MaBenhNhan == userId)
+                .OrderByDescending(l => l.NgayGioHen)
+                .Select(l => new
+                {
+                    l.MaLichHen,
+                    TenBacSi = l.MaBacSiNavigation.HoTen,
+                    ChuyenKhoa = l.MaBacSiNavigation.ChiTietBacSi.ChuyenKhoa,
+                    l.NgayGioHen,
+                    l.TrangThai, // Confirmed, Pending, Cancelled, Completed
+                    l.LyDoKham
+                })
+                .ToListAsync();
+            return Ok(list);
         }
 
-        // DTO Update
-        public class PatientUpdateDto
+        // 3. ĐẶT LỊCH HẸN (Yêu cầu đăng nhập)
+        [HttpPost("book-appointment")]
+        [Authorize(Roles = "BenhNhan")]
+        public async Task<IActionResult> BookAppointment([FromBody] BookingDto req)
         {
-            public string? HoTen { get; set; }
-            public string? SoDienThoai { get; set; }
-            public string? DiaChi { get; set; }
-            public string? TienSuBenh { get; set; }
-            public string? NhomMau { get; set; }
-            public string? AnhDaiDien { get; set; }
+            int userId = GetCurrentUserId();
+            if (userId == 0) return Unauthorized("Vui lòng đăng nhập lại.");
+
+            var lichHen = new LichHen
+            {
+                MaBenhNhan = userId,
+                MaBacSi = req.MaBacSi,
+                NgayGioHen = req.NgayHen,
+                LyDoKham = req.LyDoKham,
+                TrangThai = "Pending", // Mặc định chờ duyệt
+                NgayTao = DateTime.Now
+            };
+
+            _context.LichHens.Add(lichHen);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Đặt lịch thành công!", MaLichHen = lichHen.MaLichHen });
         }
     }
 
-    public class DangKyGoiRequest
+    public class BookingDto
     {
-        public int MaBenhNhan { get; set; }
-        public int MaGoi { get; set; }
+        public int MaBacSi { get; set; }
+        public DateTime NgayHen { get; set; }
+        public string LyDoKham { get; set; }
     }
 }

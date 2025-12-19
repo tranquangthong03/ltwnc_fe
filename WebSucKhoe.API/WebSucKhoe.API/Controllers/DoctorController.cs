@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using WebSucKhoe.API.Models;
 
 namespace WebSucKhoe.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "BacSi,Admin")]
+
     public class DoctorController : ControllerBase
     {
         private readonly WebSucKhoeDbContext _context;
@@ -16,245 +19,223 @@ namespace WebSucKhoe.API.Controllers
             _context = context;
         }
 
-        // =========================================================
-        // 1. API LẤY DANH SÁCH BÁC SĨ (PUBLIC - Ai cũng xem được)
-        // =========================================================
-        [HttpGet]
-        [AllowAnonymous] // Cho phép truy cập không cần token
-        public async Task<IActionResult> GetAllDoctors()
+        // --- HELPER: Lấy ID người dùng an toàn từ Token ---
+        private int GetCurrentUserId()
         {
-            var doctors = await _context.NguoiDungs
-                .Where(u => u.VaiTro == "BacSi" && u.TrangThai == true) // Lấy user là Bác sĩ và đang hoạt động
-                .Include(u => u.ChiTietBacSi) // Kèm thông tin chi tiết (Chuyên khoa, giá...)
-                .Select(u => new
-                {
-                    MaBacSi = u.MaNguoiDung,
-                    HoTen = u.HoTen,
-                    // Nếu chưa có chi tiết thì để mặc định
-                    ChuyenKhoa = u.ChiTietBacSi != null ? u.ChiTietBacSi.ChuyenKhoa : "Đa Khoa",
-                    KinhNghiem = u.ChiTietBacSi != null && u.ChiTietBacSi.SoNamKinhNghiem.HasValue
-                                 ? u.ChiTietBacSi.SoNamKinhNghiem + " năm"
-                                 : "N/A",
-                    Anh = u.AnhDaiDien,
-                    DanhGia = 5.0 // Tạm thời hardcode, sau này tính trung bình từ bảng Đánh giá
-                })
-                .ToListAsync();
+            var identity = User.Identity as ClaimsIdentity;
+            if (identity != null)
+            {
+                // Tìm claim ID theo nhiều chuẩn khác nhau (Id, UserID, hoặc nameidentifier)
+                var userClaim = identity.FindFirst("Id")
+                             ?? identity.FindFirst("UserID")
+                             ?? identity.FindFirst(ClaimTypes.NameIdentifier);
 
-            return Ok(doctors);
+                if (userClaim != null && int.TryParse(userClaim.Value, out int userId))
+                {
+                    return userId;
+                }
+            }
+            return 0;
         }
 
         // =========================================================
-        // 2. API XEM BỆNH NHÂN CỦA TÔI (CHỈ BÁC SĨ)
+        // 1. QUẢN LÝ LỊCH HẸN
         // =========================================================
-        [HttpGet("my-patients/{doctorId}")]
-        [Authorize(Roles = "BacSi")] // Chỉ bác sĩ mới được gọi
-        public async Task<IActionResult> GetMyPatients(int doctorId)
+        [HttpGet("schedule")]
+        public async Task<IActionResult> GetSchedule()
         {
+            int bacSiId = GetCurrentUserId();
+            var schedules = await _context.LichHens
+                .Where(x => x.MaBacSi == bacSiId)
+                .Include(x => x.MaBenhNhanNavigation)
+                .OrderByDescending(x => x.NgayGioHen)
+                .Select(x => new
+                {
+                    x.MaLichHen,
+                    x.MaBenhNhan,
+                    TenBenhNhan = x.MaBenhNhanNavigation.HoTen,
+                    NgayHen = x.NgayGioHen,
+
+                    // --- SỬA DÒNG NÀY ---
+                    // Cũ (Lỗi): GioHen = x.NgayGioHen.HasValue ? x.NgayGioHen.Value.ToString("HH:mm") : "00:00",
+                    // Mới (Đúng): Trực tiếp format vì NgayGioHen không bao giờ null
+                    GioHen = x.NgayGioHen.ToString("HH:mm"),
+
+                    x.LyDoKham,
+                    x.TrangThai
+                })
+                .ToListAsync();
+
+            return Ok(schedules);
+        }
+
+        [HttpPut("appointment/{id}/status")]
+        public async Task<IActionResult> UpdateAppointmentStatus(int id, [FromBody] dynamic data)
+        {
+            // Lưu ý: data là dynamic JSON { "status": "..." }
+            string newStatus;
+            try { newStatus = data.GetProperty("status").ToString(); } catch { return BadRequest("Thiếu trạng thái"); }
+
+            var appt = await _context.LichHens.FindAsync(id);
+            if (appt == null) return NotFound("Không tìm thấy lịch hẹn");
+
+            if (appt.MaBacSi != GetCurrentUserId()) return Forbid();
+
+            appt.TrangThai = newStatus;
+            await _context.SaveChangesAsync();
+            return Ok(new { Message = "Cập nhật thành công" });
+        }
+
+        // =========================================================
+        // 2. QUẢN LÝ BỆNH NHÂN
+        // =========================================================
+        [HttpGet("my-patients")]
+        public async Task<IActionResult> GetMyPatients()
+        {
+            int bacSiId = GetCurrentUserId();
             var patients = await _context.LichHens
-               .Where(l => l.MaBacSi == doctorId)
-               .Include(l => l.MaBenhNhanNavigation)
-               .ThenInclude(u => u.ChiTietBenhNhan)
-               .Select(l => new
-               {
-                   HoTen = l.MaBenhNhanNavigation.HoTen,
-                   NgaySinh = l.MaBenhNhanNavigation.ChiTietBenhNhan.NgaySinh,
-                   TienSuBenh = l.MaBenhNhanNavigation.ChiTietBenhNhan.TienSuBenh,
-                   LyDoKham = l.LyDoKham,
-                   NgayHen = l.NgayGioHen
-               })
-               .Distinct()
-               .ToListAsync();
+                .Where(l => l.MaBacSi == bacSiId)
+                .Select(l => l.MaBenhNhanNavigation)
+                .Distinct()
+                .Include(u => u.ChiTietBenhNhan)
+                .Select(u => new
+                {
+                    u.MaNguoiDung,
+                    u.HoTen,
+                    u.SoDienThoai,
+                    u.Email,
+                    NgaySinh = u.ChiTietBenhNhan != null ? u.ChiTietBenhNhan.NgaySinh : null,
+                    GioiTinh = u.ChiTietBenhNhan != null ? u.ChiTietBenhNhan.GioiTinh : "Khác",
+                    DiaChi = u.ChiTietBenhNhan != null ? u.ChiTietBenhNhan.DiaChi : ""
+                })
+                .ToListAsync();
 
             return Ok(patients);
         }
 
-        // =========================================================
-        // TEST API - Kiểm tra xem controller có hoạt động không
-        // =========================================================
-        [HttpGet("test")]
-        [AllowAnonymous]
-        public IActionResult TestEndpoint()
+        [HttpPut("patient/{id}")]
+        public async Task<IActionResult> UpdatePatientInfo(int id, [FromBody] ChiTietBenhNhan model)
         {
-            Console.WriteLine("Test endpoint called successfully!");
-            return Ok(new { message = "DoctorController is working!", timestamp = DateTime.Now });
+            var details = await _context.ChiTietBenhNhans.FirstOrDefaultAsync(x => x.MaBenhNhan == id);
+            if (details == null)
+            {
+                details = new ChiTietBenhNhan { MaBenhNhan = id };
+                _context.ChiTietBenhNhans.Add(details);
+            }
+
+            details.NgaySinh = model.NgaySinh;
+            details.GioiTinh = model.GioiTinh;
+            details.DiaChi = model.DiaChi;
+            details.TienSuBenh = model.TienSuBenh;
+
+            await _context.SaveChangesAsync();
+            return Ok(new { Message = "Cập nhật thành công" });
         }
 
         // =========================================================
-        // 3. API TẠO BÁC SĨ MỚI (CHỈ ADMIN)
+        // 3. QUẢN LÝ HỒ SƠ CÁ NHÂN (PROFILE) - ĐÃ SỬA
         // =========================================================
-        [HttpPost]
-        [AllowAnonymous] // Tạm thời bỏ authorize để test
-        public async Task<IActionResult> CreateDoctor([FromBody] CreateDoctorDto doctorDto)
+
+        // GET: api/Doctor/profile
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
         {
-            Console.WriteLine($"CreateDoctor called with data: {System.Text.Json.JsonSerializer.Serialize(doctorDto)}");
-            
-            try
+            int userId = GetCurrentUserId();
+            if (userId == 0) return Unauthorized("Không xác định được người dùng.");
+
+            var user = await _context.NguoiDungs
+                .Include(u => u.ChiTietBacSi)
+                .FirstOrDefaultAsync(u => u.MaNguoiDung == userId);
+
+            if (user == null) return NotFound();
+
+            // Trả về object phẳng để Frontend dễ binding
+            return Ok(new
             {
-                // Kiểm tra email đã tồn tại chưa
-                var existingUser = await _context.NguoiDungs.FirstOrDefaultAsync(u => u.Email == doctorDto.Email);
-                if (existingUser != null)
-                {
-                    return BadRequest("Email đã được sử dụng");
-                }
+                user.HoTen,
+                user.Email,
+                user.SoDienThoai,
+                // Mapping dữ liệu từ bảng chi tiết (xử lý null nếu chưa có)
+                ChuyenKhoa = user.ChiTietBacSi?.ChuyenKhoa ?? "",
+                KinhNghiem = user.ChiTietBacSi?.SoNamKinhNghiem ?? 0, // DB: SoNamKinhNghiem
+                GiaKham = user.ChiTietBacSi?.GiaKham ?? 0,
+                SoChungChi = user.ChiTietBacSi?.SoChungChi ?? "",
+                MoTa = user.ChiTietBacSi?.MoTa ?? "" // DB: MoTa -> FE: GioiThieu/Bio
+            });
+        }
 
-                // Tạo người dùng mới
-                var newUser = new NguoiDung
-                {
-                    TenDangNhap = doctorDto.TenDangNhap,
-                    MatKhauHash = doctorDto.MatKhau, // Trong thực tế cần hash password
-                    Email = doctorDto.Email,
-                    HoTen = doctorDto.HoTen,
-                    SoDienThoai = doctorDto.SoDienThoai,
-                    VaiTro = "BacSi",
-                    TrangThai = true,
-                    NgayTao = DateTime.Now
-                };
+        // PUT: api/Doctor/profile
+        // Sử dụng DTO cụ thể thay vì dynamic để an toàn hơn
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] DoctorProfileUpdateDto req)
+        {
+            int userId = GetCurrentUserId();
+            if (userId == 0) return Unauthorized();
 
-                _context.NguoiDungs.Add(newUser);
-                await _context.SaveChangesAsync();
+            var user = await _context.NguoiDungs
+                .Include(u => u.ChiTietBacSi)
+                .FirstOrDefaultAsync(u => u.MaNguoiDung == userId);
 
-                // Tạo chi tiết bác sĩ
-                var doctorDetail = new ChiTietBacSi
-                {
-                    MaBacSi = newUser.MaNguoiDung,
-                    ChuyenKhoa = doctorDto.ChuyenKhoa,
-                    SoChungChi = doctorDto.SoChungChi,
-                    GiaKham = doctorDto.GiaKham,
-                    MoTa = doctorDto.GioiThieu,
-                    SoNamKinhNghiem = 0
-                };
+            if (user == null) return NotFound();
 
-                _context.ChiTietBacSis.Add(doctorDetail);
-                await _context.SaveChangesAsync();
+            // 1. Cập nhật thông tin cơ bản
+            user.HoTen = req.HoTen;
+            user.SoDienThoai = req.SoDienThoai;
 
-                Console.WriteLine($"Created doctor successfully with ID: {newUser.MaNguoiDung}");
-                return Ok(new { message = "Tạo bác sĩ thành công", maBacSi = newUser.MaNguoiDung });
-            }
-            catch (Exception ex)
+            // 2. Cập nhật thông tin chi tiết (Tạo mới nếu chưa có)
+            if (user.ChiTietBacSi == null)
             {
-                Console.WriteLine($"Error creating doctor: {ex.Message}");
-                return StatusCode(500, $"Lỗi tạo bác sĩ: {ex.Message}");
+                user.ChiTietBacSi = new ChiTietBacSi { MaBacSi = userId };
+                _context.ChiTietBacSis.Add(user.ChiTietBacSi);
             }
+
+            user.ChiTietBacSi.ChuyenKhoa = req.ChuyenKhoa;
+            user.ChiTietBacSi.SoNamKinhNghiem = req.KinhNghiem; // Map từ DTO
+            user.ChiTietBacSi.GiaKham = req.GiaKham;
+            user.ChiTietBacSi.MoTa = req.GioiThieu; // Map từ DTO
+
+            // Lưu thay đổi
+            await _context.SaveChangesAsync();
+            return Ok(new { Message = "Cập nhật thành công" });
         }
 
         // =========================================================
-        // 4. API CẬP NHẬT THÔNG TIN BÁC SĨ (CHỈ ADMIN)
+        // 4. TẠO HỒ SƠ BỆNH ÁN
         // =========================================================
-        [HttpPut("{id}")]
-        [AllowAnonymous] // Tạm thời bỏ authorize để test
-        public async Task<IActionResult> UpdateDoctor(int id, [FromBody] UpdateDoctorDto doctorDto)
+        [HttpPost("medical-record")]
+        public async Task<IActionResult> CreateMedicalRecord([FromBody] HoSoYte model)
         {
-            Console.WriteLine($"UpdateDoctor called for ID: {id} with data: {System.Text.Json.JsonSerializer.Serialize(doctorDto)}");
-            
-            try
+            model.MaBacSi = GetCurrentUserId();
+            model.NgayTao = DateTime.Now;
+
+            _context.HoSoYtes.Add(model);
+
+            // Cập nhật trạng thái lịch hẹn thành Completed
+            var appointment = await _context.LichHens
+                .Where(x => x.MaBenhNhan == model.MaBenhNhan
+                         && x.MaBacSi == model.MaBacSi
+                         && x.TrangThai == "Confirmed")
+                .OrderByDescending(x => x.NgayGioHen)
+                .FirstOrDefaultAsync();
+
+            if (appointment != null)
             {
-                // Tìm người dùng
-                var user = await _context.NguoiDungs.FindAsync(id);
-                if (user == null || user.VaiTro != "BacSi")
-                {
-                    return NotFound("Không tìm thấy bác sĩ");
-                }
-
-                // Cập nhật thông tin người dùng
-                user.HoTen = doctorDto.HoTen;
-                user.Email = doctorDto.Email;
-                user.SoDienThoai = doctorDto.SoDienThoai;
-
-                // Tìm hoặc tạo chi tiết bác sĩ
-                var doctorDetail = await _context.ChiTietBacSis.FirstOrDefaultAsync(d => d.MaBacSi == id);
-                if (doctorDetail == null)
-                {
-                    doctorDetail = new ChiTietBacSi
-                    {
-                        MaBacSi = id,
-                        ChuyenKhoa = doctorDto.ChuyenKhoa,
-                        SoChungChi = doctorDto.SoChungChi,
-                        GiaKham = doctorDto.GiaKham,
-                        MoTa = doctorDto.GioiThieu,
-                        SoNamKinhNghiem = 0
-                    };
-                    _context.ChiTietBacSis.Add(doctorDetail);
-                }
-                else
-                {
-                    doctorDetail.ChuyenKhoa = doctorDto.ChuyenKhoa;
-                    doctorDetail.SoChungChi = doctorDto.SoChungChi;
-                    doctorDetail.GiaKham = doctorDto.GiaKham;
-                    doctorDetail.MoTa = doctorDto.GioiThieu;
-                }
-
-                await _context.SaveChangesAsync();
-
-                Console.WriteLine($"Updated doctor successfully with ID: {id}");
-                return Ok(new { message = "Cập nhật bác sĩ thành công" });
+                appointment.TrangThai = "Completed";
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error updating doctor: {ex.Message}");
-                return StatusCode(500, $"Lỗi cập nhật bác sĩ: {ex.Message}");
-            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { Message = "Đã lưu hồ sơ bệnh án", MaHoSo = model.MaHoSo });
         }
 
-        // =========================================================
-        // 5. API XÓA BÁC SĨ (CHỈ ADMIN)
-        // =========================================================
-        [HttpDelete("{id}")]
-        [AllowAnonymous] // Tạm thời bỏ authorize để test
-        public async Task<IActionResult> DeleteDoctor(int id)
-        {
-            Console.WriteLine($"DeleteDoctor called for ID: {id}");
-            
-            try
-            {
-                var user = await _context.NguoiDungs.FindAsync(id);
-                if (user == null || user.VaiTro != "BacSi")
-                {
-                    return NotFound("Không tìm thấy bác sĩ");
-                }
-
-                // Xóa chi tiết bác sĩ trước (nếu có)
-                var doctorDetail = await _context.ChiTietBacSis.FirstOrDefaultAsync(d => d.MaBacSi == id);
-                if (doctorDetail != null)
-                {
-                    _context.ChiTietBacSis.Remove(doctorDetail);
-                }
-
-                // Xóa người dùng
-                _context.NguoiDungs.Remove(user);
-                await _context.SaveChangesAsync();
-
-                Console.WriteLine($"Deleted doctor successfully with ID: {id}");
-                return Ok(new { message = "Xóa bác sĩ thành công" });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error deleting doctor: {ex.Message}");
-                return StatusCode(500, $"Lỗi xóa bác sĩ: {ex.Message}");
-            }
-        }
     }
-
-    // DTO Classes
-    public class CreateDoctorDto
-    {
-        public string TenDangNhap { get; set; }
-        public string MatKhau { get; set; }
-        public string HoTen { get; set; }
-        public string Email { get; set; }
-        public string SoDienThoai { get; set; }
-        public string ChuyenKhoa { get; set; }
-        public string SoChungChi { get; set; }
-        public decimal GiaKham { get; set; }
-        public string GioiThieu { get; set; }
-    }
-
-    public class UpdateDoctorDto
+   
+    // --- DTO CLASS ---
+    public class DoctorProfileUpdateDto
     {
         public string HoTen { get; set; }
-        public string Email { get; set; }
         public string SoDienThoai { get; set; }
         public string ChuyenKhoa { get; set; }
-        public string SoChungChi { get; set; }
+        public int KinhNghiem { get; set; }
         public decimal GiaKham { get; set; }
         public string GioiThieu { get; set; }
     }

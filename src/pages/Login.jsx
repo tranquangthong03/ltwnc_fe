@@ -13,51 +13,56 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-            e.preventDefault();
-            try {
-                const res = await api.post('/Auth/login', { Username: username, Password: password });
+        e.preventDefault();
+        try {
+            const res = await api.post('/Auth/login', { Username: username, Password: password });
 
-                const token = res.data.Token || res.data.token;
-                if (!token) throw new Error("Không nhận được token");
+            // 1. Lấy Token
+            const token = res.data.Token || res.data.token;
+            if (!token) throw new Error("Không nhận được token");
 
-                // Giải mã token (Giữ nguyên code cũ của bạn)
-                const base64Url = token.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-                const decoded = JSON.parse(jsonPayload);
+            // 2. Giải mã Token
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+            const decoded = JSON.parse(jsonPayload);
 
-                // Mapping dữ liệu user (Giữ nguyên code cũ)
-                const userData = {
-                    userId: decoded.UserID || decoded.nameid,
-                    role: decoded.role || decoded.Role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"], 
-                    name: decoded.HoTen || decoded.unique_name
-                };
+            // 3. Mapping dữ liệu user
+            const userData = {
+                userId: decoded.UserID || decoded.nameid,
+                role: decoded.role || decoded.Role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
+                name: decoded.HoTen || decoded.unique_name
+            };
 
-                login(token, userData);
-                toast.success(`Chào mừng ${userData.name} quay trở lại!`);
+            // 4. Lưu vào Context
+            login(token, userData);
+            toast.success(`Chào mừng ${userData.name} quay trở lại!`);
 
-                // === [PHẦN SỬA ĐỔI QUAN TRỌNG] ===
-                // Kiểm tra role để chuyển hướng
-                // Lưu ý: Trong SQL của bạn vai trò là 'Admin', 'BenhNhan', 'BacSi' (Viết hoa chữ cái đầu)
-                if (userData.role === 'Admin') {
-                    navigate('/admin'); // Nếu là Admin -> trang Admin Dashboard
-                } else {
-                    navigate('/');      // Nếu là User (BenhNhan/BacSi) -> Trang chủ hoặc trang sản phẩm (/packages)
-                }
-                // =================================
-
-            } catch (err) {
-                console.error(err);
-                toast.error("Sai tài khoản hoặc mật khẩu");
+            // 5. ĐIỀU HƯỚNG DỰA TRÊN VAI TRÒ (Updated logic)
+            // ----------------------------------------------------
+            if (userData.role === 'Admin') {
+                navigate('/admin');   // Chuyển đến trang Admin
             }
-        };
+            else if (userData.role === 'BacSi') {
+                navigate('/doctor/dashboard');  // Chuyển đến trang Bác sĩ
+            }
+            else {
+                navigate('/');                  // Chuyển đến trang chủ (Bệnh nhân)
+            }
+            // ----------------------------------------------------
+
+        } catch (err) {
+            console.error(err);
+            toast.error("Sai tài khoản hoặc mật khẩu");
+        }
+    };
 
     return (
-        <div className="login-wrapper"> 
+        <div className="login-wrapper">
             <div className="login-box">
                 <h2 className="section-title">Đăng Nhập</h2>
                 <p style={{ textAlign: 'center', marginBottom: '30px', color: 'var(--text-secondary)' }}>
-                    Vui lòng đăng nhập để tiếp tục
+                    Hệ thống dành cho Bệnh nhân, Bác sĩ và Quản trị viên
                 </p>
 
                 <form onSubmit={handleSubmit}>

@@ -1,21 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebSucKhoe.API.Models;
-
-public partial class HoSoYte
+namespace WebSucKhoe.API.Models
 {
-    public int MaHoSo { get; set; }
+    [Table("HoSoYte")]
+    public partial class HoSoYte
+    {
+        [Key]
+        public int MaHoSo { get; set; }
 
-    public int MaLichHen { get; set; }
+        public int? MaBenhNhan { get; set; }
 
-    public string ChanDoan { get; set; } = null!;
+        // Thêm cột này để khớp với logic Controller
+        public int? MaBacSi { get; set; }
 
-    public string? DonThuoc { get; set; }
+        public string? ChuanDoan { get; set; }
 
-    public string? LoiDanBacSi { get; set; }
+        public string? TrieuChung { get; set; }
 
-    public DateOnly? NgayTaiKham { get; set; }
+        public string? HuongDieuTri { get; set; }
 
-    public virtual LichHen MaLichHenNavigation { get; set; } = null!;
+        public string? DonThuoc { get; set; }
+
+        public DateTime? NgayTao { get; set; }
+
+        [ForeignKey("MaBenhNhan")]
+        public virtual NguoiDung? MaBenhNhanNavigation { get; set; }
+
+        [ForeignKey("MaBacSi")]
+        public virtual NguoiDung? MaBacSiNavigation { get; set; }
+    }
 }

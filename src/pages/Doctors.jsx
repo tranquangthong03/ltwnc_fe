@@ -1,39 +1,36 @@
-// src/pages/Doctors.jsx
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import api from '../services/api'; // Import axios instance
+import React, { useEffect, useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom'; // Giữ lại useNavigate
+import api from '../services/api';
 import RevealOnScroll from '../components/RevealOnScroll';
 import Footer from '../components/Footer';
+import { AuthContext } from '../context/AuthContext';
+// Thêm CalendarCheck vào đây
 import {
-    Stethoscope, Clock, Star, CalendarCheck, Search, Filter,
-    Award, Users, ThumbsUp, ArrowRight, Smartphone, Download, AlertCircle
+    Stethoscope, Clock, Star, CalendarCheck, Search, Filter, X,
+    Calendar, Loader // Thêm Calendar cho nút Lịch sử
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 const Doctors = () => {
+    const { user } = useContext(AuthContext);
     const [doctors, setDoctors] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null); // Thêm state lỗi
     const [searchTerm, setSearchTerm] = useState('');
+    const navigate = useNavigate();
+
+    // Modal state
+    const [showModal, setShowModal] = useState(false);
+    const [selectedDoctor, setSelectedDoctor] = useState(null);
+    const [bookingForm, setBookingForm] = useState({ date: '', time: '', reason: '' });
 
     useEffect(() => {
         const fetchDoctors = async () => {
             try {
                 setLoading(true);
-                // Gọi API thực tế
-                const response = await api.get('/Doctor');
-
-                // Kiểm tra nếu dữ liệu trả về đúng là mảng
-                if (Array.isArray(response.data)) {
-                    setDoctors(response.data);
-                } else {
-                    console.error("API không trả về mảng:", response.data);
-                    setDoctors([]);
-                }
+                const response = await api.get('/Patient/doctors');
+                setDoctors(Array.isArray(response.data) ? response.data : []);
             } catch (err) {
-                console.error("Lỗi tải API Bác sĩ:", err);
-                setError("Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại đường truyền.");
-                setDoctors([]); // Không dùng dữ liệu giả, để rỗng
+                console.error("Lỗi:", err);
             } finally {
                 setLoading(false);
             }
@@ -41,113 +38,102 @@ const Doctors = () => {
         fetchDoctors();
     }, []);
 
-    const handleBookAppointment = (docName) => {
-        toast.info(`Đang chuyển đến trang đặt lịch với ${docName}...`);
+    const openBookingModal = (doc) => {
+        if (!user) {
+            toast.warning("Vui lòng đăng nhập để đặt lịch!");
+            return;
+        }
+        setSelectedDoctor(doc);
+        setBookingForm({ date: '', time: '', reason: '' });
+        setShowModal(true);
     };
 
-    // Logic lọc an toàn (tránh lỗi toLowerCase undefined)
+    const handleConfirmBooking = async (e) => {
+        e.preventDefault();
+        try {
+            const dateTimeString = `${bookingForm.date}T${bookingForm.time}:00`;
+
+            await api.post('/Patient/book-appointment', {
+                MaBacSi: selectedDoctor.maBacSi, // Đảm bảo trường này khớp với Backend (có thể là MaBacSi hoặc maBacSi)
+                NgayHen: dateTimeString,
+                LyDoKham: bookingForm.reason
+            });
+
+            toast.success(`Đã đặt lịch thành công với BS. ${selectedDoctor.hoTen}!`);
+            setShowModal(false);
+        } catch (err) {
+            console.error("Chi tiết lỗi:", err.response); // Xem log trong Console (F12)
+
+            // Hiển thị thông báo lỗi cụ thể từ Server gửi về (nếu có)
+            const serverMessage = err.response?.data?.message || err.response?.data || "Đặt lịch thất bại.";
+
+            if (err.response?.status === 401) {
+                toast.error("Phiên đăng nhập hết hạn hoặc không hợp lệ.");
+            } else if (err.response?.status === 403) {
+                toast.error("Bạn không có quyền đặt lịch (Cần tài khoản Bệnh nhân).");
+            } else {
+                toast.error(`Lỗi: ${serverMessage}`);
+            }
+        }
+    };
+
     const filteredDoctors = doctors.filter(doc => {
-        const name = doc.HoTen || doc.hoTen || "";
-        const dept = doc.ChuyenKhoa || doc.chuyenKhoa || "";
+        const name = doc.hoTen || "";
+        const dept = doc.chuyenKhoa || "";
         const search = searchTerm.toLowerCase();
         return name.toLowerCase().includes(search) || dept.toLowerCase().includes(search);
     });
 
-    // --- RENDER GIAO DIỆN ---
-
-    if (loading) {
-        return (
-            <div className="page-container" style={{ textAlign: 'center', paddingTop: '100px' }}>
-                <div className="spinner"></div>
-                <p style={{ marginTop: '20px', color: 'var(--text-secondary)' }}>Đang đồng bộ dữ liệu bác sĩ...</p>
-            </div>
-        );
-    }
+    if (loading) return <div className="p-20 text-center"><Loader className="animate-spin mx-auto text-blue-600" size={40} /></div>;
 
     return (
         <div>
-            {/* 1. HEADER & SEARCH */}
-            <div style={{ backgroundColor: 'var(--bg-light)', padding: '60px 20px', textAlign: 'center', marginBottom: '40px' }}>
+            <div style={{ backgroundColor: 'var(--bg-light)', padding: '60px 20px', textAlign: 'center' }}>
                 <RevealOnScroll>
-                    <h1 className="section-title" style={{ fontSize: '2.5rem', marginBottom: '15px' }}>
-                        Đội Ngũ <span className="text-gradient">Chuyên Gia</span>
-                    </h1>
-                    <p className="section-subtitle">
-                        Danh sách bác sĩ được cập nhật trực tiếp từ hệ thống dữ liệu bệnh viện.
-                    </p>
+                    <h1 className="section-title">Đội Ngũ <span className="text-gradient">Chuyên Gia</span></h1>
 
-                    <div className="search-container" style={{ margin: '30px auto', maxWidth: '600px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
-                        <Search size={20} style={{ color: 'var(--text-secondary)', marginLeft: '10px' }} />
-                        <input
-                            type="text"
-                            className="search-input"
-                            placeholder="Tìm kiếm bác sĩ theo tên hoặc chuyên khoa..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        <button className="search-btn" style={{ width: 'auto', padding: '0 20px', borderRadius: '8px' }}>
-                            Tìm Kiếm
-                        </button>
+                    {/* --- THÊM NÚT XEM LỊCH SỬ HẸN TẠI ĐÂY --- */}
+                    {user && (
+                        <div className="mb-6">
+                            <button
+                                onClick={() => navigate('/my-appointments')}
+                                className="bg-white border border-blue-200 text-blue-600 px-6 py-2 rounded-full font-bold hover:bg-blue-50 transition-colors inline-flex items-center gap-2 shadow-sm"
+                            >
+                                <Calendar size={18} /> Xem Lịch Hẹn Của Tôi
+                            </button>
+                        </div>
+                    )}
+
+                    <div className="search-container" style={{ margin: '20px auto' }}>
+                        <Search size={20} className="text-gray-400 ml-3" />
+                        <input className="search-input" placeholder="Tìm kiếm bác sĩ..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
                     </div>
                 </RevealOnScroll>
             </div>
 
-            {/* 2. DANH SÁCH BÁC SĨ TỪ API */}
             <div className="page-container">
                 <RevealOnScroll>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                        <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <Filter size={18} /> Kết quả ({filteredDoctors.length})
-                        </h3>
+                    <div className="mb-6 flex items-center gap-2">
+                        <Filter size={18} className="text-blue-600" />
+                        <span className="font-bold text-slate-700">Kết quả ({filteredDoctors.length})</span>
                     </div>
 
-                    {/* Hiển thị Lỗi nếu có */}
-                    {error && (
-                        <div style={{ textAlign: 'center', padding: '40px', background: '#fee2e2', borderRadius: '12px', color: '#b91c1c', marginBottom: '30px' }}>
-                            <AlertCircle size={40} style={{ marginBottom: '10px' }} />
-                            <p>{error}</p>
-                            <p style={{ fontSize: '0.9rem' }}>Hãy đảm bảo Backend đang chạy tại port 7004 và Controller cho phép truy cập Public.</p>
-                        </div>
-                    )}
-
-                    {/* Hiển thị Danh sách */}
-                    {!error && filteredDoctors.length > 0 ? (
+                    {filteredDoctors.length > 0 ? (
                         <div className="grid-container">
                             {filteredDoctors.map((doc) => (
-                                <div key={doc.MaBacSi || doc.maBacSi || Math.random()} className="doctor-card-wrapper">
+                                <div key={doc.maBacSi} className="doctor-card-wrapper">
                                     <div className="doc-img-container">
-                                        <span className="doc-badge">
-                                            <Stethoscope size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-                                            {doc.ChuyenKhoa || doc.chuyenKhoa || "Đa Khoa"}
-                                        </span>
-                                        <img
-                                            src={doc.Anh || doc.anh || "/doctor.png"}
-                                            alt={doc.HoTen}
-                                            className="doc-img"
-                                            onError={(e) => { e.target.src = "https://via.placeholder.com/400x500?text=Bac+Si" }}
-                                        />
+                                        <span className="doc-badge"><Stethoscope size={14} /> {doc.chuyenKhoa}</span>
+                                        <img src={doc.anhDaiDien || "/doctor.png"} alt={doc.hoTen} className="doc-img" onError={(e) => { e.target.src = "https://via.placeholder.com/400x500?text=Bac+Si" }} />
                                     </div>
-
                                     <div className="doc-info">
-                                        <h3 className="doc-name">{doc.HoTen || doc.hoTen}</h3>
-                                        <span className="doc-dept">{doc.ChuyenKhoa || doc.chuyenKhoa}</span>
-
+                                        <h3 className="doc-name">{doc.hoTen}</h3>
+                                        <span className="doc-dept">{doc.chuyenKhoa}</span>
                                         <div className="doc-stats">
-                                            <div className="doc-stat-item">
-                                                <Clock size={16} color="var(--primary)" />
-                                                <span>{doc.KinhNghiem || doc.kinhNghiem || "N/A"}</span>
-                                            </div>
-                                            <div className="doc-stat-item">
-                                                <Star size={16} color="#fbbf24" fill="#fbbf24" />
-                                                <span>{doc.DanhGia || doc.danhGia || 5.0}</span>
-                                            </div>
+                                            <div className="doc-stat-item"><Clock size={16} /> <span>{doc.soNamKinhNghiem || 5}+ Năm</span></div>
+                                            <div className="doc-stat-item"><Star size={16} color="#fbbf24" fill="#fbbf24" /> <span>5.0</span></div>
                                         </div>
-
-                                        <button
-                                            className="btn btn-outline btn-block"
-                                            onClick={() => handleBookAppointment(doc.HoTen || doc.hoTen)}
-                                            style={{ borderRadius: '50px' }}
-                                        >
+                                        <button className="btn btn-outline w-full rounded-full" onClick={() => openBookingModal(doc)}>
                                             <CalendarCheck size={18} /> Đặt Lịch Ngay
                                         </button>
                                     </div>
@@ -155,70 +141,54 @@ const Doctors = () => {
                             ))}
                         </div>
                     ) : (
-                        !error && (
-                            <div style={{ textAlign: 'center', padding: '50px', color: 'var(--text-secondary)', border: '2px dashed #e2e8f0', borderRadius: '20px' }}>
-                                <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Chưa có dữ liệu bác sĩ nào.</p>
-                                <p>Vui lòng kiểm tra Database hoặc nhập dữ liệu bác sĩ vào hệ thống.</p>
-                            </div>
-                        )
+                        <p className="text-center text-gray-500">Không tìm thấy bác sĩ.</p>
                     )}
                 </RevealOnScroll>
             </div>
 
-            {/* 3. TRUST SECTION */}
-            <div className="trust-section" style={{ marginTop: '60px' }}>
-                <RevealOnScroll>
-                    <div className="trust-grid">
-                        <div className="trust-image-box">
-                            <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=600" alt="Team bác sĩ" className="main-trust-img" />
-                            <div className="float-badge">
-                                <div style={{ background: '#fbbf24', padding: '10px', borderRadius: '50%' }}>
-                                    <Star size={24} color="white" fill="white" />
+            {/* Modal Popup */}
+            {showModal && selectedDoctor && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-scale-in">
+                        <div className="bg-blue-600 p-4 flex justify-between items-center text-white">
+                            <h3 className="font-bold text-lg">Đặt Lịch Khám</h3>
+                            <button onClick={() => setShowModal(false)} className="hover:bg-white/20 p-1 rounded-full"><X size={20} /></button>
+                        </div>
+                        <form onSubmit={handleConfirmBooking} className="p-6 space-y-4">
+                            <div className="flex items-center gap-4 mb-4 bg-blue-50 p-3 rounded-xl border border-blue-100">
+                                <img src={selectedDoctor.anhDaiDien || "/doctor.png"} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm" alt="" />
+                                <div>
+                                    <p className="text-sm text-blue-600 font-semibold">Bác sĩ phụ trách</p>
+                                    <p className="font-bold text-slate-800">{selectedDoctor.hoTen}</p>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 mb-1">NGÀY KHÁM</label>
+                                    <input required type="date" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                                        value={bookingForm.date} onChange={e => setBookingForm({ ...bookingForm, date: e.target.value })} />
                                 </div>
                                 <div>
-                                    <strong style={{ display: 'block', fontSize: '1.2rem' }}>4.9/5.0</strong>
-                                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Chất lượng điều trị</span>
+                                    <label className="block text-xs font-bold text-gray-500 mb-1">GIỜ KHÁM</label>
+                                    <input required type="time" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                                        value={bookingForm.time} onChange={e => setBookingForm({ ...bookingForm, time: e.target.value })} />
                                 </div>
                             </div>
-                        </div>
-                        <div className="trust-content">
-                            <h2 className="section-title" style={{ textAlign: 'left' }}>Tại Sao Chọn <br /><span className="text-gradient">Đội Ngũ Của Chúng Tôi?</span></h2>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>Không chỉ giỏi chuyên môn, các bác sĩ tại Healthes System còn luôn đặt y đức lên hàng đầu.</p>
-                            <ul className="trust-list">
-                                <li className="trust-item">
-                                    <div className="trust-icon"><Award size={24} /></div>
-                                    <div className="trust-text"><h4>Chuyên Môn Cao</h4><p>Đội ngũ Giáo sư, Tiến sĩ đầu ngành.</p></div>
-                                </li>
-                                <li className="trust-item">
-                                    <div className="trust-icon"><Users size={24} /></div>
-                                    <div className="trust-text"><h4>Hội Chẩn Đa Khoa</h4><p>Phối hợp điều trị tối ưu.</p></div>
-                                </li>
-                            </ul>
-                            <Link to="/contact" className="btn btn-primary">Liên Hệ Tư Vấn <ArrowRight size={18} /></Link>
-                        </div>
-                    </div>
-                </RevealOnScroll>
-            </div>
-
-            {/* 4. APP BANNER */}
-            <div className="app-section">
-                <RevealOnScroll>
-                    <div className="app-container">
-                        <div className="app-content">
-                            <h2>Kết Nối Bác Sĩ Mọi Lúc</h2>
-                            <p>Tải ứng dụng Healthes System để đặt lịch và video call trực tiếp.</p>
-                            <div className="app-btns">
-                                <a href="#" className="store-btn"><Smartphone size={24} /> App Store</a>
-                                <a href="#" className="store-btn"><Download size={24} /> Google Play</a>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 mb-1">TRIỆU CHỨNG / LÝ DO</label>
+                                <textarea required className="w-full p-2.5 border rounded-lg h-24 resize-none outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="VD: Đau đầu, sốt nhẹ..."
+                                    value={bookingForm.reason} onChange={e => setBookingForm({ ...bookingForm, reason: e.target.value })} />
                             </div>
-                        </div>
-                        <div className="app-image" style={{ display: 'flex', alignItems: 'center' }}>
-                            <Smartphone size={180} color="white" strokeWidth={1} style={{ opacity: 0.9 }} />
-                        </div>
+                            <div className="pt-2">
+                                <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/30">
+                                    Xác Nhận Đặt Lịch
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </RevealOnScroll>
-            </div>
-
+                </div>
+            )}
             <Footer />
         </div>
     );

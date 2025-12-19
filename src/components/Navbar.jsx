@@ -3,7 +3,6 @@ import React, { useContext, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Home, Stethoscope, MessageCircle, Package, LogOut, User, Search, Phone } from 'lucide-react';
-
 const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -34,6 +33,7 @@ const Navbar = () => {
                     <li><Link to="/chat-ai" className={`nav-link-item ${isActive('/chat-ai')}`}><MessageCircle size={18} /> AI Chat</Link></li>
                     <li><Link to="/packages" className={`nav-link-item ${isActive('/packages')}`}><Package size={18} /> Gói Khám</Link></li>
                     <li><Link to="/contact" className={`nav-link-item ${isActive('/contact')}`}><Phone size={18} /> Liên Hệ</Link></li>
+
                 </ul>
 
                 {/* 3. THANH TÌM KIẾM (Đã chuyển sang phải) */}

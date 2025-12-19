@@ -5,6 +5,18 @@
     "version": "v1"
   },
   "paths": {
+    "/api/Admin/doctors": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Admin/add-doctor": {
       "post": {
         "tags": [
@@ -36,14 +48,14 @@
         }
       }
     },
-    "/api/Admin/confirm-payment/{maHoaDon}": {
-      "post": {
+    "/api/Admin/update-doctor/{id}": {
+      "put": {
         "tags": [
           "Admin"
         ],
         "parameters": [
           {
-            "name": "maHoaDon",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -52,73 +64,25 @@
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Admin/chat-monitor": {
-      "get": {
-        "tags": [
-          "Admin"
-        ],
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            }
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DoctorUpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DoctorUpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DoctorUpdateDto"
+              }
             }
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Admin/chat-detail/{maPhienChat}": {
-      "get": {
-        "tags": [
-          "Admin"
-        ],
-        "parameters": [
-          {
-            "name": "maPhienChat",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Admin/doctors": {
-      "get": {
-        "tags": [
-          "Admin"
-        ],
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -207,6 +171,84 @@
       "get": {
         "tags": [
           "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Admin/confirm-payment/{maHoaDon}": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "maHoaDon",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Admin/chat-monitor": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Admin/chat-detail/{maPhienChat}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "maPhienChat",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -308,7 +350,7 @@
         }
       }
     },
-    "/api/Doctor": {
+    "/api/Doctor/schedule": {
       "get": {
         "tags": [
           "Doctor"
@@ -318,27 +360,34 @@
             "description": "OK"
           }
         }
-      },
-      "post": {
+      }
+    },
+    "/api/Doctor/appointment/{id}/status": {
+      "put": {
         "tags": [
           "Doctor"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateDoctorDto"
-              }
+              "schema": { }
             },
             "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateDoctorDto"
-              }
+              "schema": { }
             },
             "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateDoctorDto"
-              }
+              "schema": { }
             }
           }
         },
@@ -349,30 +398,7 @@
         }
       }
     },
-    "/api/Doctor/my-patients/{doctorId}": {
-      "get": {
-        "tags": [
-          "Doctor"
-        ],
-        "parameters": [
-          {
-            "name": "doctorId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Doctor/test": {
+    "/api/Doctor/my-patients": {
       "get": {
         "tags": [
           "Doctor"
@@ -384,7 +410,7 @@
         }
       }
     },
-    "/api/Doctor/{id}": {
+    "/api/Doctor/patient/{id}": {
       "put": {
         "tags": [
           "Doctor"
@@ -404,17 +430,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateDoctorDto"
+                "$ref": "#/components/schemas/ChiTietBenhNhan"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateDoctorDto"
+                "$ref": "#/components/schemas/ChiTietBenhNhan"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateDoctorDto"
+                "$ref": "#/components/schemas/ChiTietBenhNhan"
               }
             }
           }
@@ -424,22 +450,73 @@
             "description": "OK"
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/api/Doctor/profile": {
+      "get": {
         "tags": [
           "Doctor"
         ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Doctor"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DoctorProfileUpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DoctorProfileUpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DoctorProfileUpdateDto"
+              }
             }
           }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Doctor/medical-record": {
+      "post": {
+        "tags": [
+          "Doctor"
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoSoYte"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoSoYte"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoSoYte"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -623,7 +700,31 @@
         }
       }
     },
-    "/api/Patient/register-package": {
+    "/api/Patient/doctors": {
+      "get": {
+        "tags": [
+          "Patient"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Patient/appointments": {
+      "get": {
+        "tags": [
+          "Patient"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Patient/book-appointment": {
       "post": {
         "tags": [
           "Patient"
@@ -632,71 +733,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DangKyGoiRequest"
+                "$ref": "#/components/schemas/BookingDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/DangKyGoiRequest"
+                "$ref": "#/components/schemas/BookingDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/DangKyGoiRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Patient/my-invoices/{userId}": {
-      "get": {
-        "tags": [
-          "Patient"
-        ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Patient/update-profile": {
-      "put": {
-        "tags": [
-          "Patient"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PatientUpdateDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PatientUpdateDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/PatientUpdateDto"
+                "$ref": "#/components/schemas/BookingDto"
               }
             }
           }
@@ -711,6 +758,24 @@
   },
   "components": {
     "schemas": {
+      "BookingDto": {
+        "type": "object",
+        "properties": {
+          "maBacSi": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ngayHen": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lyDoKham": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "ChatRequest": {
         "type": "object",
         "properties": {
@@ -730,28 +795,12 @@
         },
         "additionalProperties": false
       },
-      "CreateDoctorDto": {
+      "ChiTietBacSi": {
         "type": "object",
         "properties": {
-          "tenDangNhap": {
-            "type": "string",
-            "nullable": true
-          },
-          "matKhau": {
-            "type": "string",
-            "nullable": true
-          },
-          "hoTen": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "soDienThoai": {
-            "type": "string",
-            "nullable": true
+          "maBacSi": {
+            "type": "integer",
+            "format": "int32"
           },
           "chuyenKhoa": {
             "type": "string",
@@ -761,20 +810,67 @@
             "type": "string",
             "nullable": true
           },
+          "soNamKinhNghiem": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "giaKham": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "nullable": true
           },
-          "gioiThieu": {
+          "moTa": {
             "type": "string",
             "nullable": true
+          },
+          "maBacSiNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
           }
         },
         "additionalProperties": false
       },
-      "DangKyGoiRequest": {
+      "ChiTietBenhNhan": {
         "type": "object",
         "properties": {
+          "maBenhNhan": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ngaySinh": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "gioiTinh": {
+            "type": "string",
+            "nullable": true
+          },
+          "diaChi": {
+            "type": "string",
+            "nullable": true
+          },
+          "nhomMau": {
+            "type": "string",
+            "nullable": true
+          },
+          "tienSuBenh": {
+            "type": "string",
+            "nullable": true
+          },
+          "maBenhNhanNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DangKyGoi": {
+        "type": "object",
+        "properties": {
+          "maDangKy": {
+            "type": "integer",
+            "format": "int32"
+          },
           "maBenhNhan": {
             "type": "integer",
             "format": "int32"
@@ -782,6 +878,33 @@
           "maGoi": {
             "type": "integer",
             "format": "int32"
+          },
+          "ngayBatDau": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "ngayKetThuc": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "trangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "hoaDons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HoaDon"
+            },
+            "nullable": true
+          },
+          "maBenhNhanNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          },
+          "maGoiNavigation": {
+            "$ref": "#/components/schemas/GoiKham"
           }
         },
         "additionalProperties": false
@@ -805,6 +928,10 @@
             "type": "string",
             "nullable": true
           },
+          "soDienThoai": {
+            "type": "string",
+            "nullable": true
+          },
           "chuyenKhoa": {
             "type": "string",
             "nullable": true
@@ -812,6 +939,264 @@
           "giaKham": {
             "type": "number",
             "format": "double"
+          },
+          "soChungChi": {
+            "type": "string",
+            "nullable": true
+          },
+          "gioiThieu": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DoctorProfileUpdateDto": {
+        "type": "object",
+        "properties": {
+          "hoTen": {
+            "type": "string",
+            "nullable": true
+          },
+          "soDienThoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "chuyenKhoa": {
+            "type": "string",
+            "nullable": true
+          },
+          "kinhNghiem": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "giaKham": {
+            "type": "number",
+            "format": "double"
+          },
+          "gioiThieu": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DoctorUpdateDto": {
+        "type": "object",
+        "properties": {
+          "hoTen": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "soDienThoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "chuyenKhoa": {
+            "type": "string",
+            "nullable": true
+          },
+          "giaKham": {
+            "type": "number",
+            "format": "double"
+          },
+          "soChungChi": {
+            "type": "string",
+            "nullable": true
+          },
+          "gioiThieu": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GoiKham": {
+        "type": "object",
+        "properties": {
+          "maGoi": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tenGoi": {
+            "type": "string",
+            "nullable": true
+          },
+          "moTa": {
+            "type": "string",
+            "nullable": true
+          },
+          "giaTien": {
+            "type": "number",
+            "format": "double"
+          },
+          "thoiHanNgay": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dangHoatDong": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "dangKyGois": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DangKyGoi"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "HoSoYte": {
+        "type": "object",
+        "properties": {
+          "maHoSo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maBenhNhan": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "maBacSi": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "chuanDoan": {
+            "type": "string",
+            "nullable": true
+          },
+          "trieuChung": {
+            "type": "string",
+            "nullable": true
+          },
+          "huongDieuTri": {
+            "type": "string",
+            "nullable": true
+          },
+          "donThuoc": {
+            "type": "string",
+            "nullable": true
+          },
+          "ngayTao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "maBenhNhanNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          },
+          "maBacSiNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          }
+        },
+        "additionalProperties": false
+      },
+      "HoaDon": {
+        "type": "object",
+        "properties": {
+          "maHoaDon": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maBenhNhan": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maLichHen": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "maDangKy": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "tongTien": {
+            "type": "number",
+            "format": "double"
+          },
+          "phuongThucThanhToan": {
+            "type": "string",
+            "nullable": true
+          },
+          "trangThaiThanhToan": {
+            "type": "string",
+            "nullable": true
+          },
+          "maGiaoDich": {
+            "type": "string",
+            "nullable": true
+          },
+          "ngayTao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "maBenhNhanNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          },
+          "maDangKyNavigation": {
+            "$ref": "#/components/schemas/DangKyGoi"
+          },
+          "maLichHenNavigation": {
+            "$ref": "#/components/schemas/LichHen"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LichHen": {
+        "type": "object",
+        "properties": {
+          "maLichHen": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maBenhNhan": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maBacSi": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ngayGioHen": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lyDoKham": {
+            "type": "string",
+            "nullable": true
+          },
+          "trangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "ngayTao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "hoaDons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HoaDon"
+            },
+            "nullable": true
+          },
+          "maBacSiNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          },
+          "maBenhNhanNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
           }
         },
         "additionalProperties": false
@@ -825,6 +1210,94 @@
           },
           "password": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NguoiDung": {
+        "type": "object",
+        "properties": {
+          "maNguoiDung": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tenDangNhap": {
+            "type": "string",
+            "nullable": true
+          },
+          "matKhauHash": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "hoTen": {
+            "type": "string",
+            "nullable": true
+          },
+          "soDienThoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "anhDaiDien": {
+            "type": "string",
+            "nullable": true
+          },
+          "vaiTro": {
+            "type": "string",
+            "nullable": true
+          },
+          "ngayTao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "trangThai": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "chiTietBacSi": {
+            "$ref": "#/components/schemas/ChiTietBacSi"
+          },
+          "chiTietBenhNhan": {
+            "$ref": "#/components/schemas/ChiTietBenhNhan"
+          },
+          "dangKyGois": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DangKyGoi"
+            },
+            "nullable": true
+          },
+          "hoaDons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HoaDon"
+            },
+            "nullable": true
+          },
+          "lichHenMaBacSiNavigations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LichHen"
+            },
+            "nullable": true
+          },
+          "lichHenMaBenhNhanNavigations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LichHen"
+            },
+            "nullable": true
+          },
+          "phienChats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhienChat"
+            },
             "nullable": true
           }
         },
@@ -856,31 +1329,34 @@
         },
         "additionalProperties": false
       },
-      "PatientUpdateDto": {
+      "PhienChat": {
         "type": "object",
         "properties": {
-          "hoTen": {
+          "maPhienChat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maNguoiDung": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tieuDe": {
             "type": "string",
             "nullable": true
           },
-          "soDienThoai": {
+          "thoiGianTao": {
             "type": "string",
+            "format": "date-time",
             "nullable": true
           },
-          "diaChi": {
-            "type": "string",
-            "nullable": true
+          "maNguoiDungNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
           },
-          "tienSuBenh": {
-            "type": "string",
-            "nullable": true
-          },
-          "nhomMau": {
-            "type": "string",
-            "nullable": true
-          },
-          "anhDaiDien": {
-            "type": "string",
+          "tinNhans": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TinNhan"
+            },
             "nullable": true
           }
         },
@@ -934,36 +1410,32 @@
         },
         "additionalProperties": false
       },
-      "UpdateDoctorDto": {
+      "TinNhan": {
         "type": "object",
         "properties": {
-          "hoTen": {
+          "maTinNhan": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "maPhienChat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vaiTro": {
             "type": "string",
             "nullable": true
           },
-          "email": {
+          "noiDung": {
             "type": "string",
             "nullable": true
           },
-          "soDienThoai": {
+          "thoiGianGui": {
             "type": "string",
+            "format": "date-time",
             "nullable": true
           },
-          "chuyenKhoa": {
-            "type": "string",
-            "nullable": true
-          },
-          "soChungChi": {
-            "type": "string",
-            "nullable": true
-          },
-          "giaKham": {
-            "type": "number",
-            "format": "double"
-          },
-          "gioiThieu": {
-            "type": "string",
-            "nullable": true
+          "maPhienChatNavigation": {
+            "$ref": "#/components/schemas/PhienChat"
           }
         },
         "additionalProperties": false

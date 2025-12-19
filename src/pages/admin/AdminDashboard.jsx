@@ -50,7 +50,7 @@ const AdminDashboard = () => {
 
             {/* 3. Main Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                
+
                 {/* Cột trái: Biểu đồ hoặc Danh sách chính (Chiếm 2 phần) */}
                 <div className="lg:col-span-2 space-y-8">
                     {/* Giả lập biểu đồ doanh thu bằng CSS đơn giản */}
@@ -62,8 +62,8 @@ const AdminDashboard = () => {
                         <div className="h-64 flex items-end justify-between gap-2">
                             {[40, 65, 30, 80, 55, 90, 70].map((h, i) => (
                                 <div key={i} className="w-full bg-blue-50 rounded-t-lg relative group">
-                                    <div 
-                                        style={{ height: `${h}%` }} 
+                                    <div
+                                        style={{ height: `${h}%` }}
                                         className="absolute bottom-0 w-full bg-blue-500 rounded-t-lg transition-all duration-500 group-hover:bg-blue-600"
                                     ></div>
                                     <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs py-1 px-2 rounded transition-opacity">
@@ -99,7 +99,7 @@ const AdminDashboard = () => {
                 {/* Cột phải: Hoạt động gần đây (Chiếm 1 phần) */}
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-fit">
                     <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
-                        <Activity size={20} className="text-blue-500"/> Hoạt động gần đây
+                        <Activity size={20} className="text-blue-500" /> Hoạt động gần đây
                     </h3>
                     <div className="space-y-6">
                         {recentActivities.map((act) => (
@@ -115,7 +115,7 @@ const AdminDashboard = () => {
                         ))}
                     </div>
                     <button className="w-full mt-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
-                        Xem tất cả <ArrowUpRight size={16}/>
+                        Xem tất cả <ArrowUpRight size={16} />
                     </button>
                 </div>
 
