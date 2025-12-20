@@ -212,28 +212,31 @@ namespace WebSucKhoe.API.Controllers
             return Ok(list);
         }
 
-        // 4.2 Xác nhận thanh toán
+        // 4.2 Xác nhận thanh toán (Cập nhật logic kích hoạt gói)
         [HttpPost("confirm-payment/{maHoaDon}")]
         public async Task<IActionResult> ConfirmPayment(int maHoaDon)
         {
             var hoaDon = await _context.HoaDons.FindAsync(maHoaDon);
-            if (hoaDon == null) return NotFound();
+            if (hoaDon == null) return NotFound("Không tìm thấy hóa đơn");
 
+            // 1. Cập nhật hóa đơn
             hoaDon.TrangThaiThanhToan = "DaThanhToan";
-            hoaDon.PhuongThucThanhToan = "ChuyenKhoan";
+            hoaDon.PhuongThucThanhToan = "ChuyenKhoan"; // Hoặc lấy từ request nếu cần
 
-            // Kích hoạt gói đăng ký nếu có
+            // 2. Kích hoạt gói đăng ký nếu hóa đơn này thuộc về một đăng ký gói
             if (hoaDon.MaDangKy != null)
             {
                 var dangKy = await _context.DangKyGois.FindAsync(hoaDon.MaDangKy);
                 if (dangKy != null)
                 {
-                    dangKy.TrangThai = "DangDung";
+                    dangKy.TrangThai = "DangDung"; // Kích hoạt gói
+                    // Cập nhật ngày kết thúc dựa trên thời hạn gói (nếu cần logic này)
+                    // dangKy.NgayKetThuc = DateTime.Now.AddDays(goi.ThoiHan); 
                 }
             }
 
             await _context.SaveChangesAsync();
-            return Ok("Đã xác nhận thanh toán và kích hoạt dịch vụ.");
+            return Ok(new { Message = "Đã xác nhận thanh toán và kích hoạt dịch vụ." });
         }
 
         // =============================================================
@@ -280,6 +283,139 @@ namespace WebSucKhoe.API.Controllers
 
             return Ok(details);
         }
+        // =============================================================
+        // 6. QUẢN LÝ LỊCH HẸN (Bổ sung cho Admin)
+        // =============================================================
+
+        // 6.1 Lấy tất cả lịch hẹn
+        [HttpGet("appointments")]
+        public async Task<IActionResult> GetAllAppointments()
+        {
+            var list = await _context.LichHens
+                .Include(l => l.MaBenhNhanNavigation)
+                .Include(l => l.MaBacSiNavigation)
+                .OrderByDescending(l => l.NgayGioHen)
+                .Select(l => new
+                {
+                    MaLichHen = l.MaLichHen,
+                    BenhNhan = l.MaBenhNhanNavigation.HoTen,
+                    BacSi = l.MaBacSiNavigation.HoTen,
+                    NgayGioHen = l.NgayGioHen,
+                    TrangThai = l.TrangThai,
+                    LyDo = l.LyDoKham
+                })
+                .ToListAsync();
+
+            return Ok(list);
+        }
+
+        // 6.2 Cập nhật trạng thái lịch hẹn (Duyệt/Hủy)
+        [HttpPut("appointment/{id}/status")]
+        public async Task<IActionResult> UpdateAppointmentStatus(int id, [FromBody] AppointmentStatusDto req)
+        {
+            var appt = await _context.LichHens.FindAsync(id);
+            if (appt == null) return NotFound("Không tìm thấy lịch hẹn");
+
+            appt.TrangThai = req.Status;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Cập nhật trạng thái thành công" });
+        }
+
+        // Class DTO để nhận dữ liệu từ Frontend
+        public class AppointmentStatusDto
+        {
+            public string Status { get; set; }
+        }
+
+
+        // =============================================================
+        // 7. DASHBOARD STATS (Thống kê cho trang chủ Admin)
+        // =============================================================
+        [HttpGet("dashboard-stats")]
+        public async Task<IActionResult> GetDashboardStats()
+        {
+            var today = DateTime.Today;
+            var startOfMonth = new DateTime(today.Year, today.Month, 1);
+
+            // 1. Số liệu tổng quan
+            var totalPatients = await _context.NguoiDungs.CountAsync(u => u.VaiTro == "BenhNhan");
+            var totalDoctors = await _context.ChiTietBacSis.CountAsync();
+            var appointmentsToday = await _context.LichHens.CountAsync(l => l.NgayGioHen.Date == today);
+
+            // Doanh thu tháng này (Chỉ tính hóa đơn đã thanh toán)
+            var monthlyRevenue = await _context.HoaDons
+                .Where(h => h.TrangThaiThanhToan == "DaThanhToan" && h.NgayTao >= startOfMonth)
+                .SumAsync(h => h.TongTien);
+
+            // 2. Hoạt động gần đây (Lấy 5 lịch hẹn mới nhất)
+            var recentActivities = await _context.LichHens
+                .Include(l => l.MaBenhNhanNavigation)
+                .OrderByDescending(l => l.NgayTao)
+                .Take(5)
+                .Select(l => new
+                {
+                    Id = l.MaLichHen,
+                    User = l.MaBenhNhanNavigation.HoTen,
+                    Action = "đã đặt lịch hẹn",
+                    Time = l.NgayTao,
+                    Type = "appointment"
+                })
+                .ToListAsync();
+
+            return Ok(new
+            {
+                totalPatients,
+                totalDoctors,
+                appointmentsToday,
+                monthlyRevenue,
+                recentActivities
+            });
+        }
+
+        // =============================================================
+        // 8. QUẢN LÝ GÓI KHÁM (Packages)
+        // =============================================================
+        [HttpGet("packages")]
+        public async Task<IActionResult> GetPackages()
+        {
+            return Ok(await _context.GoiKhams.ToListAsync());
+        }
+
+        [HttpPost("packages")]
+        public async Task<IActionResult> CreatePackage([FromBody] GoiKham model)
+        {
+            _context.GoiKhams.Add(model);
+            await _context.SaveChangesAsync();
+            return Ok(new { Message = "Tạo gói thành công" });
+        }
+
+        [HttpPut("packages/{id}")]
+        public async Task<IActionResult> UpdatePackage(int id, [FromBody] GoiKham model)
+        {
+            var pkg = await _context.GoiKhams.FindAsync(id);
+            if (pkg == null) return NotFound();
+
+            pkg.TenGoi = model.TenGoi;
+            pkg.GiaTien = model.GiaTien;
+            pkg.ThoiHanNgay = model.ThoiHanNgay;
+            pkg.MoTa = model.MoTa;
+            // pkg.DangHoatDong = model.DangHoatDong; // Nếu có
+
+            await _context.SaveChangesAsync();
+            return Ok(new { Message = "Cập nhật thành công" });
+        }
+
+        [HttpDelete("packages/{id}")]
+        public async Task<IActionResult> DeletePackage(int id)
+        {
+            var pkg = await _context.GoiKhams.FindAsync(id);
+            if (pkg == null) return NotFound();
+            _context.GoiKhams.Remove(pkg);
+            await _context.SaveChangesAsync();
+            return Ok(new { Message = "Đã xóa gói" });
+        }
+
     }
 
     // =============================================================

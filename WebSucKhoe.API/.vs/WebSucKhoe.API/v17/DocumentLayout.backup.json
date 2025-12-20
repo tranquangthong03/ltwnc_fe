@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|d:\\wnc chamsocsk\\web-suc-khoe-frontend\\websuckhoe.api\\websuckhoe.api\\controllers\\patientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\controllers\\patientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|d:\\wnc chamsocsk\\web-suc-khoe-frontend\\websuckhoe.api\\websuckhoe.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|d:\\wnc chamsocsk\\web-suc-khoe-frontend\\websuckhoe.api\\websuckhoe.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -19,10 +27,6 @@
       "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\models\\lichhen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|d:\\wnc chamsocsk\\web-suc-khoe-frontend\\websuckhoe.api\\websuckhoe.api\\controllers\\patientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\controllers\\patientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|d:\\wnc chamsocsk\\web-suc-khoe-frontend\\websuckhoe.api\\websuckhoe.api\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -33,10 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|d:\\wnc chamsocsk\\web-suc-khoe-frontend\\websuckhoe.api\\websuckhoe.api\\models\\hosoyte.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\models\\hosoyte.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|d:\\wnc chamsocsk\\web-suc-khoe-frontend\\websuckhoe.api\\websuckhoe.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|d:\\wnc chamsocsk\\web-suc-khoe-frontend\\websuckhoe.api\\websuckhoe.api\\helpers\\passwordhasher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -74,7 +74,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 15,
+          "SelectedChildIndex": 12,
           "Children": [
             {
               "$type": "Bookmark",
@@ -90,7 +90,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "LichHen.cs",
               "DocumentMoniker": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\LichHen.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Models\\LichHen.cs",
@@ -102,7 +102,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "HoSoYte.cs",
               "DocumentMoniker": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\HoSoYte.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Models\\HoSoYte.cs",
@@ -174,7 +174,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "DoctorController.cs",
               "DocumentMoniker": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\DoctorController.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Controllers\\DoctorController.cs",
@@ -186,27 +186,29 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 1,
               "Title": "AdminController.cs",
               "DocumentMoniker": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Controllers\\AdminController.cs",
               "ToolTip": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\AdminController.cs",
               "RelativeToolTip": "WebSucKhoe.API\\Controllers\\AdminController.cs",
-              "ViewState": "AgIAACoBAAAAAAAAAAAAAC8BAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAJIBAAAAAAAAAAAAAJ0BAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-14T11:43:35.611Z"
+              "WhenOpened": "2025-12-14T11:43:35.611Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "PatientController.cs",
               "DocumentMoniker": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\PatientController.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Controllers\\PatientController.cs",
-              "ToolTip": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\PatientController.cs",
-              "RelativeToolTip": "WebSucKhoe.API\\Controllers\\PatientController.cs",
-              "ViewState": "AgIAAC4AAAAAAAAAAAAewDkAAAAYAAAAAAAAAA==",
+              "ToolTip": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\PatientController.cs*",
+              "RelativeToolTip": "WebSucKhoe.API\\Controllers\\PatientController.cs*",
+              "ViewState": "AgIAAKsAAAAAAAAAAAAAALQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-14T11:43:11.491Z"
+              "WhenOpened": "2025-12-14T11:43:11.491Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -234,7 +236,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\appsettings.json",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\appsettings.json",
@@ -247,7 +249,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "ChatController.cs",
               "DocumentMoniker": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\ChatController.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Controllers\\ChatController.cs",
@@ -259,7 +261,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "GeminiService.cs",
               "DocumentMoniker": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\Services\\GeminiService.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Services\\GeminiService.cs",
@@ -271,7 +273,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "WebSucKhoeDbContext.cs",
               "DocumentMoniker": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\WebSucKhoeDbContext.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Models\\WebSucKhoeDbContext.cs",

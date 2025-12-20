@@ -17,6 +17,37 @@
   },
   {
     "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
+    "Method": "UpdateAppointmentStatus",
+    "RelativePath": "api/Admin/appointment/{id}/status",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "WebSucKhoe.API.Controllers.AdminController\u002BAppointmentStatusDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
+    "Method": "GetAllAppointments",
+    "RelativePath": "api/Admin/appointments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
     "Method": "GetChatDetail",
     "RelativePath": "api/Admin/chat-detail/{maPhienChat}",
     "HttpMethod": "GET",
@@ -70,6 +101,16 @@
   },
   {
     "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
+    "Method": "GetDashboardStats",
+    "RelativePath": "api/Admin/dashboard-stats",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
     "Method": "DeleteUser",
     "RelativePath": "api/Admin/delete-user/{id}",
     "HttpMethod": "DELETE",
@@ -102,6 +143,69 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
+    "Method": "GetPackages",
+    "RelativePath": "api/Admin/packages",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
+    "Method": "CreatePackage",
+    "RelativePath": "api/Admin/packages",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "WebSucKhoe.API.Models.GoiKham",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
+    "Method": "UpdatePackage",
+    "RelativePath": "api/Admin/packages/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "model",
+        "Type": "WebSucKhoe.API.Models.GoiKham",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
+    "Method": "DeletePackage",
+    "RelativePath": "api/Admin/packages/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -450,12 +554,48 @@
   },
   {
     "ContainingType": "WebSucKhoe.API.Controllers.PatientController",
+    "Method": "GetCurrentSubscription",
+    "RelativePath": "api/Patient/current-subscription",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.PatientController",
     "Method": "GetAllDoctors",
     "RelativePath": "api/Patient/doctors",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.PatientController",
+    "Method": "GetPackages",
+    "RelativePath": "api/Patient/packages",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.PatientController",
+    "Method": "RegisterPackage",
+    "RelativePath": "api/Patient/register-package",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "WebSucKhoe.API.Controllers.RegisterPackageDto",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   }
 ]
