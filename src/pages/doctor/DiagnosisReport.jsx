@@ -2,7 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import api from '../../services/api';
 import { Printer, Plus, Trash, Pill, StickyNote } from 'lucide-react'; // Đã bỏ 'Save'
 import { toast } from 'react-toastify';
-import html2pdf from 'html2pdf.js';
+
+// Dynamic import for html2pdf to avoid build errors if not installed
+let html2pdf = null;
+try {
+    html2pdf = require('html2pdf.js');
+} catch (e) {
+    console.warn('html2pdf.js not installed, PDF export may not work');
+}
 
 const DiagnosisReport = () => {
     const reportRef = useRef();

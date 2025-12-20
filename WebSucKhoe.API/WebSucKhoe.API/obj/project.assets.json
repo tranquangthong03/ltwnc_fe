@@ -4206,23 +4206,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\admin\\.nuget\\packages\\": {},
+    "C:\\Users\\LENOVO\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\WebSucKhoe.API.csproj",
+      "projectUniqueName": "E:\\WORK SPACE\\ltwnc\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\WebSucKhoe.API.csproj",
       "projectName": "WebSucKhoe.API",
-      "projectPath": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\WebSucKhoe.API.csproj",
-      "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-      "outputPath": "D:\\WNC chamsocSK\\web-suc-khoe-frontend\\WebSucKhoe.API\\WebSucKhoe.API\\obj\\",
+      "projectPath": "E:\\WORK SPACE\\ltwnc\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\WebSucKhoe.API.csproj",
+      "packagesPath": "C:\\Users\\LENOVO\\.nuget\\packages\\",
+      "outputPath": "E:\\WORK SPACE\\ltwnc\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\LENOVO\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -4231,6 +4231,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -4303,7 +4304,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
