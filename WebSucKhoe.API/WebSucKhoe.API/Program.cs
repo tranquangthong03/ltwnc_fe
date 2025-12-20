@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebSucKhoe.API.Models;
 using WebSucKhoe.API.Services;
+using WebSucKhoe.API.Hubs; // Namespace chứa ChatHub
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,13 +12,22 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. ĐĂNG KÝ DỊCH VỤ (SERVICES REGISTRATION)
 // ====================================================
 
-// Thêm Controllers và Swagger
+// Thêm Controllers
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+// 1.1 Đăng ký SignalR Service (Bật chi tiết lỗi để dễ debug)
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true;
+});
+
+// Cấu hình Swagger (để test API)
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "WebSucKhoe API", Version = "v1" });
 
+    // Cấu hình JWT cho Swagger
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -44,25 +54,27 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
-// Đăng ký HttpClient (Cần thiết cho GeminiService gọi API Google)
+// Đăng ký HttpClient (cho GeminiService)
 builder.Services.AddHttpClient();
 
-// Đăng ký DB Context (Kết nối SQL Server)
+// Đăng ký DB Context
 builder.Services.AddDbContext<WebSucKhoeDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("WebSucKhoeDB")));
 
-// Đăng ký Gemini Service (Dependency Injection)
+// Đăng ký Gemini Service
 builder.Services.AddScoped<GeminiService>();
 
-// Đăng ký CORS (Để Frontend React/Mobile gọi được API)
+// 1.2 Đăng ký CORS (QUAN TRỌNG CHO REACT & SIGNALR)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    options.AddPolicy("AllowAll", b => b
+        .WithOrigins("http://localhost:3000") // Chỉ cho phép React Frontend gọi
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()); // Bắt buộc phải có để SignalR hoạt động
 });
 
-// Đăng ký JWT Authentication (BẮT BUỘC PHẢI Ở ĐÂY - TRƯỚC builder.Build)
+// Đăng ký JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -76,37 +88,54 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
+
+        // Cấu hình để lấy Token từ Query String (cho SignalR)
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chatHub"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 
 // ====================================================
-// 2. XÂY DỰNG ỨNG DỤNG (BUILD APP)
+// 2. XÂY DỰNG ỨNG DỤNG
 // ====================================================
-// Chỉ được gọi lệnh này MỘT LẦN DUY NHẤT sau khi đã Add hết Services
 var app = builder.Build();
 
 // ====================================================
 // 3. CẤU HÌNH PIPELINE (MIDDLEWARE)
 // ====================================================
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// --- QUAN TRỌNG: Tắt chuyển hướng HTTPS để tránh lỗi SSL ở Localhost ---
+// app.UseHttpsRedirection(); 
+// ----------------------------------------------------------------------
 
-// Kích hoạt CORS
+// Kích hoạt CORS (Phải đặt trước Auth và Hub)
 app.UseCors("AllowAll");
 
 // Kích hoạt Authentication & Authorization
-// Thứ tự cực kỳ quan trọng: UseAuthentication phải TRƯỚC UseAuthorization
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Định tuyến đến các Controllers
+// Định tuyến Controllers
 app.MapControllers();
+
+// 1.3 Định tuyến SignalR Hub
+app.MapHub<ChatHub>("/chatHub");
 
 // Chạy ứng dụng
 app.Run();

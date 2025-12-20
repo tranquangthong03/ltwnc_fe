@@ -8,8 +8,8 @@ namespace WebSucKhoe.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    // Mặc định Controller này chỉ dành cho Bác sĩ và Admin
     [Authorize(Roles = "BacSi,Admin")]
-
     public class DoctorController : ControllerBase
     {
         private readonly WebSucKhoeDbContext _context;
@@ -25,7 +25,6 @@ namespace WebSucKhoe.API.Controllers
             var identity = User.Identity as ClaimsIdentity;
             if (identity != null)
             {
-                // Tìm claim ID theo nhiều chuẩn khác nhau (Id, UserID, hoặc nameidentifier)
                 var userClaim = identity.FindFirst("Id")
                              ?? identity.FindFirst("UserID")
                              ?? identity.FindFirst(ClaimTypes.NameIdentifier);
@@ -36,6 +35,27 @@ namespace WebSucKhoe.API.Controllers
                 }
             }
             return 0;
+        }
+
+        // =========================================================
+        // 0. API CÔNG KHAI (Cho Bệnh nhân chọn Bác sĩ để Chat)
+        // =========================================================
+        [HttpGet("public-list")]
+        [AllowAnonymous] // <--- QUAN TRỌNG: Cho phép ai cũng xem được (để Bệnh nhân gọi API này)
+        public async Task<IActionResult> GetPublicList()
+        {
+            var list = await _context.ChiTietBacSis
+                .Include(b => b.MaBacSiNavigation)
+                .Select(b => new
+                {
+                    MaBacSi = b.MaBacSi,
+                    HoTen = b.MaBacSiNavigation.HoTen,
+                    ChuyenKhoa = b.ChuyenKhoa,
+                    // Avatar = ... (nếu có)
+                })
+                .ToListAsync();
+
+            return Ok(list);
         }
 
         // =========================================================
@@ -55,12 +75,7 @@ namespace WebSucKhoe.API.Controllers
                     x.MaBenhNhan,
                     TenBenhNhan = x.MaBenhNhanNavigation.HoTen,
                     NgayHen = x.NgayGioHen,
-
-                    // --- SỬA DÒNG NÀY ---
-                    // Cũ (Lỗi): GioHen = x.NgayGioHen.HasValue ? x.NgayGioHen.Value.ToString("HH:mm") : "00:00",
-                    // Mới (Đúng): Trực tiếp format vì NgayGioHen không bao giờ null
                     GioHen = x.NgayGioHen.ToString("HH:mm"),
-
                     x.LyDoKham,
                     x.TrangThai
                 })
@@ -72,7 +87,6 @@ namespace WebSucKhoe.API.Controllers
         [HttpPut("appointment/{id}/status")]
         public async Task<IActionResult> UpdateAppointmentStatus(int id, [FromBody] dynamic data)
         {
-            // Lưu ý: data là dynamic JSON { "status": "..." }
             string newStatus;
             try { newStatus = data.GetProperty("status").ToString(); } catch { return BadRequest("Thiếu trạng thái"); }
 
@@ -133,10 +147,9 @@ namespace WebSucKhoe.API.Controllers
         }
 
         // =========================================================
-        // 3. QUẢN LÝ HỒ SƠ CÁ NHÂN (PROFILE) - ĐÃ SỬA
+        // 3. QUẢN LÝ HỒ SƠ CÁ NHÂN (PROFILE)
         // =========================================================
 
-        // GET: api/Doctor/profile
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
@@ -149,23 +162,19 @@ namespace WebSucKhoe.API.Controllers
 
             if (user == null) return NotFound();
 
-            // Trả về object phẳng để Frontend dễ binding
             return Ok(new
             {
                 user.HoTen,
                 user.Email,
                 user.SoDienThoai,
-                // Mapping dữ liệu từ bảng chi tiết (xử lý null nếu chưa có)
                 ChuyenKhoa = user.ChiTietBacSi?.ChuyenKhoa ?? "",
-                KinhNghiem = user.ChiTietBacSi?.SoNamKinhNghiem ?? 0, // DB: SoNamKinhNghiem
+                KinhNghiem = user.ChiTietBacSi?.SoNamKinhNghiem ?? 0,
                 GiaKham = user.ChiTietBacSi?.GiaKham ?? 0,
                 SoChungChi = user.ChiTietBacSi?.SoChungChi ?? "",
-                MoTa = user.ChiTietBacSi?.MoTa ?? "" // DB: MoTa -> FE: GioiThieu/Bio
+                MoTa = user.ChiTietBacSi?.MoTa ?? ""
             });
         }
 
-        // PUT: api/Doctor/profile
-        // Sử dụng DTO cụ thể thay vì dynamic để an toàn hơn
         [HttpPut("profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] DoctorProfileUpdateDto req)
         {
@@ -182,7 +191,7 @@ namespace WebSucKhoe.API.Controllers
             user.HoTen = req.HoTen;
             user.SoDienThoai = req.SoDienThoai;
 
-            // 2. Cập nhật thông tin chi tiết (Tạo mới nếu chưa có)
+            // 2. Cập nhật thông tin chi tiết
             if (user.ChiTietBacSi == null)
             {
                 user.ChiTietBacSi = new ChiTietBacSi { MaBacSi = userId };
@@ -190,11 +199,10 @@ namespace WebSucKhoe.API.Controllers
             }
 
             user.ChiTietBacSi.ChuyenKhoa = req.ChuyenKhoa;
-            user.ChiTietBacSi.SoNamKinhNghiem = req.KinhNghiem; // Map từ DTO
+            user.ChiTietBacSi.SoNamKinhNghiem = req.KinhNghiem;
             user.ChiTietBacSi.GiaKham = req.GiaKham;
-            user.ChiTietBacSi.MoTa = req.GioiThieu; // Map từ DTO
+            user.ChiTietBacSi.MoTa = req.GioiThieu;
 
-            // Lưu thay đổi
             await _context.SaveChangesAsync();
             return Ok(new { Message = "Cập nhật thành công" });
         }
@@ -228,7 +236,7 @@ namespace WebSucKhoe.API.Controllers
         }
 
     }
-   
+
     // --- DTO CLASS ---
     public class DoctorProfileUpdateDto
     {

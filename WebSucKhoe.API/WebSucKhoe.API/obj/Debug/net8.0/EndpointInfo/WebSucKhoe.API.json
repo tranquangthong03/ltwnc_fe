@@ -520,6 +520,18 @@
         }
       }
     },
+    "/api/Doctor/public-list": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Doctor/schedule": {
       "get": {
         "tags": [
@@ -1575,6 +1587,11 @@
             "type": "integer",
             "format": "int32"
           },
+          "maBacSi": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "tieuDe": {
             "type": "string",
             "nullable": true
@@ -1585,6 +1602,9 @@
             "nullable": true
           },
           "maNguoiDungNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          },
+          "maBacSiNavigation": {
             "$ref": "#/components/schemas/NguoiDung"
           },
           "tinNhans": {

@@ -236,3 +236,32 @@ INSERT INTO PhienChat (MaNguoiDung, TieuDe) VALUES (4, N'Tư vấn đau ngực')
 INSERT INTO TinNhan (MaPhienChat, VaiTro, NoiDung) VALUES 
 (1, 'user', N'Bác sĩ ơi tôi hay bị đau ngực?'),
 (1, 'model', N'Chào bạn, đau ngực có nhiều nguyên nhân. Bạn có thấy khó thở không?');
+
+
+
+-- Kiểm tra nếu cột chưa tồn tại thì thêm vào
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'PhienChat' AND COLUMN_NAME = 'MaBacSi')
+BEGIN
+    ALTER TABLE PhienChat ADD MaBacSi INT NULL;
+    ALTER TABLE PhienChat ADD CONSTRAINT FK_PhienChat_NguoiDung_BacSi FOREIGN KEY (MaBacSi) REFERENCES NguoiDung(MaNguoiDung);
+END
+USE WebSucKhoeDB;
+GO
+
+-- 1. Thêm cột MaBacSi nếu chưa có
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'PhienChat' AND COLUMN_NAME = 'MaBacSi')
+BEGIN
+    ALTER TABLE PhienChat ADD MaBacSi INT NULL;
+    PRINT 'Da them cot MaBacSi';
+END
+
+-- 2. Thêm khóa ngoại liên kết với bảng NguoiDung (hoặc ChiTietBacSi)
+-- Kiểm tra xem constraint đã tồn tại chưa để tránh lỗi trùng tên
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_PhienChat_NguoiDung_BacSi')
+BEGIN
+    ALTER TABLE PhienChat 
+    ADD CONSTRAINT FK_PhienChat_NguoiDung_BacSi 
+    FOREIGN KEY (MaBacSi) REFERENCES NguoiDung(MaNguoiDung);
+    PRINT 'Da them khoa ngoai FK_PhienChat_NguoiDung_BacSi';
+END
+GO

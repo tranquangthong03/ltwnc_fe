@@ -35,7 +35,7 @@ import DoctorPatients from './pages/doctor/DoctorPatients';
 import DoctorSchedule from './pages/doctor/DoctorSchedule'; // Bạn tự tạo file này tương tự DoctorPatients
 import DiagnosisReport from './pages/doctor/DiagnosisReport';
 import DoctorProfile from './pages/doctor/DoctorProfile';
-
+import DoctorChat from './pages/doctor/DoctorChat';
 
 function App() {
   return (
@@ -76,6 +76,7 @@ function App() {
           <Route path="/doctor" element={<DoctorLayout />}>
             <Route index element={<DoctorDashboard />} /> {/* Mặc định vào Dashboard */}
             <Route path="dashboard" element={<DoctorDashboard />} />
+            <Route path="chat" element={<DoctorChat />} />
             <Route path="patients" element={<DoctorPatients />} />
             <Route path="schedule" element={<DoctorSchedule />} />
             <Route path="diagnosis" element={<DiagnosisReport />} />

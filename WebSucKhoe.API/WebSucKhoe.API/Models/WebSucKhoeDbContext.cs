@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration; // Thêm thư viện này để đọc config
+using Microsoft.Extensions.Configuration;
 
 namespace WebSucKhoe.API.Models;
 
@@ -13,7 +13,6 @@ public partial class WebSucKhoeDbContext : DbContext
     {
     }
 
-    // Constructor chuẩn cho Dependency Injection
     public WebSucKhoeDbContext(DbContextOptions<WebSucKhoeDbContext> options, IConfiguration configuration)
         : base(options)
     {
@@ -35,8 +34,6 @@ public partial class WebSucKhoeDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            // Lấy chuỗi kết nối từ appsettings.json thay vì hardcode
-            // Nếu không đọc được, mới dùng chuỗi mặc định (Fallback)
             var connectionString = _configuration?.GetConnectionString("DefaultConnection")
                                    ?? "Server=.\\SQLEXPRESS;Database=WebSucKhoeDB;Trusted_Connection=True;TrustServerCertificate=True;";
             optionsBuilder.UseSqlServer(connectionString);
@@ -99,11 +96,9 @@ public partial class WebSucKhoeDbContext : DbContext
         {
             entity.HasKey(e => e.MaHoSo).HasName("PK__HoSoYTe__1666423C927FDB8B");
             entity.ToTable("HoSoYTe");
-            // entity.HasIndex(e => e.MaLichHen, "UQ__HoSoYTe__150F264EEACAEE9C").IsUnique(); // Nếu logic 1 lịch hẹn chỉ có 1 hồ sơ
 
-            // QUAN TRỌNG: Cần thêm Foreign Key cho MaBacSi nếu trong SQL bạn đã thêm cột này
-            // Nếu chưa chạy lệnh SQL thêm cột MaBacSi thì comment dòng này lại
-            entity.HasOne(d => d.MaBacSiNavigation).WithMany() // Một bác sĩ có nhiều hồ sơ
+            // Mapping quan hệ với Bác sĩ
+            entity.HasOne(d => d.MaBacSiNavigation).WithMany()
                   .HasForeignKey(d => d.MaBacSi)
                   .HasConstraintName("FK_HoSo_BacSi");
 
@@ -132,27 +127,17 @@ public partial class WebSucKhoeDbContext : DbContext
         modelBuilder.Entity<LichHen>(entity =>
         {
             entity.HasKey(e => e.MaLichHen).HasName("PK__LichHen__150F264FDE199CC8");
-
             entity.ToTable("LichHen");
-
             entity.Property(e => e.LyDoKham).HasMaxLength(255);
             entity.Property(e => e.NgayGioHen).HasColumnType("datetime");
-            entity.Property(e => e.NgayTao)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.TrangThai)
-                .HasMaxLength(20)
-                .HasDefaultValue("ChoDuyet");
+            entity.Property(e => e.NgayTao).HasDefaultValueSql("(getdate())").HasColumnType("datetime");
+            entity.Property(e => e.TrangThai).HasMaxLength(20).HasDefaultValue("ChoDuyet");
 
-            // Chỉ giữ lại liên kết với Bác Sĩ và Bệnh Nhân
             entity.HasOne(d => d.MaBacSiNavigation).WithMany(p => p.LichHenMaBacSiNavigations)
-                .HasForeignKey(d => d.MaBacSi)
-                .HasConstraintName("FK_LichHen_BacSi");
+                .HasForeignKey(d => d.MaBacSi).HasConstraintName("FK_LichHen_BacSi");
 
             entity.HasOne(d => d.MaBenhNhanNavigation).WithMany(p => p.LichHenMaBenhNhanNavigations)
-                .HasForeignKey(d => d.MaBenhNhan)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_LichHen_BenhNhan");
+                .HasForeignKey(d => d.MaBenhNhan).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_LichHen_BenhNhan");
         });
 
         modelBuilder.Entity<NguoiDung>(entity =>
@@ -172,14 +157,31 @@ public partial class WebSucKhoeDbContext : DbContext
             entity.Property(e => e.VaiTro).HasMaxLength(20).IsUnicode(false);
         });
 
+        // --------------------------------------------------------
+        // PHẦN SỬA CHỮA QUAN TRỌNG: GỘP CẤU HÌNH PHIENCHAT VÀO 1 CHỖ
+        // --------------------------------------------------------
         modelBuilder.Entity<PhienChat>(entity =>
         {
             entity.HasKey(e => e.MaPhienChat).HasName("PK__PhienCha__A91ECE76DC34CCFC");
             entity.ToTable("PhienChat");
-            entity.Property(e => e.ThoiGianTao).HasDefaultValueSql("(getdate())").HasColumnType("datetime");
-            entity.Property(e => e.TieuDe).HasMaxLength(200).HasDefaultValue("Cuộc hội thoại mới");
+
+            entity.Property(e => e.ThoiGianTao)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.Property(e => e.TieuDe)
+                .HasMaxLength(200)
+                .HasDefaultValue("Cuộc hội thoại mới");
+
+            // Khóa ngoại với Bệnh nhân
             entity.HasOne(d => d.MaNguoiDungNavigation).WithMany(p => p.PhienChats)
-                .HasForeignKey(d => d.MaNguoiDung).HasConstraintName("FK_PhienChat_User");
+                .HasForeignKey(d => d.MaNguoiDung)
+                .HasConstraintName("FK_PhienChat_User");
+
+            // Khóa ngoại với Bác sĩ (Bắt buộc phải có để tránh lỗi lưu DB)
+            entity.HasOne(d => d.MaBacSiNavigation).WithMany()
+                .HasForeignKey(d => d.MaBacSi)
+                .HasConstraintName("FK_PhienChat_NguoiDung_BacSi");
         });
 
         modelBuilder.Entity<TinNhan>(entity =>

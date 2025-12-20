@@ -404,6 +404,16 @@
   },
   {
     "ContainingType": "WebSucKhoe.API.Controllers.DoctorController",
+    "Method": "GetPublicList",
+    "RelativePath": "api/Doctor/public-list",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.DoctorController",
     "Method": "GetSchedule",
     "RelativePath": "api/Doctor/schedule",
     "HttpMethod": "GET",

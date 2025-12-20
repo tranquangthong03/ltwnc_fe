@@ -2,9 +2,10 @@
 import React, { useContext } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+// --- SỬA DÒNG NÀY: Thêm MessageCircle vào danh sách import ---
 import {
     LayoutDashboard, Users, Calendar, FileText,
-    MessageSquare, User, LogOut, HeartPulse
+    MessageSquare, User, LogOut, HeartPulse, MessageCircle
 } from 'lucide-react';
 
 const DoctorLayout = () => {
@@ -14,6 +15,8 @@ const DoctorLayout = () => {
 
     const menuItems = [
         { path: '/doctor/dashboard', label: 'Tổng Quan', icon: <LayoutDashboard size={20} /> },
+        // Item này sử dụng MessageCircle, nên bắt buộc phải import ở trên
+        { path: '/doctor/chat', label: 'Tư Vấn Online', icon: <MessageCircle size={20} /> },
         { path: '/doctor/patients', label: 'Quản Lý Bệnh Nhân', icon: <Users size={20} /> },
         { path: '/doctor/schedule', label: 'Lịch Hẹn Khám', icon: <Calendar size={20} /> },
         { path: '/doctor/diagnosis', label: 'Tạo Phiếu Khám', icon: <FileText size={20} /> },
