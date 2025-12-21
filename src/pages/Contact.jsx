@@ -3,7 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import api from '../services/api';
 import * as signalR from "@microsoft/signalr";
 // SỬA DÒNG NÀY: Thay UserMd bằng Stethoscope
-import { MessageCircle, Send, X, Stethoscope, ChevronLeft } from 'lucide-react';
+import { MessageCircle, Send, X, Stethoscope, ChevronLeft, Loader } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 const Contact = () => {
@@ -14,7 +14,32 @@ const Contact = () => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [connection, setConnection] = useState(null);
+    const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef(null);
+
+    // Load lịch sử chat khi chọn bác sĩ
+    useEffect(() => {
+        const loadChatHistory = async () => {
+            if (selectedDoctor && connection && user) {
+                setLoading(true);
+                try {
+                    const history = await connection.invoke("LoadChatHistory", 
+                        parseInt(user.userId), 
+                        selectedDoctor.maBacSi
+                    );
+                    setMessages(history || []);
+                    console.log("📜 Loaded chat history:", history);
+                    scrollToBottom();
+                } catch (e) {
+                    console.error("Error loading history:", e);
+                    setMessages([]);
+                } finally {
+                    setLoading(false);
+                }
+            }
+        };
+        loadChatHistory();
+    }, [selectedDoctor, connection, user]);
 
     useEffect(() => {
         const fetchDoctors = async () => {
@@ -40,21 +65,40 @@ const Contact = () => {
 
             setConnection(newConnection);
         }
-    }, [selectedDoctor, user]);
+    }, [selectedDoctor, user, connection]);
 
     useEffect(() => {
-        if (connection) {
+        if (connection && connection.state === signalR.HubConnectionState.Disconnected) {
+            const handleReceiveMessage = (data) => {
+                console.log("📩 Received message:", data);
+                setMessages(prev => [...prev, {
+                    maNguoiGui: data.maNguoiGui,
+                    noiDung: data.noiDung,
+                    thoiGianGui: data.thoiGianGui
+                }]);
+                scrollToBottom();
+            };
+
             connection.start()
                 .then(() => {
-                    console.log("Connected SignalR");
+                    console.log("✅ SignalR Connected");
                     connection.invoke("JoinChat", user.userId.toString());
-
-                    connection.on("ReceiveMessage", (role, msg, time) => {
-                        setMessages(prev => [...prev, { vaiTro: role, noiDung: msg, thoiGianGui: time }]);
-                        scrollToBottom();
-                    });
+                    
+                    // Đăng ký listener
+                    connection.on("ReceiveMessage", handleReceiveMessage);
                 })
-                .catch(e => console.error("Connection failed: ", e));
+                .catch(e => {
+                    console.error("❌ SignalR Connection failed:", e);
+                    toast.error("Không thể kết nối chat");
+                });
+
+            return () => {
+                // Cleanup listener và connection khi unmount
+                connection.off("ReceiveMessage", handleReceiveMessage);
+                if (connection.state === signalR.HubConnectionState.Connected) {
+                    connection.stop();
+                }
+            };
         }
     }, [connection, user]);
 
@@ -66,11 +110,17 @@ const Contact = () => {
         if (!input.trim() || !connection || !selectedDoctor) return;
 
         try {
-            await connection.invoke("SendMessage", "BenhNhan", parseInt(user.userId), selectedDoctor.maBacSi, input);
+            // SendMessage(int maNguoiGui, int maNguoiNhan, string noiDung)
+            await connection.invoke("SendMessage", 
+                parseInt(user.userId),        // Người gửi (bệnh nhân)
+                selectedDoctor.maBacSi,       // Người nhận (bác sĩ)
+                input.trim()                  // Nội dung
+            );
             setInput('');
+            console.log("✅ Message sent");
         } catch (e) {
-            console.error(e);
-            toast.error("Lỗi gửi tin nhắn");
+            console.error("❌ Error sending message:", e);
+            toast.error("Lỗi gửi tin nhắn: " + (e.message || "Không xác định"));
         }
     };
 
@@ -136,19 +186,28 @@ const Contact = () => {
                                 </div>
                             ) : (
                                 <div className="p-4 space-y-3 pb-4">
-                                    {messages.length === 0 && (
-                                        <p className="text-center text-xs text-slate-400 mt-4">Bắt đầu cuộc trò chuyện...</p>
-                                    )}
-                                    {messages.map((m, idx) => (
-                                        <div key={idx} className={`flex ${m.vaiTro === 'BenhNhan' ? 'justify-end' : 'justify-start'}`}>
-                                            <div className={`max-w-[85%] p-2.5 rounded-xl text-sm shadow-sm ${m.vaiTro === 'BenhNhan'
-                                                ? 'bg-blue-500 text-white rounded-br-none'
-                                                : 'bg-white border text-slate-700 rounded-bl-none'
-                                                }`}>
-                                                {m.noiDung}
-                                            </div>
+                                    {loading ? (
+                                        <div className="flex justify-center items-center h-full py-8">
+                                            <Loader className="animate-spin text-blue-600" size={32} />
                                         </div>
-                                    ))}
+                                    ) : messages.length === 0 ? (
+                                        <p className="text-center text-xs text-slate-400 mt-4">Bắt đầu cuộc trò chuyện...</p>
+                                    ) : (
+                                        messages.map((m, idx) => {
+                                            const isMe = m.maNguoiGui === parseInt(user.userId);
+                                            return (
+                                                <div key={idx} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
+                                                    <div className={`max-w-[85%] p-2.5 rounded-xl text-sm shadow-sm ${
+                                                        isMe
+                                                            ? 'bg-blue-500 text-white rounded-br-none'
+                                                            : 'bg-white border text-slate-700 rounded-bl-none'
+                                                    }`}>
+                                                        {m.noiDung}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    )}
                                     <div ref={messagesEndRef} />
                                 </div>
                             )}

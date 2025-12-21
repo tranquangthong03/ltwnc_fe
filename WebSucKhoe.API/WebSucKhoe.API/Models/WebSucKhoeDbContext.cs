@@ -29,7 +29,8 @@ public partial class WebSucKhoeDbContext : DbContext
     public virtual DbSet<NguoiDung> NguoiDungs { get; set; }
     public virtual DbSet<PhienChat> PhienChats { get; set; }
     public virtual DbSet<TinNhan> TinNhans { get; set; }
-
+    public virtual DbSet<CuocTroChuyen> CuocTroChuyen { get; set; }
+    public virtual DbSet<TinNhanChat> TinNhanChat { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)

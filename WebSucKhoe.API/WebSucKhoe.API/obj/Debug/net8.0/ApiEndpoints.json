@@ -309,6 +309,80 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "WebSucKhoe.API.Controllers.ChatRealTimeController",
+    "Method": "GetOrCreateConversation",
+    "RelativePath": "api/ChatRealTime/conversation/{userId1}/{userId2}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId1",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "userId2",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.ChatRealTimeController",
+    "Method": "GetConversations",
+    "RelativePath": "api/ChatRealTime/conversations/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.ChatRealTimeController",
+    "Method": "MarkAsRead",
+    "RelativePath": "api/ChatRealTime/mark-read/{conversationId}/{userId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "conversationId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.ChatRealTimeController",
+    "Method": "GetMessages",
+    "RelativePath": "api/ChatRealTime/messages/{conversationId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "conversationId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "WebSucKhoe.API.Controllers.DoctorController",
     "Method": "UpdateAppointmentStatus",
     "RelativePath": "api/Doctor/appointment/{id}/status",

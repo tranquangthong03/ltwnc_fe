@@ -68,7 +68,7 @@ builder.Services.AddScoped<GeminiService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", b => b
-        .WithOrigins("http://localhost:3000") // Chỉ cho phép React Frontend gọi
+        .WithOrigins("http://localhost:3000", "http://localhost:5173") // React/Vite Frontend
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()); // Bắt buộc phải có để SignalR hoạt động
@@ -104,7 +104,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             }
         };
     });
-
+builder.Services.AddSignalR();
 // ====================================================
 // 2. XÂY DỰNG ỨNG DỤNG
 // ====================================================
@@ -134,7 +134,6 @@ app.UseAuthorization();
 // Định tuyến Controllers
 app.MapControllers();
 
-// 1.3 Định tuyến SignalR Hub
 app.MapHub<ChatHub>("/chatHub");
 
 // Chạy ứng dụng

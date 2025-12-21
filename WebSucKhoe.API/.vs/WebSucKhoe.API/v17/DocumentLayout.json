@@ -3,8 +3,20 @@
   "WorkspaceRootPath": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|e:\\work space\\laptrinhwebnc\\ltwnc_fe\\websuckhoe.api\\websuckhoe.api\\models\\phienchat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\models\\phienchat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|e:\\work space\\laptrinhwebnc\\ltwnc_fe\\websuckhoe.api\\websuckhoe.api\\controllers\\chatrealtimecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\controllers\\chatrealtimecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|e:\\work space\\laptrinhwebnc\\ltwnc_fe\\websuckhoe.api\\websuckhoe.api\\models\\cuoctrochuyen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\models\\cuoctrochuyen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|e:\\work space\\laptrinhwebnc\\ltwnc_fe\\websuckhoe.api\\websuckhoe.api\\models\\tinnhanchat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\models\\tinnhanchat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|e:\\work space\\laptrinhwebnc\\ltwnc_fe\\websuckhoe.api\\websuckhoe.api\\hubs\\chathub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\hubs\\chathub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|e:\\work space\\laptrinhwebnc\\ltwnc_fe\\websuckhoe.api\\websuckhoe.api\\models\\websuckhoedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -15,8 +27,8 @@
       "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|e:\\work space\\laptrinhwebnc\\ltwnc_fe\\websuckhoe.api\\websuckhoe.api\\hubs\\chathub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\hubs\\chathub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|e:\\work space\\laptrinhwebnc\\ltwnc_fe\\websuckhoe.api\\websuckhoe.api\\models\\phienchat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|solutionrelative:websuckhoe.api\\models\\phienchat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2E4ADA15-5BCA-4554-9B1C-E2CCAB88E14C}|WebSucKhoe.API\\WebSucKhoe.API.csproj|e:\\work space\\laptrinhwebnc\\ltwnc_fe\\websuckhoe.api\\websuckhoe.api\\controllers\\doctorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -82,7 +94,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Bookmark",
@@ -122,32 +134,72 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ChatRealTimeController.cs",
+              "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\ChatRealTimeController.cs",
+              "RelativeDocumentMoniker": "WebSucKhoe.API\\Controllers\\ChatRealTimeController.cs",
+              "ToolTip": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\ChatRealTimeController.cs",
+              "RelativeToolTip": "WebSucKhoe.API\\Controllers\\ChatRealTimeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-21T13:36:18.177Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "TinNhanChat.cs",
+              "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\TinNhanChat.cs",
+              "RelativeDocumentMoniker": "WebSucKhoe.API\\Models\\TinNhanChat.cs",
+              "ToolTip": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\TinNhanChat.cs",
+              "RelativeToolTip": "WebSucKhoe.API\\Models\\TinNhanChat.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-21T13:24:18.113Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CuocTroChuyen.cs",
+              "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\CuocTroChuyen.cs",
+              "RelativeDocumentMoniker": "WebSucKhoe.API\\Models\\CuocTroChuyen.cs",
+              "ToolTip": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\CuocTroChuyen.cs",
+              "RelativeToolTip": "WebSucKhoe.API\\Models\\CuocTroChuyen.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-21T13:24:05.56Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 3,
               "Title": "ChatHub.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Hubs\\ChatHub.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Hubs\\ChatHub.cs",
               "ToolTip": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Hubs\\ChatHub.cs",
               "RelativeToolTip": "WebSucKhoe.API\\Hubs\\ChatHub.cs",
-              "ViewState": "AgIAAFQAAAAAAAAAAAAAAGkAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAABYAAAAAAAAAAAAYwCIAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-20T15:24:40.167Z"
+              "WhenOpened": "2025-12-20T15:24:40.167Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 6,
               "Title": "PhienChat.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\PhienChat.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Models\\PhienChat.cs",
               "ToolTip": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\PhienChat.cs",
               "RelativeToolTip": "WebSucKhoe.API\\Models\\PhienChat.cs",
-              "ViewState": "AgIAAAQAAAAAAAAAAAAAAAgAAAAoAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAmwA0AAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-20T15:23:50.552Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "LichHen.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\LichHen.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Models\\LichHen.cs",
@@ -159,7 +211,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 14,
               "Title": "HoSoYte.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\HoSoYte.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Models\\HoSoYte.cs",
@@ -171,7 +223,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "NguoiDung.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\NguoiDung.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Models\\NguoiDung.cs",
@@ -183,7 +235,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "NguoiDungController.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\NguoiDungController.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Controllers\\NguoiDungController.cs",
@@ -195,7 +247,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 19,
               "Title": "WebSucKhoe.API.http",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\WebSucKhoe.API.http",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\WebSucKhoe.API.http",
@@ -207,7 +259,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 20,
               "Title": "WeatherForecast.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\WeatherForecast.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\WeatherForecast.cs",
@@ -219,7 +271,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "PasswordHasher.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Helpers\\PasswordHasher.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Helpers\\PasswordHasher.cs",
@@ -231,7 +283,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "DoctorController.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\DoctorController.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Controllers\\DoctorController.cs",
@@ -243,7 +295,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "AdminController.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Controllers\\AdminController.cs",
@@ -255,7 +307,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "PatientController.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\PatientController.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Controllers\\PatientController.cs",
@@ -267,7 +319,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "AuthController.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Controllers\\AuthController.cs",
@@ -279,19 +331,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "Program.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Program.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Program.cs",
               "ToolTip": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Program.cs",
               "RelativeToolTip": "WebSucKhoe.API\\Program.cs",
-              "ViewState": "AgIAAIAAAAAAAAAAAAAAAIwAAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAAAIsAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-14T11:41:07.139Z"
+              "WhenOpened": "2025-12-14T11:41:07.139Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "appsettings.json",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\appsettings.json",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\appsettings.json",
@@ -303,7 +356,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 12,
               "Title": "ChatController.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Controllers\\ChatController.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Controllers\\ChatController.cs",
@@ -315,7 +368,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "GeminiService.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Services\\GeminiService.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Services\\GeminiService.cs",
@@ -327,15 +380,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "WebSucKhoeDbContext.cs",
               "DocumentMoniker": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\WebSucKhoeDbContext.cs",
               "RelativeDocumentMoniker": "WebSucKhoe.API\\Models\\WebSucKhoeDbContext.cs",
               "ToolTip": "E:\\WORK SPACE\\LapTrinhWebNC\\ltwnc_fe\\WebSucKhoe.API\\WebSucKhoe.API\\Models\\WebSucKhoeDbContext.cs",
               "RelativeToolTip": "WebSucKhoe.API\\Models\\WebSucKhoeDbContext.cs",
-              "ViewState": "AgIAALMAAAAAAAAAAAAAAMgAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAYwB0AAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-14T11:38:34.313Z"
+              "WhenOpened": "2025-12-14T11:38:34.313Z",
+              "EditorCaption": ""
             }
           ]
         },
