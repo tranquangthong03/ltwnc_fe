@@ -287,7 +287,7 @@ const ManageUsers = () => {
           <div className="p-5">
             <div className="flex flex-col lg:flex-row gap-4">
               {/* Search Box */}
-              <div className="flex-1 relative group">
+              <div className="lg:w-2/3 relative group">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl opacity-0 group-focus-within:opacity-10 blur transition-opacity"></div>
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors z-10" size={20} />
                 <input
@@ -310,47 +310,47 @@ const ManageUsers = () => {
               </div>
 
               {/* Status Filter Buttons */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 lg:w-1/3 justify-end flex-wrap lg:flex-nowrap">
                 <button
                   type="button"
                   onClick={() => setStatusFilter("all")}
                   className={
-                    "px-5 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 whitespace-nowrap " +
+                    "px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 whitespace-nowrap " +
                     (statusFilter === "all"
                       ? "bg-gradient-to-r from-slate-700 to-slate-900 text-white shadow-lg shadow-slate-500/30"
                       : "bg-slate-100 text-slate-700 hover:bg-slate-200 border-2 border-slate-200")
                   }
                 >
                   <Users size={18} />
-                  <span>Tất cả</span>
+                  <span className="hidden sm:inline">Tất cả</span>
                 </button>
                 
                 <button
                   type="button"
                   onClick={() => setStatusFilter("active")}
                   className={
-                    "px-5 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 whitespace-nowrap " +
+                    "px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 whitespace-nowrap " +
                     (statusFilter === "active"
                       ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-500/30"
                       : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-2 border-emerald-200")
                   }
                 >
                   <UserCheck size={18} />
-                  <span>Hoạt động</span>
+                  <span className="hidden sm:inline">Hoạt động</span>
                 </button>
                 
                 <button
                   type="button"
                   onClick={() => setStatusFilter("locked")}
                   className={
-                    "px-5 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 whitespace-nowrap " +
+                    "px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 whitespace-nowrap " +
                     (statusFilter === "locked"
                       ? "bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-lg shadow-red-500/30"
                       : "bg-red-50 text-red-700 hover:bg-red-100 border-2 border-red-200")
                   }
                 >
                   <UserX size={18} />
-                  <span>Đã khóa</span>
+                  <span className="hidden sm:inline">Đã khóa</span>
                 </button>
               </div>
             </div>
@@ -517,7 +517,8 @@ const ManageUsers = () => {
                 {/* Decorative Bottom Border */}
                 <div className="h-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500"></div>
               </div>
-            )})
+            );
+            })
           )}
         </div>
       </div>

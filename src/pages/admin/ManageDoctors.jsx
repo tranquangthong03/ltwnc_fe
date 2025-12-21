@@ -5,7 +5,7 @@ import {
     Plus, Edit, Trash2, Search, X,
     Mail, Phone, Stethoscope, DollarSign,
     Award, ChevronRight, Filter, ArrowUpDown, RefreshCw,
-    User, TrendingUp
+    User, Users, TrendingUp, UserCheck, UserX
 } from 'lucide-react';
 
 const ManageDoctors = () => {
@@ -16,6 +16,7 @@ const ManageDoctors = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSpecialty, setSelectedSpecialty] = useState('All');
     const [sortConfig, setSortConfig] = useState('newest');
+    const [statusFilter, setStatusFilter] = useState('all');
 
     // State Modal & Form
     const [showModal, setShowModal] = useState(false);
@@ -98,8 +99,14 @@ const ManageDoctors = () => {
                 break;
         }
 
+        // Lọc theo trạng thái (nếu không phải là "tất cả")
+        if (statusFilter !== 'all') {
+            const isActive = statusFilter === 'active';
+            result = result.filter(d => (d.TrangThai === isActive));
+        }
+
         return result;
-    }, [doctors, searchTerm, selectedSpecialty, sortConfig]);
+    }, [doctors, searchTerm, selectedSpecialty, sortConfig, statusFilter]);
 
     // --- XỬ LÝ LƯU (THÊM / SỬA) ---
     const handleSave = async (e) => {
@@ -252,58 +259,116 @@ const ManageDoctors = () => {
                     </div>
                 </div>
 
-                {/* Filters */}
-                <div className="bg-white/90 p-5 rounded-2xl shadow-lg border border-white/60 mb-6 backdrop-blur-md">
-                    <div className="flex flex-col lg:flex-row gap-4">
-                        <div className="flex-1 relative group">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
-                            <input
-                                className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all font-medium"
-                                placeholder="Tìm kiếm tên, email, sđt..."
-                                value={searchTerm}
-                                onChange={e => setSearchTerm(e.target.value)}
-                            />
+                {/* Filter Bar - FIXED */}
+                <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-white/60 shadow-lg mb-6 overflow-hidden">
+                    <div className="p-5">
+                        <div className="flex flex-col lg:flex-row gap-4">
+                            {/* Search Box */}
+                            <div className="lg:w-2/3 relative group">
+                                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl opacity-0 group-focus-within:opacity-10 blur transition-opacity"></div>
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors z-10" size={20} />
+                                <input
+                                    type="text"
+                                    placeholder="Tìm kiếm tên, email, sđt..."
+                                    className="relative w-full pl-12 pr-10 py-3.5 bg-slate-50/50 border-2 border-slate-200/60 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all text-slate-700 font-medium placeholder:text-slate-400"
+                                    value={searchTerm}
+                                    onChange={e => setSearchTerm(e.target.value)}
+                                />
+                                {searchTerm && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setSearchTerm("")}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-200 transition z-10"
+                                        title="Xóa từ khóa"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* Status Filter Buttons */}
+                            <div className="flex gap-2 lg:w-1/3 justify-end flex-wrap lg:flex-nowrap">
+                                <button
+                                    type="button"
+                                    onClick={() => setStatusFilter("all")}
+                                    className={
+                                        "px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 whitespace-nowrap " +
+                                        (statusFilter === "all"
+                                            ? "bg-gradient-to-r from-slate-700 to-slate-900 text-white shadow-lg shadow-slate-500/30"
+                                            : "bg-slate-100 text-slate-700 hover:bg-slate-200 border-2 border-slate-200")
+                                    }
+                                >
+                                    <Users size={18} />
+                                    <span className="hidden sm:inline">Tất cả</span>
+                                </button>
+                                
+                                <button
+                                    type="button"
+                                    onClick={() => setStatusFilter("active")}
+                                    className={
+                                        "px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 whitespace-nowrap " +
+                                        (statusFilter === "active"
+                                            ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-500/30"
+                                            : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-2 border-emerald-200")
+                                    }
+                                >
+                                    <UserCheck size={18} />
+                                    <span className="hidden sm:inline">Hoạt động</span>
+                                </button>
+                                
+                                <button
+                                    type="button"
+                                    onClick={() => setStatusFilter("locked")}
+                                    className={
+                                        "px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 whitespace-nowrap " +
+                                        (statusFilter === "locked"
+                                            ? "bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-lg shadow-red-500/30"
+                                            : "bg-red-50 text-red-700 hover:bg-red-100 border-2 border-red-200")
+                                    }
+                                >
+                                    <UserX size={18} />
+                                    <span className="hidden sm:inline">Đã khóa</span>
+                                </button>
+                            </div>
                         </div>
 
-                        <div className="min-w-[200px] relative">
-                            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                            <select
-                                className="w-full pl-11 pr-8 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all font-medium appearance-none cursor-pointer"
-                                value={selectedSpecialty}
-                                onChange={e => setSelectedSpecialty(e.target.value)}
-                            >
-                                <option value="All">Tất cả chuyên khoa</option>
-                                {specialties.map(spec => (
-                                    <option key={spec} value={spec}>{spec}</option>
-                                ))}
-                            </select>
-                            <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 rotate-90 text-slate-400 pointer-events-none" size={16} />
-                        </div>
-
-                        <div className="min-w-[180px] relative">
-                            <ArrowUpDown className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                            <select
-                                className="w-full pl-11 pr-8 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all font-medium appearance-none cursor-pointer"
-                                value={sortConfig}
-                                onChange={e => setSortConfig(e.target.value)}
-                            >
-                                <option value="newest">Mới nhất</option>
-                                <option value="name-asc">Tên A-Z</option>
-                                <option value="price-asc">Giá tăng dần</option>
-                                <option value="price-desc">Giá giảm dần</option>
-                            </select>
-                            <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 rotate-90 text-slate-400 pointer-events-none" size={16} />
-                        </div>
-
-                        {(searchTerm || selectedSpecialty !== 'All' || sortConfig !== 'newest') && (
-                            <button
-                                onClick={() => { setSearchTerm(''); setSelectedSpecialty('All'); setSortConfig('newest'); }}
-                                className="px-4 py-3 bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 rounded-xl transition-all flex items-center justify-center gap-2 font-medium"
-                                title="Xóa bộ lọc"
-                            >
-                                <RefreshCw size={18} />
-                                <span className="hidden lg:inline">Đặt lại</span>
-                            </button>
+                        {/* Active Filter Chips */}
+                        {(searchTerm || statusFilter !== "all") && (
+                            <div className="mt-4 pt-4 border-t border-slate-100 flex flex-wrap gap-2">
+                                <span className="text-xs text-slate-500 font-semibold flex items-center gap-2">
+                                    <Filter size={14} />
+                                    Bộ lọc đang áp dụng:
+                                </span>
+                                {searchTerm && (
+                                    <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
+                                        Từ khóa: "{searchTerm}"
+                                        <button 
+                                          type="button" 
+                                          onClick={() => setSearchTerm("")} 
+                                          className="hover:text-blue-900 transition"
+                                        >
+                                          <X size={14} />
+                                        </button>
+                                    </span>
+                                )}
+                                {statusFilter !== "all" && (
+                                    <span className={
+                                        "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border " +
+                                        (statusFilter === "active" 
+                                          ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+                                          : "bg-red-100 text-red-700 border-red-200")
+                                    }>
+                                        Trạng thái: {statusFilter === "active" ? "Hoạt động" : "Đã khóa"}
+                                        <button 
+                                          type="button" 
+                                          onClick={() => setStatusFilter("all")} 
+                                          className="hover:opacity-70 transition"
+                                        >
+                                          <X size={14} />
+                                        </button>
+                                    </span>
+                                )}
+                            </div>
                         )}
                     </div>
                 </div>
