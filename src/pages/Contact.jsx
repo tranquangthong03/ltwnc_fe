@@ -165,25 +165,25 @@ const Contact = () => {
                             <MessageCircle className="text-emerald-600" /> Gửi thắc mắc
                         </h2>
                         <form className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-slate-600">Họ tên</label>
-                                    <input className="w-4/5 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all" placeholder="Nguyễn Văn A" />
+                                    <input className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all" placeholder="Nguyễn Văn A" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-slate-600">Email</label>
-                                    <input className="w-4/5 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all" placeholder="email@example.com" />
+                                    <input className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all" placeholder="email@example.com" />
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-slate-600">Chủ đề</label>
-                                <input className="w-4/5 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all" placeholder="Vấn đề cần hỗ trợ..." />
+                                <input className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all" placeholder="Vấn đề cần hỗ trợ..." />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-slate-600">Nội dung</label>
-                                <textarea className="w-4/5 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none h-32 resize-none transition-all" placeholder="Nhập nội dung chi tiết..."></textarea>
+                                <textarea className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none h-32 resize-none transition-all" placeholder="Nhập nội dung chi tiết..."></textarea>
                             </div>
-                            <button type="button" className="w-4/5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-emerald-600/30 transform hover:-translate-y-0.5">
+                            <button type="button" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-emerald-600/30 transform hover:-translate-y-0.5">
                                 Gửi Tin Nhắn
                             </button>
                         </form>
@@ -214,7 +214,7 @@ const Contact = () => {
                             <div key={idx} className="bg-white rounded-xl border border-emerald-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                                 <button
                                     onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                                    className="w-4/5 flex justify-between items-center p-5 text-left bg-white hover:bg-emerald-50/50 transition-colors"
+                                    className="w-full flex justify-between items-center p-5 text-left bg-white hover:bg-emerald-50/50 transition-colors"
                                 >
                                     <span className="font-bold text-emerald-900">{faq.q}</span>
                                     {openFaq === idx ? <ChevronUp className="text-emerald-600" /> : <ChevronDown className="text-emerald-400" />}
