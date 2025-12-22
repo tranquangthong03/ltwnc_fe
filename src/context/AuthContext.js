@@ -1,8 +1,13 @@
 // src/context/AuthContext.js
-import React, { createContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode'; // Cần npm install jwt-decode nếu muốn decode xịn, ở đây mình làm đơn giản
+import React, { createContext, useState, useEffect, useContext } from 'react'; // 1. Thêm useContext
+import { jwtDecode } from 'jwt-decode';
 
 export const AuthContext = createContext();
+
+// 2. Thêm hàm này để fix lỗi "export 'useAuth' was not found"
+export const useAuth = () => {
+    return useContext(AuthContext);
+};
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -10,20 +15,24 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            // Giả lập decode token để lấy UserID và Role
-            // Trong thực tế nên dùng thư viện jwt-decode
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
+            try {
+                // Giữ nguyên logic decode thủ công của bạn
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
 
-            const decoded = JSON.parse(jsonPayload);
-            setUser({
-                userId: decoded.UserID || decoded.nameid, // Tùy claim config
-                role: decoded.role,
-                name: decoded.HoTen
-            });
+                const decoded = JSON.parse(jsonPayload);
+                setUser({
+                    userId: decoded.UserID || decoded.nameid,
+                    role: decoded.role,
+                    name: decoded.HoTen
+                });
+            } catch (error) {
+                console.error("Lỗi decode token:", error);
+                localStorage.removeItem('token');
+            }
         }
     }, []);
 

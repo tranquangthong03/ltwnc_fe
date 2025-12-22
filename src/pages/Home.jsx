@@ -91,7 +91,7 @@ const Home = () => {
                 <div className="hero-image-container">
                     <RevealOnScroll>
                         <div className="doctor-frame">
-                            <img src="/doctor.png" alt="Bác sĩ" />
+                            <img src="https://i.pinimg.com/736x/f0/3f/be/f03fbe3f11e73afee540301ad0de3bfc.jpg" alt="Bác sĩ" />
                         </div>
 
                         <div className="floating-card float-1">

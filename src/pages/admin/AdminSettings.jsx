@@ -50,7 +50,7 @@ const AdminSettings = () => {
                             <input
                                 type="password"
                                 required
-                                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 outline-none transition-all"
+                                className="w-4/5 p-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 outline-none transition-all"
                                 placeholder="••••••••"
                                 value={passwords.current}
                                 onChange={e => setPasswords({ ...passwords, current: e.target.value })}
@@ -61,7 +61,7 @@ const AdminSettings = () => {
                             <input
                                 type="password"
                                 required
-                                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 outline-none transition-all"
+                                className="w-4/5 p-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 outline-none transition-all"
                                 placeholder="••••••••"
                                 value={passwords.new}
                                 onChange={e => setPasswords({ ...passwords, new: e.target.value })}
@@ -72,13 +72,13 @@ const AdminSettings = () => {
                             <input
                                 type="password"
                                 required
-                                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 outline-none transition-all"
+                                className="w-4/5 p-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 outline-none transition-all"
                                 placeholder="••••••••"
                                 value={passwords.confirm}
                                 onChange={e => setPasswords({ ...passwords, confirm: e.target.value })}
                             />
                         </div>
-                        <button className="w-full py-3 bg-slate-900 text-white rounded-xl hover:bg-slate-800 font-bold transition-all flex items-center justify-center gap-2">
+                        <button className="w-4/5 py-3 bg-slate-900 text-white rounded-xl hover:bg-slate-800 font-bold transition-all flex items-center justify-center gap-2">
                             <Save size={18} /> Lưu thay đổi
                         </button>
                     </form>

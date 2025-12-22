@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import api from "../../services/api";
 import { toast } from "react-toastify";
-import { 
+import {
   Search, Lock, Unlock, Mail, Phone, MapPin, X, RefreshCw,
   Users, UserCheck, UserX, TrendingUp, Filter, Activity
 } from "lucide-react";
@@ -17,10 +17,10 @@ const ManageUsers = () => {
     try {
       // Gọi đúng endpoint từ AdminController
       const res = await api.get("/Admin/patients");
-      
+
       // Backend đã trả về chỉ bệnh nhân, không cần lọc thêm
       setUsers(res.data);
-      
+
       if (res.data.length === 0) {
         toast.info("Chưa có bệnh nhân nào trong hệ thống");
       } else {
@@ -60,28 +60,28 @@ const ManageUsers = () => {
     if (!window.confirm(`Bạn có chắc muốn ${currentStatus ? "KHÓA" : "MỞ KHÓA"} tài khoản này?`)) return;
 
     console.log("Toggle status - ID:", id, "Current Status:", currentStatus);
-    
+
     try {
       // Gọi API cập nhật trạng thái người dùng
-      const response = await api.put(`/Admin/users/${id}/status`, { 
-        trangThai: !currentStatus 
+      const response = await api.put(`/Admin/users/${id}/status`, {
+        trangThai: !currentStatus
       });
-      
+
       console.log("API Response:", response.data);
-      
+
       // Cập nhật state local
       setUsers((prev) => prev.map((u) => {
         const uId = u.MaBenhNhan || u.maBenhNhan;
         if (uId === id) {
-          return { 
-            ...u, 
+          return {
+            ...u,
             TrangThai: !currentStatus,
-            trangThai: !currentStatus 
+            trangThai: !currentStatus
           };
         }
         return u;
       }));
-      
+
       toast.success(`Đã ${!currentStatus ? "mở khóa" : "khóa"} tài khoản thành công!`);
     } catch (error) {
       console.error("Lỗi cập nhật trạng thái:", error);
@@ -141,7 +141,7 @@ const ManageUsers = () => {
   const Avatar = ({ user }) => {
     const name = user.HoTen || user.hoTen || "U";
     const active = user.TrangThai ?? user.trangThai ?? true;
-    
+
     const colors = [
       'from-blue-400 to-indigo-500',
       'from-purple-400 to-pink-500',
@@ -152,13 +152,13 @@ const ManageUsers = () => {
     ];
     const initial = name.trim().charAt(0).toUpperCase();
     const colorIndex = initial.charCodeAt(0) % colors.length;
-    
+
     return (
       <div
         className={
           "relative w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-white text-base shadow-lg " +
-          (active 
-            ? `bg-gradient-to-br ${colors[colorIndex]}` 
+          (active
+            ? `bg-gradient-to-br ${colors[colorIndex]}`
             : "bg-gradient-to-br from-slate-300 to-slate-400")
         }
         title={name}
@@ -293,7 +293,7 @@ const ManageUsers = () => {
                 <input
                   type="text"
                   placeholder="Tìm theo tên, email, số điện thoại..."
-                  className="relative w-full pl-12 pr-10 py-3.5 bg-slate-50/50 border-2 border-slate-200/60 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all text-slate-700 font-medium placeholder:text-slate-400"
+                  className="relative w-4/5 pl-12 pr-10 py-3.5 bg-slate-50/50 border-2 border-slate-200/60 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all text-slate-700 font-medium placeholder:text-slate-400"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -324,7 +324,7 @@ const ManageUsers = () => {
                   <Users size={18} />
                   <span className="hidden sm:inline">Tất cả</span>
                 </button>
-                
+
                 <button
                   type="button"
                   onClick={() => setStatusFilter("active")}
@@ -338,7 +338,7 @@ const ManageUsers = () => {
                   <UserCheck size={18} />
                   <span className="hidden sm:inline">Hoạt động</span>
                 </button>
-                
+
                 <button
                   type="button"
                   onClick={() => setStatusFilter("locked")}
@@ -365,9 +365,9 @@ const ManageUsers = () => {
                 {searchTerm && (
                   <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
                     Từ khóa: "{searchTerm}"
-                    <button 
-                      type="button" 
-                      onClick={() => setSearchTerm("")} 
+                    <button
+                      type="button"
+                      onClick={() => setSearchTerm("")}
                       className="hover:text-blue-900 transition"
                     >
                       <X size={14} />
@@ -377,14 +377,14 @@ const ManageUsers = () => {
                 {statusFilter !== "all" && (
                   <span className={
                     "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border " +
-                    (statusFilter === "active" 
+                    (statusFilter === "active"
                       ? "bg-emerald-100 text-emerald-700 border-emerald-200"
                       : "bg-red-100 text-red-700 border-red-200")
                   }>
                     Trạng thái: {statusFilter === "active" ? "Hoạt động" : "Đã khóa"}
-                    <button 
-                      type="button" 
-                      onClick={() => setStatusFilter("all")} 
+                    <button
+                      type="button"
+                      onClick={() => setStatusFilter("all")}
                       className="hover:opacity-70 transition"
                     >
                       <X size={14} />
@@ -409,11 +409,11 @@ const ManageUsers = () => {
             <div className="col-span-full">
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 text-center border border-white/60">
                 <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Search size={32} className="text-slate-400"/>
+                  <Search size={32} className="text-slate-400" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-700 mb-2">Không tìm thấy bệnh nhân</h3>
                 <p className="text-slate-500 mb-6">Hãy thử thay đổi từ khóa hoặc bộ lọc của bạn</p>
-                <button 
+                <button
                   onClick={() => { setSearchTerm(''); setStatusFilter('all'); }}
                   className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
                 >
@@ -422,102 +422,102 @@ const ManageUsers = () => {
               </div>
             </div>
           ) : (
-             processedUsers.map((user) => {
-               // Debug log cho từng user
-               console.log("Rendering user:", user);
-               
-               // Sử dụng MaBenhNhan làm userId (đây chính là MaNguoiDung trong bảng NguoiDung)
-               const userId = user.MaBenhNhan || user.maBenhNhan || "N/A";
-               const userName = user.HoTen || user.hoTen || "Chưa có tên";
-               const userEmail = user.Email || user.email || "—";
-               const userPhone = user.SoDienThoai || user.soDienThoai || "—";
-               const userAddress = user.DiaChi || user.diaChi || "Chưa cập nhật";
-               const userStatus = user.TrangThai ?? user.trangThai ?? true;
-              
+            processedUsers.map((user) => {
+              // Debug log cho từng user
+              console.log("Rendering user:", user);
+
+              // Sử dụng MaBenhNhan làm userId (đây chính là MaNguoiDung trong bảng NguoiDung)
+              const userId = user.MaBenhNhan || user.maBenhNhan || "N/A";
+              const userName = user.HoTen || user.hoTen || "Chưa có tên";
+              const userEmail = user.Email || user.email || "—";
+              const userPhone = user.SoDienThoai || user.soDienThoai || "—";
+              const userAddress = user.DiaChi || user.diaChi || "Chưa cập nhật";
+              const userStatus = user.TrangThai ?? user.trangThai ?? true;
+
               return (
-              <div
-                key={userId}
-                className="group bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg shadow-slate-200/50 border border-white/60 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-              >
-                {/* Card Header */}
-                <div className="relative h-24 bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 overflow-hidden">
-                  <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30"></div>
-                  <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/20 rounded-full"></div>
-                  <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/20 rounded-full"></div>
-                </div>
-
-                {/* Avatar positioned to overlap header */}
-                <div className="px-6 -mt-6 relative">
-                  <div className="flex items-start justify-between">
-                    <Avatar user={user} />
-                    <div className="pt-1">
-                      <StatusBadge user={user} />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Card Body */}
-                <div className="px-6 pb-6 pt-3 space-y-4">
-                  {/* User Name & ID */}
-                  <div>
-                    <h3 className="text-lg font-bold text-slate-800 mb-0.5 truncate group-hover:text-blue-600 transition-colors">
-                      {userName}
-                    </h3>
-                    <p className="text-xs text-slate-400 font-semibold">ID: #{userId}</p>
+                <div
+                  key={userId}
+                  className="group bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg shadow-slate-200/50 border border-white/60 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                >
+                  {/* Card Header */}
+                  <div className="relative h-24 bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 overflow-hidden">
+                    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30"></div>
+                    <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/20 rounded-full"></div>
+                    <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/20 rounded-full"></div>
                   </div>
 
-                  {/* Contact Info */}
-                  <div className="space-y-2.5 pt-2 border-t border-slate-100">
-                    <div className="flex items-center gap-3 text-sm text-slate-600 hover:text-blue-600 transition-colors group/item">
-                      <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center group-hover/item:bg-blue-100 transition-colors shrink-0">
-                        <Mail size={14} className="text-slate-500 group-hover/item:text-blue-600"/>
+                  {/* Avatar positioned to overlap header */}
+                  <div className="px-6 -mt-6 relative">
+                    <div className="flex items-start justify-between">
+                      <Avatar user={user} />
+                      <div className="pt-1">
+                        <StatusBadge user={user} />
                       </div>
-                      <span className="font-medium truncate">{userEmail}</span>
-                    </div>
-                    
-                    <div className="flex items-center gap-3 text-sm text-slate-600 hover:text-emerald-600 transition-colors group/item">
-                      <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center group-hover/item:bg-emerald-100 transition-colors shrink-0">
-                        <Phone size={14} className="text-slate-500 group-hover/item:text-emerald-600"/>
-                      </div>
-                      <span className="font-medium">{userPhone}</span>
-                    </div>
-                    
-                    <div className="flex items-center gap-3 text-sm text-slate-600 hover:text-purple-600 transition-colors group/item">
-                      <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center group-hover/item:bg-purple-100 transition-colors shrink-0">
-                        <MapPin size={14} className="text-slate-500 group-hover/item:text-purple-600"/>
-                      </div>
-                      <span className="font-medium truncate">{userAddress}</span>
                     </div>
                   </div>
 
-                  {/* Action Button */}
-                  <button
-                    onClick={() => toggleStatus(userId, userStatus)}
-                    className={
-                      "w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold transition-all " +
-                      (userStatus
-                        ? "bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border-2 border-red-200 hover:border-red-600"
-                        : "bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border-2 border-emerald-200 hover:border-emerald-600")
-                    }
-                  >
-                    {userStatus ? (
-                      <>
-                        <Lock size={18} />
-                        <span>Khóa tài khoản</span>
-                      </>
-                    ) : (
-                      <>
-                        <Unlock size={18} />
-                        <span>Mở khóa</span>
-                      </>
-                    )}
-                  </button>
-                </div>
+                  {/* Card Body */}
+                  <div className="px-6 pb-6 pt-3 space-y-4">
+                    {/* User Name & ID */}
+                    <div>
+                      <h3 className="text-lg font-bold text-slate-800 mb-0.5 truncate group-hover:text-blue-600 transition-colors">
+                        {userName}
+                      </h3>
+                      <p className="text-xs text-slate-400 font-semibold">ID: #{userId}</p>
+                    </div>
 
-                {/* Decorative Bottom Border */}
-                <div className="h-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500"></div>
-              </div>
-            );
+                    {/* Contact Info */}
+                    <div className="space-y-2.5 pt-2 border-t border-slate-100">
+                      <div className="flex items-center gap-3 text-sm text-slate-600 hover:text-blue-600 transition-colors group/item">
+                        <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center group-hover/item:bg-blue-100 transition-colors shrink-0">
+                          <Mail size={14} className="text-slate-500 group-hover/item:text-blue-600" />
+                        </div>
+                        <span className="font-medium truncate">{userEmail}</span>
+                      </div>
+
+                      <div className="flex items-center gap-3 text-sm text-slate-600 hover:text-emerald-600 transition-colors group/item">
+                        <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center group-hover/item:bg-emerald-100 transition-colors shrink-0">
+                          <Phone size={14} className="text-slate-500 group-hover/item:text-emerald-600" />
+                        </div>
+                        <span className="font-medium">{userPhone}</span>
+                      </div>
+
+                      <div className="flex items-center gap-3 text-sm text-slate-600 hover:text-purple-600 transition-colors group/item">
+                        <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center group-hover/item:bg-purple-100 transition-colors shrink-0">
+                          <MapPin size={14} className="text-slate-500 group-hover/item:text-purple-600" />
+                        </div>
+                        <span className="font-medium truncate">{userAddress}</span>
+                      </div>
+                    </div>
+
+                    {/* Action Button */}
+                    <button
+                      onClick={() => toggleStatus(userId, userStatus)}
+                      className={
+                        "w-4/5 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold transition-all " +
+                        (userStatus
+                          ? "bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border-2 border-red-200 hover:border-red-600"
+                          : "bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border-2 border-emerald-200 hover:border-emerald-600")
+                      }
+                    >
+                      {userStatus ? (
+                        <>
+                          <Lock size={18} />
+                          <span>Khóa tài khoản</span>
+                        </>
+                      ) : (
+                        <>
+                          <Unlock size={18} />
+                          <span>Mở khóa</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Decorative Bottom Border */}
+                  <div className="h-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500"></div>
+                </div>
+              );
             })
           )}
         </div>

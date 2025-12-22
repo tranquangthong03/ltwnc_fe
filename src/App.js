@@ -28,6 +28,7 @@ import ManageAppointments from './pages/admin/ManageAppointments';
 import ManageInvoices from './pages/admin/ManageInvoices';
 import AdminSettings from './pages/admin/AdminSettings';
 
+import AdminChatLogs from './pages/admin/AdminChatLogs';
 //import pages (Doctor)
 import DoctorLayout from './pages/doctor/DoctorLayout';
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
@@ -69,6 +70,7 @@ function App() {
             <Route path="invoices" element={<ManageInvoices />} />
 
             {/* Khác */}
+            <Route path="chat-logs" element={<AdminChatLogs />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
 

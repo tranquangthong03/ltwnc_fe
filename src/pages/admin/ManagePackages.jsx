@@ -166,7 +166,7 @@ const ManagePackages = () => {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-md">
-                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-xl overflow-hidden">
+                    <div className="bg-white rounded-3xl shadow-2xl w-4/5 max-w-xl overflow-hidden">
                         <div className="px-8 py-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white flex justify-between items-center">
                             <h3 className="text-xl font-bold">{editingPkg ? 'Cập nhật Gói' : 'Tạo Gói Mới'}</h3>
                             <button onClick={() => setShowModal(false)}><X size={24} /></button>
@@ -174,21 +174,21 @@ const ManagePackages = () => {
                         <form onSubmit={handleSubmit} className="p-8 space-y-4">
                             <div>
                                 <label className="block text-sm font-bold mb-1">Tên gói</label>
-                                <input required className="w-full p-3 border rounded-xl" value={formData.tenGoi} onChange={e => setFormData({ ...formData, tenGoi: e.target.value })} />
+                                <input required className="w-4/5 p-3 border rounded-xl" value={formData.tenGoi} onChange={e => setFormData({ ...formData, tenGoi: e.target.value })} />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-bold mb-1">Giá tiền</label>
-                                    <input type="number" required className="w-full p-3 border rounded-xl" value={formData.giaTien} onChange={e => setFormData({ ...formData, giaTien: Number(e.target.value) })} />
+                                    <input type="number" required className="w-4/5 p-3 border rounded-xl" value={formData.giaTien} onChange={e => setFormData({ ...formData, giaTien: Number(e.target.value) })} />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold mb-1">Thời hạn (ngày)</label>
-                                    <input type="number" required className="w-full p-3 border rounded-xl" value={formData.thoiHanNgay} onChange={e => setFormData({ ...formData, thoiHanNgay: Number(e.target.value) })} />
+                                    <input type="number" required className="w-4/5 p-3 border rounded-xl" value={formData.thoiHanNgay} onChange={e => setFormData({ ...formData, thoiHanNgay: Number(e.target.value) })} />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-bold mb-1">Mô tả</label>
-                                <textarea className="w-full p-3 border rounded-xl h-24" value={formData.moTa} onChange={e => setFormData({ ...formData, moTa: e.target.value })}></textarea>
+                                <textarea className="w-4/5 p-3 border rounded-xl h-24" value={formData.moTa} onChange={e => setFormData({ ...formData, moTa: e.target.value })}></textarea>
                             </div>
                             <div className="flex justify-end gap-2 pt-4">
                                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 bg-slate-100 rounded-lg">Hủy</button>

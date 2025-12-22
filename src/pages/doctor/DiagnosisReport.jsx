@@ -246,7 +246,7 @@ const DiagnosisReport = () => {
                         style={{
                             width: '210mm',
                             minHeight: '297mm',
-                            padding: '20mm',
+                            padding: '15mm',
                             boxSizing: 'border-box',
                             fontFamily: '"Times New Roman", serif',
                             backgroundColor: 'white'

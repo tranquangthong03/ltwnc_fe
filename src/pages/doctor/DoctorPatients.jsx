@@ -48,7 +48,7 @@ const DoctorPatients = () => {
             </div>
 
             <div className="bg-white rounded-xl shadow border overflow-hidden">
-                <table className="w-full text-left">
+                <table className="w-4/5 text-left">
                     <thead className="bg-gray-50 text-gray-600">
                         <tr>
                             <th className="p-4">ID</th>

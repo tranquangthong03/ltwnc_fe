@@ -118,7 +118,7 @@ const AdminDashboard = () => {
                             ))
                         )}
                     </div>
-                    <a href="/admin/appointments" className="w-full mt-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
+                    <a href="/admin/appointments" className="w-4/5 mt-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
                         Xem tất cả lịch hẹn <ArrowUpRight size={16} />
                     </a>
                 </div>
