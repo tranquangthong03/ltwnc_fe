@@ -34,7 +34,10 @@ const DoctorPatients = () => {
             toast.success("Cập nhật thành công!");
             setEditingId(null);
             fetchPatients();
-        } catch { toast.error("Lỗi cập nhật"); }
+        } catch (err) { 
+            console.error('Update error:', err.response?.data);
+            toast.error(err.response?.data?.Message || "Lỗi cập nhật"); 
+        }
     };
 
     return (

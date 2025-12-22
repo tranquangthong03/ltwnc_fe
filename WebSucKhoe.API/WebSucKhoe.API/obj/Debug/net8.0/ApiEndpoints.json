@@ -465,7 +465,7 @@
       },
       {
         "Name": "model",
-        "Type": "WebSucKhoe.API.Models.ChiTietBenhNhan",
+        "Type": "WebSucKhoe.API.Controllers.UpdatePatientDto",
         "IsRequired": true
       }
     ],

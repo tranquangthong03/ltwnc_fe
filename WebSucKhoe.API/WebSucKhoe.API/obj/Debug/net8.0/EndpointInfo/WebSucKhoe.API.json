@@ -765,17 +765,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChiTietBenhNhan"
+                "$ref": "#/components/schemas/UpdatePatientDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChiTietBenhNhan"
+                "$ref": "#/components/schemas/UpdatePatientDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ChiTietBenhNhan"
+                "$ref": "#/components/schemas/UpdatePatientDto"
               }
             }
           }
@@ -1862,6 +1862,28 @@
           },
           "maPhienChatNavigation": {
             "$ref": "#/components/schemas/PhienChat"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdatePatientDto": {
+        "type": "object",
+        "properties": {
+          "ngaySinh": {
+            "type": "string",
+            "nullable": true
+          },
+          "gioiTinh": {
+            "type": "string",
+            "nullable": true
+          },
+          "diaChi": {
+            "type": "string",
+            "nullable": true
+          },
+          "tienSuBenh": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

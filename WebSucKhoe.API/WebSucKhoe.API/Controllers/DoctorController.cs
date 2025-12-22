@@ -128,22 +128,33 @@ namespace WebSucKhoe.API.Controllers
         }
 
         [HttpPut("patient/{id}")]
-        public async Task<IActionResult> UpdatePatientInfo(int id, [FromBody] ChiTietBenhNhan model)
+        public async Task<IActionResult> UpdatePatientInfo(int id, [FromBody] UpdatePatientDto model)
         {
-            var details = await _context.ChiTietBenhNhans.FirstOrDefaultAsync(x => x.MaBenhNhan == id);
-            if (details == null)
+            try
             {
-                details = new ChiTietBenhNhan { MaBenhNhan = id };
-                _context.ChiTietBenhNhans.Add(details);
+                var details = await _context.ChiTietBenhNhans.FirstOrDefaultAsync(x => x.MaBenhNhan == id);
+                if (details == null)
+                {
+                    details = new ChiTietBenhNhan { MaBenhNhan = id };
+                    _context.ChiTietBenhNhans.Add(details);
+                }
+
+                // Parse date string to DateOnly
+                if (!string.IsNullOrEmpty(model.NgaySinh))
+                {
+                    details.NgaySinh = DateOnly.Parse(model.NgaySinh);
+                }
+                details.GioiTinh = model.GioiTinh;
+                details.DiaChi = model.DiaChi;
+                details.TienSuBenh = model.TienSuBenh;
+
+                await _context.SaveChangesAsync();
+                return Ok(new { Message = "Cập nhật thành công" });
             }
-
-            details.NgaySinh = model.NgaySinh;
-            details.GioiTinh = model.GioiTinh;
-            details.DiaChi = model.DiaChi;
-            details.TienSuBenh = model.TienSuBenh;
-
-            await _context.SaveChangesAsync();
-            return Ok(new { Message = "Cập nhật thành công" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = "Lỗi cập nhật", Error = ex.Message });
+            }
         }
 
         // =========================================================
@@ -246,5 +257,13 @@ namespace WebSucKhoe.API.Controllers
         public int KinhNghiem { get; set; }
         public decimal GiaKham { get; set; }
         public string GioiThieu { get; set; }
+    }
+
+    public class UpdatePatientDto
+    {
+        public string? NgaySinh { get; set; }
+        public string? GioiTinh { get; set; }
+        public string? DiaChi { get; set; }
+        public string? TienSuBenh { get; set; }
     }
 }
