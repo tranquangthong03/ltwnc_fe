@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import api from '../services/api';
+import Footer from '../components/Footer';
 import * as signalR from "@microsoft/signalr";
 import {
     MessageCircle, Send, X, Stethoscope, ChevronLeft, Loader,
@@ -351,8 +352,10 @@ const Contact = () => {
                 }
                 .animate-bounce-slow { animation: bounce-slow 3s infinite ease-in-out; }
             `}</style>
+            <Footer />
         </div>
     );
+
 };
 
 export default Contact;
