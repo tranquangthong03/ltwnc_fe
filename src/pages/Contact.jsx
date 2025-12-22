@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import api from '../services/api';
-import Footer from '../components/Footer';
 import * as signalR from "@microsoft/signalr";
 import {
     MessageCircle, Send, X, Stethoscope, ChevronLeft, Loader,
     Phone, Mail, Clock, HelpCircle, ChevronDown, ChevronUp, User
-} from 'lucide-react'; // Đã thêm User, bỏ MapPin
+} from 'lucide-react';
 import { toast } from 'react-toastify';
 
 const Contact = () => {
@@ -130,7 +129,7 @@ const Contact = () => {
                     </p>
                 </div>
 
-                {/* --- INFO CARDS (XANH LÁ) --- */}
+                {/* --- INFO CARDS --- */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="bg-emerald-50 p-8 rounded-2xl border border-emerald-100 flex flex-col items-center text-center hover:-translate-y-1 transition-transform duration-300">
                         <div className="w-14 h-14 bg-white text-emerald-600 rounded-full flex items-center justify-center mb-4 shadow-sm">
@@ -160,7 +159,7 @@ const Contact = () => {
 
                 {/* --- CONTACT FORM & MAP --- */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Form Gửi Tin Nhắn */}
+                    {/* Form */}
                     <div className="bg-white p-8 rounded-2xl shadow-lg shadow-emerald-100/50 border border-emerald-50">
                         <h2 className="text-2xl font-bold text-emerald-800 mb-6 flex items-center gap-2">
                             <MessageCircle className="text-emerald-600" /> Gửi thắc mắc
@@ -190,10 +189,10 @@ const Contact = () => {
                         </form>
                     </div>
 
-                    {/* Google Map */}
+                    {/* Map */}
                     <div className="bg-white p-2 rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 overflow-hidden h-[500px] lg:h-auto">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3833.77954767773!2d108.21102737510942!3d16.07692563923191!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31421847f125d0a9%3A0x936779884318eeca!2zNDggQ2FvIFRo4bqvbmcsIFRoYW5oIELDrG5oLCBI4bqjaSBDaMOidSwgxJDDoCBO4bq1bmcgNTUwMDAwLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1766386685586!5m2!1svi!2s"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4946681007846!2d106.6998083748049!3d10.77337428937517!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f40a3b49e59%3A0xa1bd14e483a602db!2sBen%20Thanh%20Market!5e0!3m2!1sen!2s!4v1709628000000!5m2!1sen!2s"
                             width="100%"
                             height="100%"
                             style={{ border: 0, borderRadius: '12px' }}
@@ -229,9 +228,11 @@ const Contact = () => {
                         ))}
                     </div>
                 </div>
+
+
             </div>
 
-            {/* --- CHAT WIDGET (XANH LÁ) --- */}
+            {/* --- CHAT WIDGET (Fixed Position) --- */}
             <div className="fixed bottom-8 right-8 z-50">
                 {!isChatOpen ? (
                     <button
@@ -352,10 +353,8 @@ const Contact = () => {
                 }
                 .animate-bounce-slow { animation: bounce-slow 3s infinite ease-in-out; }
             `}</style>
-            <Footer />
         </div>
     );
-
 };
 
 export default Contact;
