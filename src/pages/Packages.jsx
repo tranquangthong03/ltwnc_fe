@@ -56,12 +56,8 @@ const Packages = () => {
             return navigate('/login');
         }
 
-        if (currentSub) {
-            toast.warning(currentSub.trangThai === 'ChoDuyet'
-                ? "Bạn đang có yêu cầu chờ duyệt. Vui lòng đợi."
-                : "Bạn đang sử dụng một gói khám. Không thể đăng ký thêm.");
-            return;
-        }
+        // Cho phép đăng ký nhiều gói hoặc chuyển đổi gói (tùy logic backend)
+        // if (currentSub) { ... } -> Đã bỏ chặn
 
         if (window.confirm(`Xác nhận đăng ký "${pkg.tenGoi}"?`)) {
             try {
@@ -94,8 +90,8 @@ const Packages = () => {
             }
         }
 
-        // Nếu đã có gói khác thì disable các gói còn lại
-        return { text: "Không khả dụng", disabled: true, cls: "bg-gray-200 text-gray-500 cursor-not-allowed" };
+        // Nếu đã có gói khác thì vẫn cho phép đăng ký gói mới (thay đổi logic cũ)
+        return { text: "Đăng Ký Ngay", disabled: false, cls: "btn-primary" };
     };
 
     return (

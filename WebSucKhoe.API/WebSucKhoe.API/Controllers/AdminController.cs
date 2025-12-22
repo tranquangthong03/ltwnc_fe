@@ -251,6 +251,130 @@ namespace WebSucKhoe.API.Controllers
             return Ok(list);
         }
 
+        // 3.1 Thêm bệnh nhân mới
+        [HttpPost("add-patient")]
+        public async Task<IActionResult> AddPatient([FromBody] PatientCreateDto req)
+        {
+            try
+            {
+                // Kiểm tra trùng username hoặc email
+                if (await _context.NguoiDungs.AnyAsync(u => u.TenDangNhap == req.TenDangNhap || u.Email == req.Email))
+                {
+                    return BadRequest("Tên đăng nhập hoặc Email đã tồn tại.");
+                }
+
+                // Tạo User
+                var user = new NguoiDung
+                {
+                    TenDangNhap = req.TenDangNhap,
+                    MatKhauHash = req.MatKhau, // Lưu ý: Nên hash password
+                    Email = req.Email,
+                    HoTen = req.HoTen,
+                    SoDienThoai = req.SoDienThoai ?? "",
+                    VaiTro = "BenhNhan",
+                    TrangThai = true,
+                    NgayTao = DateTime.Now
+                };
+                _context.NguoiDungs.Add(user);
+                await _context.SaveChangesAsync();
+
+                // Tạo Chi tiết bệnh nhân
+                DateOnly? ngaySinhDateOnly = null;
+                if (!string.IsNullOrEmpty(req.NgaySinh))
+                {
+                    ngaySinhDateOnly = DateOnly.Parse(req.NgaySinh);
+                }
+
+                var detail = new ChiTietBenhNhan
+                {
+                    MaBenhNhan = user.MaNguoiDung,
+                    NgaySinh = ngaySinhDateOnly,
+                    GioiTinh = req.GioiTinh ?? "Nam",
+                    DiaChi = req.DiaChi ?? "",
+                    TienSuBenh = req.TienSuBenh ?? ""
+                };
+                _context.ChiTietBenhNhans.Add(detail);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Message = "Đã tạo bệnh nhân thành công", MaBenhNhan = user.MaNguoiDung });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi: {ex.Message}");
+            }
+        }
+
+        // 3.2 Cập nhật thông tin bệnh nhân
+        [HttpPut("update-patient/{id}")]
+        public async Task<IActionResult> UpdatePatient(int id, [FromBody] PatientUpdateDto req)
+        {
+            try
+            {
+                var user = await _context.NguoiDungs
+                    .Include(u => u.ChiTietBenhNhan)
+                    .FirstOrDefaultAsync(u => u.MaNguoiDung == id);
+
+                if (user == null) return NotFound("Không tìm thấy bệnh nhân");
+
+                // Cập nhật bảng NguoiDung
+                user.HoTen = req.HoTen;
+                user.Email = req.Email;
+                user.SoDienThoai = req.SoDienThoai ?? "";
+
+                // Cập nhật chi tiết bệnh nhân
+                if (user.ChiTietBenhNhan != null)
+                {
+                    DateOnly? ngaySinhDateOnly = null;
+                    if (!string.IsNullOrEmpty(req.NgaySinh))
+                    {
+                        ngaySinhDateOnly = DateOnly.Parse(req.NgaySinh);
+                    }
+
+                    user.ChiTietBenhNhan.NgaySinh = ngaySinhDateOnly;
+                    user.ChiTietBenhNhan.GioiTinh = req.GioiTinh ?? "Nam";
+                    user.ChiTietBenhNhan.DiaChi = req.DiaChi ?? "";
+                    user.ChiTietBenhNhan.TienSuBenh = req.TienSuBenh ?? "";
+                }
+
+                await _context.SaveChangesAsync();
+                return Ok(new { Message = "Cập nhật thành công" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi: {ex.Message}");
+            }
+        }
+
+        // 3.3 Xóa bệnh nhân
+        [HttpDelete("delete-patient/{id}")]
+        public async Task<IActionResult> DeletePatient(int id)
+        {
+            try
+            {
+                var user = await _context.NguoiDungs
+                    .Include(u => u.ChiTietBenhNhan)
+                    .FirstOrDefaultAsync(u => u.MaNguoiDung == id);
+
+                if (user == null) return NotFound("Không tìm thấy bệnh nhân");
+
+                // Xóa chi tiết bệnh nhân trước
+                if (user.ChiTietBenhNhan != null)
+                {
+                    _context.ChiTietBenhNhans.Remove(user.ChiTietBenhNhan);
+                }
+
+                // Xóa user
+                _context.NguoiDungs.Remove(user);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Message = "Đã xóa bệnh nhân thành công" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi: {ex.Message}. Inner: {ex.InnerException?.Message}");
+            }
+        }
+
         // =============================================================
         // 4. QUẢN LÝ THANH TOÁN & HÓA ĐƠN - KHÔI PHỤC
         // =============================================================
@@ -519,5 +643,29 @@ namespace WebSucKhoe.API.Controllers
     public class UpdateStatusRequest
     {
         public bool trangThai { get; set; }
+    }
+
+    public class PatientCreateDto
+    {
+        public string TenDangNhap { get; set; }
+        public string MatKhau { get; set; }
+        public string Email { get; set; }
+        public string HoTen { get; set; }
+        public string? SoDienThoai { get; set; }
+        public string? NgaySinh { get; set; }
+        public string? GioiTinh { get; set; }
+        public string? DiaChi { get; set; }
+        public string? TienSuBenh { get; set; }
+    }
+
+    public class PatientUpdateDto
+    {
+        public string HoTen { get; set; }
+        public string Email { get; set; }
+        public string? SoDienThoai { get; set; }
+        public string? NgaySinh { get; set; }
+        public string? GioiTinh { get; set; }
+        public string? DiaChi { get; set; }
+        public string? TienSuBenh { get; set; }
     }
 }

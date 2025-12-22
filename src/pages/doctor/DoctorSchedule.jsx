@@ -22,6 +22,7 @@ const DoctorSchedule = () => {
 
     const handleUpdateStatus = async (id, status) => {
         try {
+            // Gửi status tiếng Việt nếu backend trả về tiếng Việt
             await api.put(`/Doctor/appointment/${id}/status`, { status });
             toast.success("Đã cập nhật trạng thái!");
             fetchSchedule();
@@ -32,20 +33,36 @@ const DoctorSchedule = () => {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 'Confirmed': return 'bg-green-100 text-green-700';
-            case 'Pending': return 'bg-yellow-100 text-yellow-700';
-            case 'Cancelled': return 'bg-red-100 text-red-700';
-            case 'Completed': return 'bg-blue-100 text-blue-700';
+            case 'Confirmed': 
+            case 'DaDuyet':
+                return 'bg-green-100 text-green-700';
+            case 'Pending': 
+            case 'ChoDuyet':
+                return 'bg-yellow-100 text-yellow-700';
+            case 'Cancelled': 
+            case 'DaHuy':
+                return 'bg-red-100 text-red-700';
+            case 'Completed': 
+            case 'DaKham':
+                return 'bg-blue-100 text-blue-700';
             default: return 'bg-gray-100 text-gray-700';
         }
     };
 
     const getStatusText = (status) => {
         switch (status) {
-            case 'Confirmed': return 'Đã xác nhận';
-            case 'Pending': return 'Chờ duyệt';
-            case 'Cancelled': return 'Đã hủy';
-            case 'Completed': return 'Đã khám';
+            case 'Confirmed': 
+            case 'DaDuyet':
+                return 'Đã xác nhận';
+            case 'Pending': 
+            case 'ChoDuyet':
+                return 'Chờ duyệt';
+            case 'Cancelled': 
+            case 'DaHuy':
+                return 'Đã hủy';
+            case 'Completed': 
+            case 'DaKham':
+                return 'Đã khám';
             default: return status;
         }
     };
@@ -94,12 +111,12 @@ const DoctorSchedule = () => {
                             </div>
 
                             <div className="flex gap-2">
-                                {app.trangThai === 'Pending' && (
+                                {(app.trangThai === 'Pending' || app.trangThai === 'ChoDuyet') && (
                                     <>
-                                        <button onClick={() => handleUpdateStatus(app.maLichHen, 'Confirmed')} className="p-2 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg">
+                                        <button onClick={() => handleUpdateStatus(app.maLichHen, 'DaDuyet')} className="p-2 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg" title="Duyệt">
                                             <CheckCircle size={20} />
                                         </button>
-                                        <button onClick={() => handleUpdateStatus(app.maLichHen, 'Cancelled')} className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg">
+                                        <button onClick={() => handleUpdateStatus(app.maLichHen, 'DaHuy')} className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg" title="Hủy">
                                             <XCircle size={20} />
                                         </button>
                                     </>

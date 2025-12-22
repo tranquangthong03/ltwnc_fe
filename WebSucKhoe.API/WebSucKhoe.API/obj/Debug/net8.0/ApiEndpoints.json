@@ -17,6 +17,22 @@
   },
   {
     "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
+    "Method": "AddPatient",
+    "RelativePath": "api/Admin/add-patient",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "WebSucKhoe.API.Controllers.PatientCreateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
     "Method": "UpdateAppointmentStatus",
     "RelativePath": "api/Admin/appointment/{id}/status",
     "HttpMethod": "PUT",
@@ -107,6 +123,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
+    "Method": "DeletePatient",
+    "RelativePath": "api/Admin/delete-patient/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -234,6 +266,27 @@
       {
         "Name": "req",
         "Type": "WebSucKhoe.API.Controllers.DoctorUpdateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
+    "Method": "UpdatePatient",
+    "RelativePath": "api/Admin/update-patient/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "WebSucKhoe.API.Controllers.PatientUpdateDto",
         "IsRequired": true
       }
     ],

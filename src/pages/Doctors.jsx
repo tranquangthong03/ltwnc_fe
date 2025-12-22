@@ -106,7 +106,7 @@ const Doctors = () => {
 
                     <div className="search-container" style={{ margin: '20px auto' }}>
                         <Search size={20} className="text-gray-400 ml-3" />
-                        <input className="search-input" placeholder="Tìm kiếm bác sĩ..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+                        <input className="search-input box-border" placeholder="Tìm kiếm bác sĩ..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
                     </div>
                 </RevealOnScroll>
             </div>
@@ -180,18 +180,18 @@ const Doctors = () => {
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 mb-1">NGÀY KHÁM</label>
-                                    <input required type="date" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                                    <input required type="date" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 box-border"
                                         value={bookingForm.date} onChange={e => setBookingForm({ ...bookingForm, date: e.target.value })} />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 mb-1">GIỜ KHÁM</label>
-                                    <input required type="time" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                                    <input required type="time" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 box-border"
                                         value={bookingForm.time} onChange={e => setBookingForm({ ...bookingForm, time: e.target.value })} />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 mb-1">TRIỆU CHỨNG / LÝ DO</label>
-                                <textarea required className="w-full p-2.5 border rounded-lg h-24 resize-none outline-none focus:ring-2 focus:ring-blue-500"
+                                <textarea required className="w-full p-2.5 border rounded-lg h-24 resize-none outline-none focus:ring-2 focus:ring-blue-500 box-border"
                                     placeholder="VD: Đau đầu, sốt nhẹ..."
                                     value={bookingForm.reason} onChange={e => setBookingForm({ ...bookingForm, reason: e.target.value })} />
                             </div>
