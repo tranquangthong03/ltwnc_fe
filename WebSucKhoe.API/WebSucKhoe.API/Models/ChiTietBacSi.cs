@@ -17,5 +17,7 @@ public partial class ChiTietBacSi
 
     public string? MoTa { get; set; }
 
+    public string? AnhBacSi { get; set; } // Đường dẫn ảnh bác sĩ
+
     public virtual NguoiDung MaBacSiNavigation { get; set; } = null!;
 }

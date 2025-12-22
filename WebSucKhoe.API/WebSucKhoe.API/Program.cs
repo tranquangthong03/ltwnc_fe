@@ -124,6 +124,9 @@ if (app.Environment.IsDevelopment())
 // app.UseHttpsRedirection(); 
 // ----------------------------------------------------------------------
 
+// Kích hoạt phục vụ static files (cho ảnh, CSS, JS...)
+app.UseStaticFiles();
+
 // Kích hoạt CORS (Phải đặt trước Auth và Hub)
 app.UseCors("AllowAll");
 

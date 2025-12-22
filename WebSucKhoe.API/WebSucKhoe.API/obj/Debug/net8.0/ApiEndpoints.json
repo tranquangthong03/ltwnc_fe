@@ -241,6 +241,27 @@
   },
   {
     "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
+    "Method": "UploadDoctorImage",
+    "RelativePath": "api/Admin/upload-doctor-image/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "imageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebSucKhoe.API.Controllers.AdminController",
     "Method": "UpdateUserStatus",
     "RelativePath": "api/Admin/users/{id}/status",
     "HttpMethod": "PUT",

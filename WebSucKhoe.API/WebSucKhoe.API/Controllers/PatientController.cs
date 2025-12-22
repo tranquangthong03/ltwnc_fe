@@ -44,6 +44,7 @@ namespace WebSucKhoe.API.Controllers
                     d.MaBacSi,
                     HoTen = d.MaBacSiNavigation.HoTen,
                     AnhDaiDien = d.MaBacSiNavigation.AnhDaiDien,
+                    AnhBacSi = d.AnhBacSi, // Thêm ảnh bác sĩ
                     ChuyenKhoa = d.ChuyenKhoa,
                     SoNamKinhNghiem = d.SoNamKinhNghiem,
                     GiaKham = d.GiaKham,

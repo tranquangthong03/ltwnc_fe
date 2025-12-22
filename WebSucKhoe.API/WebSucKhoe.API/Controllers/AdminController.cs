@@ -39,7 +39,8 @@ namespace WebSucKhoe.API.Controllers
                     GiaKham = d.GiaKham,
                     SoChungChi = d.SoChungChi,
                     SoNamKinhNghiem = d.SoNamKinhNghiem,
-                    GioiThieu = d.MoTa
+                    GioiThieu = d.MoTa,
+                    AnhBacSi = d.AnhBacSi // Thêm ảnh bác sĩ
                 }).ToListAsync();
 
             return Ok(list);
@@ -82,7 +83,7 @@ namespace WebSucKhoe.API.Controllers
             _context.ChiTietBacSis.Add(detail);
             await _context.SaveChangesAsync();
 
-            return Ok(new { Message = "Đã tạo bác sĩ thành công" });
+            return Ok(new { Message = "Đã tạo bác sĩ thành công", MaBacSi = user.MaNguoiDung });
         }
 
         // 1.3 Cập nhật thông tin bác sĩ (MỚI THÊM)
@@ -111,9 +112,77 @@ namespace WebSucKhoe.API.Controllers
             user.ChiTietBacSi.GiaKham = req.GiaKham;
             user.ChiTietBacSi.SoChungChi = req.SoChungChi;
             user.ChiTietBacSi.MoTa = req.GioiThieu;
+            
+            // Cập nhật ảnh nếu có
+            if (!string.IsNullOrEmpty(req.AnhBacSi))
+            {
+                user.ChiTietBacSi.AnhBacSi = req.AnhBacSi;
+            }
 
             await _context.SaveChangesAsync();
             return Ok(new { Message = "Cập nhật thành công" });
+        }
+
+        // 1.4 Upload ảnh bác sĩ
+        [HttpPost("upload-doctor-image/{id}")]
+        public async Task<IActionResult> UploadDoctorImage(int id, IFormFile imageFile)
+        {
+            if (imageFile == null || imageFile.Length == 0)
+                return BadRequest("Vui lòng chọn file ảnh");
+
+            // Kiểm tra định dạng file
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+            var extension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+            if (!allowedExtensions.Contains(extension))
+                return BadRequest("Chỉ chấp nhận file ảnh (jpg, jpeg, png, gif)");
+
+            // Kiểm tra kích thước file (tối đa 5MB)
+            if (imageFile.Length > 5 * 1024 * 1024)
+                return BadRequest("File ảnh không được vượt quá 5MB");
+
+            try
+            {
+                // Tìm bác sĩ
+                var bacsi = await _context.ChiTietBacSis.FindAsync(id);
+                if (bacsi == null)
+                    return NotFound("Không tìm thấy bác sĩ");
+
+                // Tạo thư mục lưu ảnh nếu chưa có
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "doctors");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                // Xóa ảnh cũ nếu có
+                if (!string.IsNullOrEmpty(bacsi.AnhBacSi))
+                {
+                    var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", bacsi.AnhBacSi.TrimStart('/'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                // Tạo tên file unique
+                var uniqueFileName = $"doctor_{id}_{Guid.NewGuid()}{extension}";
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                // Lưu file
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(fileStream);
+                }
+
+                // Cập nhật đường dẫn trong database
+                var relativePath = $"/images/doctors/{uniqueFileName}";
+                bacsi.AnhBacSi = relativePath;
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Message = "Upload ảnh thành công", ImagePath = relativePath });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi khi upload ảnh: {ex.Message}");
+            }
         }
 
         // =============================================================
@@ -444,6 +513,7 @@ namespace WebSucKhoe.API.Controllers
         public decimal GiaKham { get; set; }
         public string SoChungChi { get; set; }
         public string GioiThieu { get; set; }
+        public string? AnhBacSi { get; set; } // Đường dẫn ảnh
     }
 
     public class UpdateStatusRequest
