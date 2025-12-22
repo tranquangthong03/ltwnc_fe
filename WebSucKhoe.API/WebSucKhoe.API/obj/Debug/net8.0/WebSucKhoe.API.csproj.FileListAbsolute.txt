@@ -731,3 +731,4 @@ E:\WORK SPACE\LapTrinhWebNC\ltwnc_fe\WebSucKhoe.API\WebSucKhoe.API\obj\Debug\net
 E:\WORK SPACE\LapTrinhWebNC\ltwnc_fe\WebSucKhoe.API\WebSucKhoe.API\obj\Debug\net8.0\WebSucKhoe.API.genruntimeconfig.cache
 E:\WORK SPACE\LapTrinhWebNC\ltwnc_fe\WebSucKhoe.API\WebSucKhoe.API\obj\Debug\net8.0\ref\WebSucKhoe.API.dll
 E:\WORK SPACE\LapTrinhWebNC\ltwnc_fe\WebSucKhoe.API\WebSucKhoe.API\bin\Debug\net8.0\WebSucKhoe.API.staticwebassets.runtime.json
+D:\WNC chamsocSK\web-suc-khoe-frontend\WebSucKhoe.API\WebSucKhoe.API\bin\Debug\net8.0\WebSucKhoe.API.staticwebassets.runtime.json
