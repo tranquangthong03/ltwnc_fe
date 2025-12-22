@@ -91,7 +91,7 @@ namespace WebSucKhoe.API.Controllers
                 MaBacSi = req.MaBacSi,
                 NgayGioHen = req.NgayHen,
                 LyDoKham = req.LyDoKham,
-                TrangThai = "Pending", // Mặc định chờ duyệt
+                TrangThai = "ChoDuyet", // Mặc định chờ duyệt
                 NgayTao = DateTime.Now
             };
 
