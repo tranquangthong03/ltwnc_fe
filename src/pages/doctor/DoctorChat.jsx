@@ -15,6 +15,14 @@ const DoctorChat = () => {
     const [loading, setLoading] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
     const messagesEndRef = useRef(null);
+    const isMounted = useRef(true);
+
+    useEffect(() => {
+        isMounted.current = true;
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
 
     // 1. Khởi tạo SignalR connection
     useEffect(() => {
@@ -36,20 +44,26 @@ const DoctorChat = () => {
         if (connection && user) {
             connection.start()
                 .then(() => {
-                    console.log("✅ Doctor SignalR Connected");
-                    setIsConnected(true);
-                    connection.invoke("JoinChat", user.userId.toString());
+                    if (isMounted.current) {
+                        console.log("✅ Doctor SignalR Connected");
+                        setIsConnected(true);
+                        connection.invoke("JoinChat", user.userId.toString());
+                    }
                 })
                 .catch(err => {
                     console.error("❌ Connection failed:", err);
-                    setIsConnected(false);
-                    toast.error("Không thể kết nối chat");
+                    if (isMounted.current) {
+                        setIsConnected(false);
+                        toast.error("Không thể kết nối chat");
+                    }
                 });
 
             return () => {
                 if (connection.state === signalR.HubConnectionState.Connected) {
                     connection.stop();
-                    setIsConnected(false);
+                    if (isMounted.current) {
+                        setIsConnected(false);
+                    }
                 }
             };
         }
@@ -59,6 +73,8 @@ const DoctorChat = () => {
     useEffect(() => {
         if (connection) {
             const handleReceiveMessage = (data) => {
+                if (!isMounted.current) return;
+
                 console.log("📩 Doctor received message:", data);
                 
                 // Nếu tin nhắn thuộc cuộc trò chuyện đang mở
@@ -77,7 +93,7 @@ const DoctorChat = () => {
                 loadConversations();
                 
                 // Hiển thị toast nếu tin nhắn từ bệnh nhân
-                if (data.maNguoiGui !== parseInt(user.userId)) {
+                if (user && data.maNguoiGui !== parseInt(user.userId)) {
                     toast.info("Có tin nhắn mới từ bệnh nhân!");
                 }
             };
@@ -95,8 +111,10 @@ const DoctorChat = () => {
         if (!user) return;
         try {
             const res = await api.get(`/ChatRealTime/conversations/${user.userId}`);
-            setConversations(res.data);
-            console.log("📋 Loaded conversations:", res.data);
+            if (isMounted.current) {
+                setConversations(res.data);
+                console.log("📋 Loaded conversations:", res.data);
+            }
         } catch (err) {
             console.error("Error loading conversations:", err);
         }
@@ -118,18 +136,24 @@ const DoctorChat = () => {
                     parseInt(user.userId), 
                     conv.maBenhNhan
                 );
-                setMessages(history || []);
-                console.log("📜 Loaded history:", history);
-                scrollToBottom();
+                if (isMounted.current) {
+                    setMessages(history || []);
+                    console.log("📜 Loaded history:", history);
+                    scrollToBottom();
+                }
 
                 // Đánh dấu đã đọc
                 await api.put(`/ChatRealTime/mark-read/${conv.maCuocTroChuyen}/${user.userId}`);
-                loadConversations();
+                if (isMounted.current) {
+                    loadConversations();
+                }
             }
         } catch (e) {
             console.error("Error loading history:", e);
         } finally {
-            setLoading(false);
+            if (isMounted.current) {
+                setLoading(false);
+            }
         }
     };
 
@@ -162,6 +186,8 @@ const DoctorChat = () => {
     };
 
     useEffect(() => { scrollToBottom(); }, [messages]);
+
+    if (!user) return null;
 
     return (
         <div className="flex h-[calc(100vh-120px)] bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">

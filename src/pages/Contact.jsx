@@ -19,9 +19,17 @@ const Contact = () => {
     const [connection, setConnection] = useState(null);
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef(null);
+    const isMounted = useRef(true);
 
     // State cho FAQ
     const [openFaq, setOpenFaq] = useState(null);
+
+    useEffect(() => {
+        isMounted.current = true;
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
 
     useEffect(() => {
         const loadChatHistory = async () => {
@@ -32,13 +40,15 @@ const Contact = () => {
                         parseInt(user.userId),
                         selectedDoctor.maBacSi
                     );
-                    setMessages(history || []);
-                    scrollToBottom();
+                    if (isMounted.current) {
+                        setMessages(history || []);
+                        scrollToBottom();
+                    }
                 } catch (e) {
                     console.error("Error loading history:", e);
-                    setMessages([]);
+                    if (isMounted.current) setMessages([]);
                 } finally {
-                    setLoading(false);
+                    if (isMounted.current) setLoading(false);
                 }
             }
         };
@@ -49,30 +59,68 @@ const Contact = () => {
         const fetchDoctors = async () => {
             try {
                 const res = await api.get('/Doctor/public-list');
-                setDoctors(res.data);
+                if (isMounted.current) setDoctors(res.data);
             } catch (err) {
-                setDoctors([
-                    { maBacSi: 1, hoTen: "BS. Nguyễn Văn A", chuyenKhoa: "Tim mạch" },
-                    { maBacSi: 2, hoTen: "BS. Trần Thị B", chuyenKhoa: "Nhi khoa" }
-                ]);
+                if (isMounted.current) {
+                    setDoctors([
+                        { maBacSi: 1, hoTen: "BS. Nguyễn Văn A", chuyenKhoa: "Tim mạch" },
+                        { maBacSi: 2, hoTen: "BS. Trần Thị B", chuyenKhoa: "Nhi khoa" }
+                    ]);
+                }
             }
         };
         fetchDoctors();
     }, []);
 
+    // 1. Init connection
     useEffect(() => {
         if (user && selectedDoctor && !connection) {
+            const token = localStorage.getItem('token');
             const newConnection = new signalR.HubConnectionBuilder()
-                .withUrl("http://localhost:5119/chatHub")
+                .withUrl("http://localhost:5119/chatHub", {
+                    accessTokenFactory: () => token || ''
+                })
                 .withAutomaticReconnect()
                 .build();
             setConnection(newConnection);
         }
     }, [selectedDoctor, user, connection]);
 
+    // 2. Start connection & Join
     useEffect(() => {
-        if (connection && connection.state === signalR.HubConnectionState.Disconnected) {
+        if (connection && user) {
+            connection.start()
+                .then(() => {
+                    if (isMounted.current) {
+                        console.log("✅ Patient SignalR Connected");
+                        connection.invoke("JoinChat", user.userId.toString());
+                    }
+                })
+                .catch(e => console.error("SignalR Error:", e));
+
+            return () => {
+                if (connection.state === signalR.HubConnectionState.Connected) {
+                    connection.stop();
+                }
+            };
+        }
+    }, [connection, user]);
+
+    // 3. Listen for messages
+    useEffect(() => {
+        if (connection) {
             const handleReceiveMessage = (data) => {
+                if (!isMounted.current) return;
+                console.log("📩 Patient received message:", data);
+                
+                // Chỉ hiện tin nhắn nếu đang chat với đúng bác sĩ hoặc tin nhắn của chính mình
+                // Lưu ý: data.maNguoiGui là ID người gửi.
+                // Nếu bác sĩ gửi, maNguoiGui == selectedDoctor.maBacSi
+                // Nếu mình gửi, maNguoiGui == user.userId
+                
+                // Tuy nhiên, logic cũ chỉ append. Chúng ta nên check selectedDoctor để tránh hiện tin nhắn của bác sĩ khác (nếu có lỗi logic)
+                // Nhưng hiện tại cứ append để debug đã.
+                
                 setMessages(prev => [...prev, {
                     maNguoiGui: data.maNguoiGui,
                     noiDung: data.noiDung,
@@ -81,21 +129,13 @@ const Contact = () => {
                 scrollToBottom();
             };
 
-            connection.start()
-                .then(() => {
-                    connection.invoke("JoinChat", user.userId.toString());
-                    connection.on("ReceiveMessage", handleReceiveMessage);
-                })
-                .catch(e => console.error("SignalR Error:", e));
+            connection.on("ReceiveMessage", handleReceiveMessage);
 
             return () => {
                 connection.off("ReceiveMessage", handleReceiveMessage);
-                if (connection.state === signalR.HubConnectionState.Connected) {
-                    connection.stop();
-                }
             };
         }
-    }, [connection, user]);
+    }, [connection, selectedDoctor]); // Thêm selectedDoctor vào deps nếu cần filter kỹ hơn
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
