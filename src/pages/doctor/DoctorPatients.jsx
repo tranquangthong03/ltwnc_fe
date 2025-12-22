@@ -39,16 +39,16 @@ const DoctorPatients = () => {
 
     return (
         <div>
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                 <h1 className="text-2xl font-bold">Danh Sách Bệnh Nhân</h1>
-                <div className="relative">
+                <div className="relative w-full md:w-64">
                     <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
-                    <input placeholder="Tìm kiếm..." className="pl-10 pr-4 py-2 border rounded-lg outline-none focus:border-blue-500" />
+                    <input placeholder="Tìm kiếm..." className="w-full pl-10 pr-4 py-2 border rounded-lg outline-none focus:border-blue-500" />
                 </div>
             </div>
 
             <div className="bg-white rounded-xl shadow border overflow-hidden">
-                <table className="w-4/5 text-left">
+                <table className="w-full text-left">
                     <thead className="bg-gray-50 text-gray-600">
                         <tr>
                             <th className="p-4">ID</th>
