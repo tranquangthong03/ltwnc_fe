@@ -120,11 +120,21 @@ const Doctors = () => {
 
                     {filteredDoctors.length > 0 ? (
                         <div className="grid-container">
-                            {filteredDoctors.map((doc) => (
+                            {filteredDoctors.map((doc) => {
+                                const doctorImage = doc.anhBacSi 
+                                    ? `http://localhost:5119${doc.anhBacSi}` 
+                                    : (doc.anhDaiDien || "/doctor.png");
+                                
+                                return (
                                 <div key={doc.maBacSi} className="doctor-card-wrapper">
                                     <div className="doc-img-container">
                                         <span className="doc-badge"><Stethoscope size={14} /> {doc.chuyenKhoa}</span>
-                                        <img src={doc.anhDaiDien || "/doctor.png"} alt={doc.hoTen} className="doc-img" onError={(e) => { e.target.src = "https://via.placeholder.com/400x500?text=Bac+Si" }} />
+                                        <img 
+                                            src={doctorImage} 
+                                            alt={doc.hoTen} 
+                                            className="doc-img" 
+                                            onError={(e) => { e.target.src = "https://via.placeholder.com/400x500?text=Bac+Si" }} 
+                                        />
                                     </div>
                                     <div className="doc-info">
                                         <h3 className="doc-name">{doc.hoTen}</h3>
@@ -138,7 +148,8 @@ const Doctors = () => {
                                         </button>
                                     </div>
                                 </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     ) : (
                         <p className="text-center text-gray-500">Không tìm thấy bác sĩ.</p>
@@ -156,7 +167,11 @@ const Doctors = () => {
                         </div>
                         <form onSubmit={handleConfirmBooking} className="p-6 space-y-4">
                             <div className="flex items-center gap-4 mb-4 bg-blue-50 p-3 rounded-xl border border-blue-100">
-                                <img src={selectedDoctor.anhDaiDien || "/doctor.png"} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm" alt="" />
+                                <img 
+                                    src={selectedDoctor.anhBacSi ? `http://localhost:5119${selectedDoctor.anhBacSi}` : (selectedDoctor.anhDaiDien || "/doctor.png")} 
+                                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm" 
+                                    alt="" 
+                                />
                                 <div>
                                     <p className="text-sm text-blue-600 font-semibold">Bác sĩ phụ trách</p>
                                     <p className="font-bold text-slate-800">{selectedDoctor.hoTen}</p>

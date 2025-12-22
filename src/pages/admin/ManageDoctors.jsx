@@ -6,7 +6,7 @@ import {
     Mail, Phone, Stethoscope, DollarSign,
     Award, RefreshCw,
     Users, UserCheck, UserX,
-    MoreHorizontal, ShieldCheck, FileText, Lock, User
+    MoreHorizontal, ShieldCheck, FileText, Lock, User, Image
 } from 'lucide-react';
 
 const ManageDoctors = () => {
@@ -37,14 +37,45 @@ const ManageDoctors = () => {
         chuyenKhoa: '',
         soChungChi: '',
         giaKham: '',
-        gioiThieu: ''
+        gioiThieu: '',
+        anhBacSi: '' // Đường dẫn ảnh
     };
 
     const [currentDoctor, setCurrentDoctor] = useState(initialFormState);
+    const [selectedImage, setSelectedImage] = useState(null); // File ảnh được chọn
+    const [imagePreview, setImagePreview] = useState(null); // Preview ảnh
 
     const formatCurrency = (value) => {
         if (!value) return '0 ₫';
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+    };
+
+    // --- XỬ LÝ CHỌỌ ẢNH ---
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            // Kiểm tra kích thước (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error('Ảnh không được vượt quá 5MB');
+                return;
+            }
+            
+            // Kiểm tra loại file
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                toast.error('Chỉ chấp nhận file ảnh (JPG, PNG, GIF)');
+                return;
+            }
+
+            setSelectedImage(file);
+            
+            // Tạo preview
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     // --- FETCH DATA ---
@@ -121,8 +152,10 @@ const ManageDoctors = () => {
                 gioiThieu: currentDoctor.gioiThieu
             };
 
+            let doctorId = currentDoctor.maNguoiDung;
+
             if (isEditing) {
-                await api.put(`/Admin/update-doctor/${currentDoctor.maNguoiDung}`, payload);
+                await api.put(`/Admin/update-doctor/${doctorId}`, payload);
                 toast.success("Cập nhật thành công!");
             } else {
                 const createPayload = {
@@ -130,11 +163,34 @@ const ManageDoctors = () => {
                     tenDangNhap: currentDoctor.tenDangNhap,
                     matKhau: currentDoctor.matKhau
                 };
-                await api.post('/Admin/add-doctor', createPayload);
+                const response = await api.post('/Admin/add-doctor', createPayload);
+                
+                // Lấy ID bác sĩ vừa tạo từ response
+                doctorId = response.data.maBacSi || response.data.MaBacSi;
                 toast.success("Thêm bác sĩ thành công!");
             }
 
+            // Upload ảnh nếu có
+            if (selectedImage && doctorId) {
+                const formData = new FormData();
+                formData.append('imageFile', selectedImage);
+                
+                try {
+                    await api.post(`/Admin/upload-doctor-image/${doctorId}`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                    toast.success('Ảnh đã được tải lên!');
+                } catch (imgError) {
+                    console.error('Lỗi upload ảnh:', imgError);
+                    toast.warning('Lưu thông tin thành công nhưng không thể tải ảnh');
+                }
+            }
+
             setShowModal(false);
+            setSelectedImage(null);
+            setImagePreview(null);
             fetchDoctors();
         } catch (error) {
             console.error("Error saving doctor:", error);
@@ -171,12 +227,21 @@ const ManageDoctors = () => {
                 chuyenKhoa: doctor.ChuyenKhoa || doctor.chuyenKhoa || '',
                 soChungChi: doctor.SoChungChi || doctor.soChungChi || '',
                 giaKham: doctor.GiaKham || doctor.giaKham || 0,
-                gioiThieu: doctor.GioiThieu || doctor.gioiThieu || doctor.MoTa || doctor.moTa || ''
+                gioiThieu: doctor.GioiThieu || doctor.gioiThieu || doctor.MoTa || doctor.moTa || '',
+                anhBacSi: doctor.AnhBacSi || doctor.anhBacSi || ''
             });
+            // Set preview ảnh hiện tại nếu có
+            if (doctor.AnhBacSi || doctor.anhBacSi) {
+                setImagePreview(`http://localhost:5119${doctor.AnhBacSi || doctor.anhBacSi}`);
+            } else {
+                setImagePreview(null);
+            }
         } else {
             setIsEditing(false);
             setCurrentDoctor(initialFormState);
+            setImagePreview(null);
         }
+        setSelectedImage(null);
         setShowModal(true);
     };
 
@@ -319,14 +384,30 @@ const ManageDoctors = () => {
                         processedDoctors.map((doc) => {
                             const avatarLetter = (doc.HoTen || doc.hoTen || "D").charAt(0).toUpperCase();
                             const status = doc.TrangThai === false ? 'locked' : 'active';
+                            const doctorImage = doc.AnhBacSi || doc.anhBacSi;
 
                             return (
                                 <div key={doc.MaBacSi || doc.maBacSi} className="group bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col overflow-hidden">
                                     <div className={`h-1.5 w-4/5 ${status === 'active' ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
                                     <div className="p-6 pb-0 flex justify-between items-start">
-                                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold text-white shadow-lg ${status === 'active' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 'bg-slate-400'}`}>
-                                            {avatarLetter}
-                                        </div>
+                                        {/* Hiển thị ảnh hoặc avatar mặc định */}
+                                        {doctorImage ? (
+                                            <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg border-2 border-slate-100">
+                                                <img 
+                                                    src={`http://localhost:5119${doctorImage}`} 
+                                                    alt={doc.HoTen || doc.hoTen}
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;
+                                                        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFMkU4RjAiLz48cGF0aCBkPSJNMzIgMzJDMzYuNDE4MyAzMiA0MCAyOC40MTgzIDQwIDI0QzQwIDE5LjU4MTcgMzYuNDE4MyAxNiAzMiAxNkMyNy41ODE3IDE2IDI0IDE5LjU4MTcgMjQgMjRDMjQgMjguNDE4MyAyNy41ODE3IDMyIDMyIDMyWiIgZmlsbD0iIzk0QTNCOCIvPjxwYXRoIGQ9Ik0xNiA0OEMxNiA0MC4yNjggMjIuMjY4IDM0IDMwIDM0SDM0QzQxLjczMiAzNCA0OCA0MC4yNjggNDggNDhWNTJIMTZWNDhaIiBmaWxsPSIjOTRBM0I4Ii8+PC9zdmc+';
+                                                    }}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold text-white shadow-lg ${status === 'active' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 'bg-slate-400'}`}>
+                                                {avatarLetter}
+                                            </div>
+                                        )}
                                         <button className="text-slate-300 hover:text-slate-600"><MoreHorizontal /></button>
                                     </div>
                                     <div className="p-6 flex-1">
@@ -534,6 +615,57 @@ const ManageDoctors = () => {
                                                         value={currentDoctor.gioiThieu}
                                                         onChange={e => setCurrentDoctor({ ...currentDoctor, gioiThieu: e.target.value })}
                                                     ></textarea>
+                                                </div>
+
+                                                {/* UPLOAD ẢNH */}
+                                                <div className="space-y-1.5">
+                                                    <label className="text-sm font-semibold text-slate-600 flex items-center gap-2">
+                                                        <Image size={16} className="text-slate-400" /> Ảnh bác sĩ
+                                                    </label>
+                                                    <div className="flex items-start gap-4">
+                                                        {/* Preview ảnh */}
+                                                        <div className="flex-shrink-0">
+                                                            {imagePreview ? (
+                                                                <div className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-emerald-200 shadow-md group">
+                                                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => {
+                                                                            setImagePreview(null);
+                                                                            setSelectedImage(null);
+                                                                        }}
+                                                                        className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                                                                    >
+                                                                        <X className="text-white" size={20} />
+                                                                    </button>
+                                                                </div>
+                                                            ) : (
+                                                                <div className="w-24 h-24 rounded-xl bg-slate-100 flex items-center justify-center border-2 border-dashed border-slate-300">
+                                                                    <Image className="text-slate-400" size={32} />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        
+                                                        {/* Input file */}
+                                                        <div className="flex-1">
+                                                            <input
+                                                                type="file"
+                                                                id="doctorImage"
+                                                                accept="image/*"
+                                                                onChange={handleImageChange}
+                                                                className="hidden"
+                                                            />
+                                                            <label
+                                                                htmlFor="doctorImage"
+                                                                className="cursor-pointer inline-block px-4 py-2.5 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-200 hover:bg-emerald-100 transition-all font-semibold text-sm"
+                                                            >
+                                                                Chọn ảnh từ máy
+                                                            </label>
+                                                            <p className="text-xs text-slate-500 mt-2">
+                                                                JPG, PNG hoặc GIF (tối đa 5MB)
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

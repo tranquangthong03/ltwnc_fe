@@ -90,6 +90,49 @@
         }
       }
     },
+    "/api/Admin/upload-doctor-image/{id}": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "imageFile": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "imageFile": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Admin/delete-user/{id}": {
       "delete": {
         "tags": [
@@ -1181,6 +1224,10 @@
             "type": "string",
             "nullable": true
           },
+          "anhBacSi": {
+            "type": "string",
+            "nullable": true
+          },
           "maBacSiNavigation": {
             "$ref": "#/components/schemas/NguoiDung"
           }
@@ -1366,6 +1413,10 @@
             "nullable": true
           },
           "gioiThieu": {
+            "type": "string",
+            "nullable": true
+          },
+          "anhBacSi": {
             "type": "string",
             "nullable": true
           }
