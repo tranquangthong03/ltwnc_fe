@@ -192,7 +192,7 @@ const Contact = () => {
                     {/* Google Map */}
                     <div className="bg-white p-2 rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 overflow-hidden h-[500px] lg:h-auto">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3833.77954767773!2d108.21102737510942!3d16.07692563923191!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31421847f125d0a9%3A0x936779884318eeca!2zNDggQ2FvIFRo4bqvbmcsIFRoYW5oIELDrG5oLCBI4bqjaSBDaMOidSwgxJDDoCBO4bq1bmcgNTUwMDAwLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1766386685586!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3833.77954767773!2d108.21102737510942!3d16.07692563923191!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31421847f125d0a9%3A0x936779884318eeca!2zNDggQ2FvIFRo4bqvbmcsIFRoYW5oIELDrG5oLCBI4bqjaSBDaMOidSwgxJDDoCBO4bq1bmcgNTUwMDAwLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1766386685586!5m2!1svi!2s"
                             width="100%"
                             height="100%"
                             style={{ border: 0, borderRadius: '12px' }}
