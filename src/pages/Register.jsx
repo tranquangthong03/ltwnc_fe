@@ -25,18 +25,29 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const payload = {
+                TenDangNhap: formData.TenDangNhap,
+                MatKhau: formData.MatKhau,
+                HoTen: formData.HoTen,
+                Email: formData.Email,
+                SoDienThoai: formData.SoDienThoai,
+                GioiTinh: formData.GioiTinh,
+                DiaChi: formData.DiaChi,
+                NgaySinh: formData.NgaySinh || null
+            };
+            
+            console.log('Sending register payload:', payload);
+            
             // Gọi API đăng ký
-            await api.post('/Auth/register', {
-                ...formData,
-                NgaySinh: formData.NgaySinh ? new Date(formData.NgaySinh).toISOString() : null
-            });
+            await api.post('/Auth/register', payload);
 
             toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
             navigate('/login'); // Chuyển về trang đăng nhập
         } catch (err) {
             // Lấy lỗi từ Backend trả về (nếu có)
+            console.error('Register error:', err.response?.data || err.message);
             const errorMsg = err.response?.data || "Đăng ký thất bại. Vui lòng thử lại.";
-            toast.error(typeof errorMsg === 'string' ? errorMsg : "Lỗi hệ thống");
+            toast.error(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
         }
     };
 
@@ -89,10 +100,10 @@ const Register = () => {
                         </div>
                         <div className="form-group">
                             <label className="form-label">Giới tính</label>
-                            <select name="GioiTinh" className="form-input" onChange={handleChange}>
+                            <select name="GioiTinh" className="form-input" onChange={handleChange} value={formData.GioiTinh}>
                                 <option value="Nam">Nam</option>
-                                <option value="Nu">Nữ</option>
-                                <option value="Khac">Khác</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
                             </select>
                         </div>
                     </div>

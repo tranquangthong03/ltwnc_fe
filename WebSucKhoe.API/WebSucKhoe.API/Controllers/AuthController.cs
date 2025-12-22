@@ -28,58 +28,67 @@ namespace WebSucKhoe.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto req)
         {
-            // 1. Kiểm tra trùng lặp
-            if (await _context.NguoiDungs.AnyAsync(u => u.TenDangNhap == req.TenDangNhap))
-                return BadRequest("Tên đăng nhập đã tồn tại.");
-
-            if (await _context.NguoiDungs.AnyAsync(u => u.Email == req.Email))
-                return BadRequest("Email đã được sử dụng.");
-
-            // 2. Bắt đầu Transaction (Quan trọng để đảm bảo dữ liệu nhất quán)
-            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // Bước A: Tạo User
-                var user = new NguoiDung
+                // 1. Kiểm tra trùng lặp
+                if (await _context.NguoiDungs.AnyAsync(u => u.TenDangNhap == req.TenDangNhap))
+                    return BadRequest("Tên đăng nhập đã tồn tại.");
+
+                if (await _context.NguoiDungs.AnyAsync(u => u.Email == req.Email))
+                    return BadRequest("Email đã được sử dụng.");
+
+                // 2. Bắt đầu Transaction (Quan trọng để đảm bảo dữ liệu nhất quán)
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
                 {
-                    TenDangNhap = req.TenDangNhap,
-                    MatKhauHash = PasswordHasher.HashPassword(req.MatKhau), // Mã hóa mật khẩu
-                    Email = req.Email,
-                    HoTen = req.HoTen,
-                    SoDienThoai = req.SoDienThoai,
-                    VaiTro = "BenhNhan", // Mặc định là bệnh nhân
-                    TrangThai = true,    // Mặc định kích hoạt
-                    NgayTao = DateTime.Now
-                };
-                _context.NguoiDungs.Add(user);
-                await _context.SaveChangesAsync(); // Lưu để lấy MaNguoiDung (ID)
+                    // Bước A: Tạo User
+                    var user = new NguoiDung
+                    {
+                        TenDangNhap = req.TenDangNhap,
+                        MatKhauHash = PasswordHasher.HashPassword(req.MatKhau), // Mã hóa mật khẩu
+                        Email = req.Email,
+                        HoTen = req.HoTen,
+                        SoDienThoai = req.SoDienThoai ?? "",
+                        VaiTro = "BenhNhan", // Mặc định là bệnh nhân
+                        TrangThai = true,    // Mặc định kích hoạt
+                        NgayTao = DateTime.Now
+                    };
+                    _context.NguoiDungs.Add(user);
+                    await _context.SaveChangesAsync(); // Lưu để lấy MaNguoiDung (ID)
 
-                // Bước B: Tạo Chi tiết bệnh nhân
-                // LƯU Ý: Chuyển DateTime? (C#) sang DateOnly? (SQL Server .NET 8)
-                var ngaySinhDateOnly = req.NgaySinh.HasValue
-                                        ? DateOnly.FromDateTime(req.NgaySinh.Value)
-                                        : (DateOnly?)null;
+                    // Bước B: Tạo Chi tiết bệnh nhân
+                    // LƯU Ý: Chuyển DateTime? (C#) sang DateOnly? (SQL Server .NET 8)
+                    DateOnly? ngaySinhDateOnly = null;
+                    if (req.NgaySinh.HasValue)
+                    {
+                        ngaySinhDateOnly = DateOnly.FromDateTime(req.NgaySinh.Value);
+                    }
 
-                var detail = new ChiTietBenhNhan
+                    var detail = new ChiTietBenhNhan
+                    {
+                        MaBenhNhan = user.MaNguoiDung, // Link với ID vừa tạo ở trên
+                        NgaySinh = ngaySinhDateOnly,
+                        GioiTinh = req.GioiTinh ?? "Nam",
+                        DiaChi = req.DiaChi ?? "",
+                        TienSuBenh = "" // Mặc định rỗng
+                    };
+                    _context.ChiTietBenhNhans.Add(detail);
+                    await _context.SaveChangesAsync();
+
+                    // Bước C: Commit Transaction (Xác nhận thành công)
+                    await transaction.CommitAsync();
+
+                    return Ok(new { Message = "Đăng ký thành công!", UserId = user.MaNguoiDung });
+                }
+                catch (Exception ex)
                 {
-                    MaBenhNhan = user.MaNguoiDung, // Link với ID vừa tạo ở trên
-                    NgaySinh = ngaySinhDateOnly,
-                    GioiTinh = req.GioiTinh,
-                    DiaChi = req.DiaChi,
-                    TienSuBenh = "" // Mặc định rỗng
-                };
-                _context.ChiTietBenhNhans.Add(detail);
-                await _context.SaveChangesAsync();
-
-                // Bước C: Commit Transaction (Xác nhận thành công)
-                await transaction.CommitAsync();
-
-                return Ok(new { Message = "Đăng ký thành công!", UserId = user.MaNguoiDung });
+                    await transaction.RollbackAsync(); // Hoàn tác nếu có lỗi
+                    return StatusCode(500, $"Lỗi khi lưu dữ liệu: {ex.Message}. Inner: {ex.InnerException?.Message}");
+                }
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync(); // Hoàn tác nếu có lỗi
-                return StatusCode(500, "Lỗi hệ thống: " + ex.Message);
+                return StatusCode(500, $"Lỗi hệ thống: {ex.Message}");
             }
         }
 
