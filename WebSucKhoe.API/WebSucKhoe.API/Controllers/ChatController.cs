@@ -24,7 +24,12 @@ namespace WebSucKhoe.API.Controllers
             try
             {
                 // 1. Kiểm tra/Tạo phiên chat
-                var phienChat = await _context.PhienChats.FindAsync(request.MaPhienChat);
+                PhienChat phienChat = null;
+                if (request.MaPhienChat.HasValue)
+                {
+                    phienChat = await _context.PhienChats.FindAsync(request.MaPhienChat.Value);
+                }
+
                 if (phienChat == null)
                 {
                     phienChat = new PhienChat
